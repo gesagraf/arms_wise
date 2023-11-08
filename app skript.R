@@ -17,6 +17,7 @@ Stichprobe.erzeugen <- function(Groese.jeder.Stichprobe, Standardabweichung.in.d
 #nur schauen ob es geht
 df <- Stichprobe.erzeugen(Groese.jeder.Stichprobe, Standardabweichung.in.der.Bevoelkerung, Mittelwert.in.der.Bevoelkerung)
 
+df <- as.data.frame(matrix(ncol = 1000, nrow = Groese.jeder.Stichprobe))
 for (i in 1:1000) {
   df[,i] <- Stichprobe.erzeugen(Groese.jeder.Stichprobe, Standardabweichung.in.der.Bevoelkerung, Mittelwert.in.der.Bevoelkerung)
 }
