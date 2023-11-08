@@ -3,16 +3,16 @@
 #Hier erstelle ich die Variable X
 Mittelwert <- 0
 Standardabweichung <- 4
-Stichprobengröße <- 10
+Stichprobengrosse <- 10
 
-df <- data.frame(ID=c(1:Stichprobengröße))
-df$X <- c(rnorm(n = Stichprobengröße, mean = Mittelwert, sd = Standardabweichung))
+df <- data.frame(ID=c(1:Stichprobengrosse))
+df$X <- c(rnorm(n = Stichprobengrosse, mean = Mittelwert, sd = Standardabweichung))
 
 #Hier erstelle ich den Fehler
 MittelwertFehler <- 0
 StandardabweichungFehler <- 1
 
-df$Fehler <- c(rnorm(n = Stichprobengröße, mean = MittelwertFehler, sd = StandardabweichungFehler))
+df$Fehler <- c(rnorm(n = Stichprobengrosse, mean = MittelwertFehler, sd = StandardabweichungFehler))
 
 #Y
 BetaNull <- 50
@@ -37,16 +37,16 @@ cor <- c(cor, model1$estimate)
 coef <- c(coef, model$coefficients)
 
 #Aufgabe 5
-XundYerzeugen <- function(Stichprobengroße, Mittelwert, Standardabweichung, MittelwertFehler, StandardabweichungFehler, BetaNull, BetaEins) {
-  X <- rnorm(n = Stichprobengroße, mean = Mittelwert, sd = Standardabweichung)
-  Y <- BetaNull + BetaEins * X + rnorm(n = Stichprobengroße, mean = MittelwertFehler, sd = StandardabweichungFehler)
+XundYerzeugen <- function(Stichprobengrosse, Mittelwert, Standardabweichung, MittelwertFehler, StandardabweichungFehler, BetaNull, BetaEins) {
+  X <- rnorm(n = Stichprobengrosse, mean = Mittelwert, sd = Standardabweichung)
+  Y <- BetaNull + BetaEins * X + rnorm(n = Stichprobengrosse, mean = MittelwertFehler, sd = StandardabweichungFehler)
   data.frame(x=X, y=Y)
 }
 
 df <- XundYerzeugen(10, 5, 2, 3, 1, 50, 0)
 
 regressions_daten <- function(daten) {
-  # Lineare Regression durchführen
+  # Lineare Regression durchf?hren
   lm_model <- lm(y ~ x, data = daten)
   # Extrahieren der Regressionskoeffizienten
   coefficients <- coef(lm_model)
@@ -56,30 +56,30 @@ regressions_daten <- function(daten) {
   p_values <- summary(lm_model)$coef[, "Pr(>|t|)"]
   # Berechnen der Korrelation
   correlation <- cor(daten$x, daten$y)
-  # Die extrahierten Informationen in einem Vektor zurückgeben
+  # Die extrahierten Informationen in einem Vektor zur?ckgeben
   result <- c(coef = coefficients, se = se, correlation = correlation, p_values=p_values)
   return(result)
 }
 
 regressions_daten(df)
-
+nsample <- 1000
 #Aufagbe 6
 column_names <- c("coef.(Intercept)","coef.x","se.(Intercept)","se.x","correlation ","p_values.(Intercept)","p_values.x" )
 #results <- list()
-results <- as.data.frame(matrix(ncol = length(column_names), ))
+results <- as.data.frame(matrix(ncol = length(column_names), nrow = nsample))
 colnames(results) <- column_names
 
-for (i in 1:999) {
+for (i in 1:nsample) {
   # Stichprobe generieren
   df <- XundYerzeugen(10, 5, 2, 3, 1, 50, 0)
-  
-  results <- rbind(results, regressions_daten(df))
+
+  results[i,] <- regressions_daten(df)
 }
 
-quadrate <- sapply(1:1000, FUN = function(i){
+results <- sapply(1:1000, FUN = function(i){
   df <- XundYerzeugen(10, 5, 2, 3, 1, 50, 0)
-  
-  results <- rbind(results, regressions_daten(df))
+
+  regressions_daten(df)
 }, simplify = "array")
 
 #mittelwerte und standardabweichungen berechnen
