@@ -5,6 +5,10 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(dplyr)
+library(ggplot2)
+library(tidyr)
 ```
 
 ## Einführung in die Programmierung von Monte Carlo Simulationen
@@ -29,14 +33,108 @@ Auf diesen Allgemeinfall werden wir später zurückkommen. Im Folgenden reduzier
   y = β0 + β1 · x + ϵ         (10)
   y ∼ N V (β0 + β1 · x, 15)   (11)
   x ∼ N V (100, 15)           (12)
-  ϵ ∼ N V (0, 15)               (13)
+  ϵ ∼ N V (0, 15)             (13)
   
 Hinweis: Fehlende Simulationsparameter dürfen Sie frei wählen Ich würde aber empfehlen, viel aus dem vorigen Abschnitt zu übernehmen, um die Vergleichbarkeit zu erhöhen.
 
   1. Mit der Funktion `rnorm(n = 1, mean = 0, sd = 0)` kann man eine Zufallsstichprobe der Größe n aus einer Normalverteilung mit vorgegebenem Mittelwert und vorgegebener SD ziehen. **Ziehen Sie eine Stichprobe beliebiger (veränderbarer) Stichprobengröße mit Werten für x und ϵ und berechnen Sie die y-Werte mithilfe der Regressionsgleichung.** Halten Sie dabei die Werte β0 und β1 flexibel, indem Sie am Anfang des Skripts Variablen einführen. Setzen Sie zunächst β0 = 50 und β1 = 0 ein.
+  
+```{r 1}
+set.seed(123)
+n <- 100
+b0 <- 50
+b1 <- 0
+
+x <- rnorm(n = n, mean = 100, sd = 15)
+e <- rnorm(n = n, mean = 0, sd = 15)
+y <- b0 + (b1 * x) + e
+
+sp <- data.frame(
+  y = y,
+  x = x,
+  e = e
+)
+```
+
+
   2. **Berechnen Sie die Parameter der linearen Regression zwischen x und y sowie die Korrelation für die Stichprobe.**
+  
+```{r 2}
+m1 <- y ~ x
+fit1 <- lm(m1, data = sp)
+summary(fit1)
+
+cor(sp$x, sp$y)
+```
+
+
   3. Wiederholen Sie die Stichprobenziehung mehrfach und beobachten Sie die extrahierten Parameter. Was fällt auf?
+  
+```{r 3}
+index <- 100
+
+results <- data.frame(
+  intercept = 1:index,
+  x = 1:index,
+  cor = 1:index
+)
+
+for (i in 1:index) {
+  
+  x <- rnorm(n = n, mean = 100, sd = 15)
+  e <- rnorm(n = n, mean = 0, sd = 15)
+  y <- b0 + (b1 * x) + e
+  
+  fit <- lm(y ~ x)
+  
+  results$intercept[i] <- fit$coefficients[1]
+  results$x[i] <- fit$coefficients[2]
+  results$cor[i] <- cor(x, y)
+  
+}
+
+ggplot(results, aes(x = intercept)) + 
+  geom_histogram()
+
+ggplot(results, aes(x = x)) + 
+  geom_histogram()
+
+ggplot(results, aes(x = cor)) + 
+  geom_histogram()
+```
+
+  
   4. Finden Sie heraus, wie man neben der Korrelation und den Regressionskoeffizienten auch die Signifikanztestergebnisse extrahiert. Speichern Sie alle Werte in einem Vektor (mit `c()`).
+  
+```{r 4}
+index <- 100
+
+results <- data.frame(
+  intercept = 1:index,
+  p_int = 1:index,
+  x = 1:index,
+  p_x = 1:index,
+  cor = 1:index
+)
+
+for (i in 1:index) {
+  
+  x <- rnorm(n = n, mean = 100, sd = 15)
+  e <- rnorm(n = n, mean = 0, sd = 15)
+  y <- b0 + (b1 * x) + e
+  
+  fit <- lm(y ~ x)
+  
+  results$intercept[i] <- fit$coefficients[1]
+  results$p_int[i] <- summary(fit)$coefficients[1,4]
+  results$x[i] <- fit$coefficients[2]
+  results$p_x[i] <- summary(fit)$coefficients[2,4]
+  results$cor[i] <- cor(x, y)
+  
+}
+
+```
+
   5. Um effizient zu programmieren, ist es wichtig, den Code zu modularisieren und einzelne Schritte, die oft wiederholt werden, in eigenen Funktionen zusammenzufassen. Zum Beispiel kann man eine Funktion, welche die Summe aus zwei Variablen berechnet, so erzeugen:
   `sum <- function(x,y) {
     sum = x + y # Summe berechnen
@@ -44,6 +142,45 @@ Hinweis: Fehlende Simulationsparameter dürfen Sie frei wählen Ich würde aber 
   }`
   
 Hinweis: Funktionen haben einen eigenen Variablenraum, d.h., Variablennamen dürfen innerhalb der Funktion neu vergeben werden, aber die Funktion kennt auch nur die Variablen, die man ihr aktiv gibt. **Schreiben Sie eine Funktion, welche wie in Aufgabe 1 aus vorgegebenen Regressionsparametern eine Stichprobe mit Werten für x und y erzeugt.** (Tipp: Halten Sie möglichst alle benötigten Zahlenwerte flexibel, dann können wir die Funktion lange weiter benutzen.) **Schreiben Sie  eine zweite Funktion, welche die Regressionskoeffizienten, deren Standardfehler, und die Korrelation aus den gezogenen Daten extrahieren kann und als Vektor zurückgibt.**
+
+```{r 5}
+# funktion für die erzeugung von stichproben
+create_sp <- function(n = 100, b0, b1, x_mean = 0, x_sd = 1, e_mean = 0, e_sd = 1) {
+ 
+  x <- rnorm(n = n, mean = x_mean, sd = x_sd)
+  e <- rnorm(n = n, mean = e_mean, sd = e_sd)
+  y <- b0 + (b1 * x) + e
+  
+  sp <- data.frame(
+    y = y,
+    x = x,
+    e = e
+    )
+  
+  return(sp)
+}
+
+# funktion für regressionsparameter etc.
+reg_par <- function(y, x) {
+  
+  fit <- lm(y ~ x)
+  
+  results <- data.frame(
+    intercept = fit$coefficients[1],
+    intercept_std.e = summary(fit)$coefficients[1, 2],
+    intercept_p.value = summary(fit)$coefficients[1, 4],
+    x = fit$coefficients[2],
+    x_std.e = summary(fit)$coefficients[2, 2],
+    x_p.value = summary(fit)$coefficients[2, 4],
+    cor = cor(x, y),
+    row.names = 1
+  )
+  
+  return(results)
+  
+}
+```
+
 
   6. Um eine Simulationsstudie durchzuführen, ist es essentiell, dass man den untersuchten Prozess (z.B. Regression für Zufallsstichproben) auch beliebig oft durchführen kann, ohne den Code explizit so oft hinzuschreiben, dafür benutzt man so genannte for-Schleifen. Zum Beispiel kann man die Zahlen von 1 bis 1000 nacheinander in einer Schleife quadrieren:
 `for (i in 1:1000) {
@@ -59,10 +196,129 @@ quadrate[i] = i^2
 
 Jetzt sind Sie wieder dran: **Führen Sie die Stichprobenziehung 10000 mal durch und speichern Sie die Regressionskoeffizienten und deren Standardfehler für jede Stichprobe. Untersuchen Sie Mittelwert, Standardabweichung und Verteilung der Parameter über die Stichproben hinweg.** Welcher Verteilung folgen die Parameter? Wie lauten Mittelwert und Standardabweichung?
 
+```{r 6}
+index <- 1000
+
+results <- data.frame(
+  intercept = 1:index,
+  intercept_std.e = 1:index,
+  intercept_p.value = 1:index,
+  x = 1:index,
+  x_std.e = 1:index,
+  x_p.value = 1:index,
+  cor = 1:index   
+)
+
+for (i in 1:index) {
+  
+  sp <- create_sp(b0 = 50, b1 = 0, x_mean = 100, x_sd = 15, e_mean = 0, e_sd = 15)
+  
+  results[i, ] <- reg_par(sp$y, sp$x)
+  
+}
+
+summary(results)
+sd(results$intercept)
+sd(results$x)
+```
+
+```{r 6_function}
+sampling <- function (index, b0, b1, x_mean = 0, x_sd = 1, e_mean = 0, e_sd = 1, n_sp = 100, return_stichproben = F, return_results = T, return_summary = TRUE) {
+  # index: Wie viele Stichproben will ich ziehen?
+  # n_sp: wie viele TN sind in jeder Stichprobe
+  # return_stichproben: eine liste mit allen stichproben ausgegeben bekommen?
+  # return_results: ein data Frame mit den Modellparametern ausgegeben bekommen?
+  # return_summary: data frame mit mean und sd der Modellparameter ausgegeben bekommen?
+  
+  # result frames 
+  # einzelne Stichproben
+  stichproben <- list()
+  # modellergebnisse
+  results <- data.frame(
+    intercept = 1:index,
+    intercept_std.e = 1:index,
+    intercept_p.value = 1:index,
+    x = 1:index,
+    x_std.e = 1:index,
+    x_p.value = 1:index,
+    cor = 1:index   
+  )
+
+for (i in 1:index) {
+  
+  sp <- create_sp(b0 = b0, b1 = b1, x_mean = x_mean, x_sd = x_sd, e_mean = e_mean, e_sd = e_sd, n = n_sp)
+  
+  stichproben[[i]] <- sp
+  
+  results[i, ] <- reg_par(sp$y, sp$x)
+  
+  }
+
+  
+  
+  summary <- data.frame(
+    row.names = c("mean", "sd"),
+    intercept = c (mean(results$intercept), sd(results$intercept)),
+    intercept_std.e = c (mean(results$intercept_std.e), sd(results$intercept_std.e)),
+    x = c (mean(results$x), sd(results$x)),
+    x_std.e = c (mean(results$x_std.e), sd(results$x_std.e))
+  )
+
+  # ausgaben
+  return(list(
+    stichproben = if (return_stichproben) stichproben else NULL,
+    results = if (return_results) results else NULL,
+    summary = if (return_summary) summary else NULL
+  ))
+  
+}
+```
+
   7. **Wiederholen Sie Aufgabe 6 für verschiedene Effektstärken** (β1 = -1, 0.8, ...,0,0.2,0.4,...1). Berechnen Sie jeweils den α-Fehler bzw. die Teststärke. Berechnen Sie außerdem Mittelwert und Standardabweichung der Regressionsgewichte sowie den Mittelwert der Standardfehler der Regressionsgewichte. Was stellen Sie fest? (Tipp: Nutzen Sie eine for-Schleife, um die Simulation für verschiedene Werte β1 durchzuführen.)
+  
+  
+```{r 7}
+schritte <- seq(-1, 1, .1) # für b1
+
+statistics <- data.frame(
+  intercept_mean = 1:length(schritte),
+  intercept_std.e_mean = 1:length(schritte),
+  x_mean = 1:length(schritte),
+  x_std.e_mean = 1:length(schritte),
+  intercept_sd = 1:length(schritte),
+  intercept_std.e_sd = 1:length(schritte),
+  x_sd = 1:length(schritte),
+  x_std.e_sd = 1:length(schritte))
+  
+for (b1 in schritte) {
+  
+  sam <- sampling(index = 100, b0 = 50, b1 = b1, return_results = F)$summary %>% t() %>% as.data.frame() 
+  
+  samp <- gather(sam, 'mean', 'sd', key = "statistik", value = "wert")
+  
+  statistics[b1, ] <- samp$wert
+
+  }
+```
+
+  
   8. Bisher haben wir die for-Schleifen als mächtiges Werkzeug kennengelernt, mit dem man ohne Weiteres vollständige Simulationsstudien durchführen kann. Allerdings wird es mit zunehmender Komplexität und Verschachtelung immer schwieriger, den Überblick zu behalten und die Ergebnisse effizient abzuspeichern. Deswegen hat man die apply-Familie erfunden, im Wesentlichen funktioniert das so, dass man den Inhalt der for-Schleife zu einer Funktion zusammenfasst und diese in einen Befehl gibt. Der große Vorteil ist, dass man ohne Indizierung vernünftige Ergebnisobjekte bekommen kann. Für das Beispiel von oben sieht eine apply-Lösung so aus:
   
 `quadrate = sapply(1:1000, FUN = function(i){i^2},
 simplify = "array")`
 
 Man bekommt also dasselbe ohne Indizierung, was die Sache erheblich einfacher und  flexibler macht. **Wiederholen Sie die Aufgaben 6 und 7 und versuchen Sie, ohne for-Schleifen auszukommen.**
+
+```{r 8}
+sapply6 <- sapply(1:1000, FUN = function(i) { 
+  sp <- create_sp(b0 = 50, b1 = 0, x_mean = 100, x_sd = 15, e_mean = 0, e_sd = 15)
+  reg_par(sp$y, sp$x)
+}, simplify = "array")
+
+sapply7 <- sapply(seq(-1, 1, .1), FUN = function(b1) {
+    sam <- sampling(index = 100, b0 = 50, b1 = b1, return_results = F)$summary %>% t() %>% as.data.frame() 
+  
+  gather(sam, 'mean', 'sd', key = "statistik", value = "wert")$wert
+}, simplify = "array")
+```
+
