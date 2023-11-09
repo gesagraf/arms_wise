@@ -65,7 +65,6 @@ regressions_daten(df)
 nsample <- 1000
 #Aufagbe 6
 column_names <- c("coef.(Intercept)","coef.x","se.(Intercept)","se.x","correlation ","p_values.(Intercept)","p_values.x" )
-#results <- list()
 results <- as.data.frame(matrix(ncol = length(column_names), nrow = nsample))
 colnames(results) <- column_names
 
