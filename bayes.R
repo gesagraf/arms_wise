@@ -27,21 +27,21 @@ mu_hat <- seq(mu - 2 * sd, mu + 2 * sd, length.out = 200)
 #### Prior ####
 prior_dens <- dnorm(mu_hat, mean = mu_prior, sd = tau_prior)
 
-results <- list()
+results <- vector("list", length = number)
 
 for (i in 1:number) {
 likelihood_function <- sapply(mu_hat, FUN = function(i_mu){
-  prod(dnorm(samp_df[,i], mean = i_mu, sd = sd(samp_df[,1])))
-})
+  prod(dnorm(samp_df[,i], mean = i_mu, sd = sd(samp_df[,i])))
+  })
 
 # Normierung der Likelihood
-den_like <- Bolstad::sintegral(mu_hat, likelihood_function)      # Normierungskonstante
-likelihood_function_norm <- likelihood_function / den_like$value # normierte Likelihood
+  den_like <- Bolstad::sintegral(mu_hat, likelihood_function)      # Normierungskonstante
+  likelihood_function_norm <- likelihood_function / den_like$value # normierte Likelihood
 
 
 ##### posteoriori #####
 # calculate posteriori
-posterior0 <- prior_dens * likelihood_function_norm
+  posterior0 <- prior_dens * likelihood_function_norm
 
 # Posteriori normieren
 den_post <- Bolstad::sintegral(mu_hat, posterior0)
@@ -61,7 +61,7 @@ estimators <- sapply(1:length(results), function(i) {
 # over all mean
 mean_est <- mean(estimators)
 
-
+sd_est <- sd(estimators)
 
 #### plotting ####
 

@@ -7,7 +7,7 @@ est <- mean()     # Estimator
 mu <- 100         # Population mean
 sd <- 15          # Population sd
 n <- 100          # sample size
-number <- 100      # number of samples
+number <- 10      # number of samples
 
 
 
@@ -20,9 +20,8 @@ samp_df <- sapply(1:number, FUN = function(i) {
 )
 
 # mean colum wise
-estimators <- sapply(1:ncol(samp_df), function(i) {
-    mean(samp_df[, i])
- })
+estimators <- apply(samp_df, MARGIN = 2, mean)
+
 
 # over all mean
 mean_est <- mean(estimators)
@@ -36,6 +35,7 @@ mean_est <- mean(estimators)
 # setting specific sample
 specific <- 5
 
+### sturges rule anzahl der bins
 ggplot(NULL, aes(x = samp_df[ , specific])) +
   geom_histogram(fill = "lightgrey", color = "black") +
   geom_point(aes(x = mean(samp_df[ , specific]), y = 0), shape = 17, size = 4, colour = "darkgrey") +
@@ -70,6 +70,7 @@ ggplot(NULL, aes(x = estimators)) +
 
   # Skalen, Theme, Labs etc.
  #  xlim(mu - sd, mu + sd) +  # xAchse festlegen
+  # coord_cartesian()
   labs(
     title = "Stichprobenkennwerteverteilung \n des arithmetischen Mittels",
     y = "Häufigkeit",
