@@ -4,10 +4,10 @@ library(ggplot2)
 ### setting variables ####
 
 est <- mean()     # Estimator
-mu <- 100         # Population mean
+mu <- 150         # Population mean
 sd <- 15          # Population sd
 n <- 100          # sample size
-number <- 100      # number of samples
+number <- 300      # number of samples
 mu_prior <- 80
 tau_prior <- 10
 
@@ -27,41 +27,46 @@ mu_hat <- seq(mu - 2 * sd, mu + 2 * sd, length.out = 200)
 #### Prior ####
 prior_dens <- dnorm(mu_hat, mean = mu_prior, sd = tau_prior)
 
-results <- vector("list", length = number)
+results <- as.data.frame(matrix(ncol = number, nrow = 200))#200 weil wir für 200 punkte die likelihood berechnen
 
 for (i in 1:number) {
 likelihood_function <- sapply(mu_hat, FUN = function(i_mu){
-  prod(dnorm(samp_df[,i], mean = i_mu, sd = sd(samp_df[,i])))
+  prod(dnorm(samp_df[,i], mean = i_mu, sd = sd(samp_df[,i])))#bei i 1 einsetzen für testi
   })
 
-# Normierung der Likelihood
+  #Normierung der Likelihood #ich glaube wir müssen das nicht normieren aber macht es trotzdem Sinn? nicht so kleine zahlen
   den_like <- Bolstad::sintegral(mu_hat, likelihood_function)      # Normierungskonstante
   likelihood_function_norm <- likelihood_function / den_like$value # normierte Likelihood
+  # Index des Maximums in der Spalte 'y' finden
+  #index_maximum <- which.max(likelihood_function_norm)
+  # Wert von 'x' für das Maximum von 'y' finden
+  #maximum <- mu_hat[index_maximum]
+  #mean(samp_df[,1])
+  #likelihood und mittelwert sind sehr ähnlich
 
-
-##### posteoriori #####
-# calculate posteriori
+  #calculate posteriori
   posterior0 <- prior_dens * likelihood_function_norm
 
-# Posteriori normieren
-den_post <- Bolstad::sintegral(mu_hat, posterior0)
-posterior <- posterior0 / den_post$value
+  #Posteriori normieren
+  den_post <- Bolstad::sintegral(mu_hat, posterior0)
+  posterior <- posterior0 / den_post$value
 
 results[[i]] <- posterior
 }
 
+# Index des Maximums in jeder Spalte finden
+index_maximum <- as.numeric(sapply(1:length(results), function(i) {
+  which.max(results[[i]])
+}))
 
-
-
-# mean colum wise
-estimators <- sapply(1:length(results), function(i) {
-  mean(results[[i]])
+# Wert von 'x' für das Maximum von 'y' finden
+bayesWerte <- sapply(1:length(results), function(i) {
+  mu_hat[index_maximum[i]]
 })
 
 # over all mean
-mean_est <- mean(estimators)
+mean_estBayes <- mean(bayesWerte)
 
-sd_est <- sd(estimators)
 
 #### plotting ####
 
@@ -97,7 +102,7 @@ ggplot(NULL, aes(x = estimators)) +
   geom_vline(aes(xintercept = mu, colour = "mu")) +
 
   # mean over all samples
-  geom_point(aes(x = mean_est, y = 4,  colour = "mean_est"), shape = 17, size = 4) +
+  geom_point(aes(x = mean_estBayes, y = 4,  colour = "mean_est"), shape = 17, size = 4) +
   geom_vline(aes(xintercept = mean_est, colour = "mean_est"), linetype = "dashed") +
 
 
@@ -109,7 +114,7 @@ ggplot(NULL, aes(x = estimators)) +
     x = expression(bar(x)),
     colour = NULL) +
   scale_color_manual(values = c(mu = "red", mean_est = "black", estimators = "darkgrey"),
-                     labels = c(mu = expression(mu), mean_est = "Mean aller Stichprobenmeans",
+                     labels = c(mu = expression(mu), mean_est = "Mittlerer Bayesschätzer",
                                 estimators = "Stichprobenmittelwerte")) +
   theme_bw()
 
