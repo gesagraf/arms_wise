@@ -55,12 +55,6 @@ likelihood_function <- sapply(mu_hat, FUN = function(i_mu){
   #Normierung der Likelihood #ich glaube wir müssen das nicht normieren aber macht es trotzdem Sinn? nicht so kleine zahlen
   den_like <- Bolstad::sintegral(mu_hat, likelihood_function)      # Normierungskonstante
   likelihood_function_norm <- likelihood_function / den_like$value # normierte Likelihood
-  # Index des Maximums in der Spalte 'y' finden
-  #index_maximum <- which.max(likelihood_function_norm)
-  # Wert von 'x' für das Maximum von 'y' finden
-  #maximum <- mu_hat[index_maximum]
-  #mean(samp_df[,1])
-  #likelihood und mittelwert sind sehr ähnlich
 
   #calculate posteriori
   posterior0 <- prior_dens * likelihood_function_norm
