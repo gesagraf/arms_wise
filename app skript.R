@@ -7,8 +7,11 @@ mu <- 150         # Population mean
 sd <- 15          # Population sd
 n <- 100          # sample size
 number <- 300      # number of samples
-mu_prior <- 80
+mu_prior <- 140
 tau_prior <- 10
+
+# Anzahl der Klassen nach Sturges' Regel (für Histogram)
+num_classes <- ceiling(log2(n) + 1)
 
 #### generating data ####
 
@@ -90,7 +93,7 @@ specific <- 5
 
 ### sturges rule anzahl der bins
 ggplot(NULL, aes(x = samp_df[ , specific])) +
-  geom_histogram(fill = "lightgrey", color = "black") +
+  geom_histogram(fill = "lightgrey", color = "black", bins = num_classes) +
   geom_point(aes(x = mean(samp_df[ , specific]), y = 0), shape = 17, size = 4, colour = "darkgrey") +
   geom_vline(xintercept = mean(samp_df[ , specific]), colour = "black", linetype = "dotted") +
 
@@ -139,7 +142,7 @@ ggplot(NULL, aes(x = estimators)) +
 specific <- 5
 
 ggplot(NULL, aes(x = samp_df[ , specific])) +
-  geom_histogram(fill = "lightgrey", color = "black") +
+  geom_histogram(fill = "lightgrey", color = "black", bins = num_classes) +
   geom_point(aes(x = mean(samp_df[ , specific]), y = 0), shape = 17, size = 4, colour = "darkgrey") +
   geom_vline(xintercept = mean(samp_df[ , specific]), colour = "black", linetype = "dotted") +
 
@@ -189,7 +192,7 @@ ggplot(NULL, aes(x = estimators)) +
 specific <- 5
 
 ggplot(NULL, aes(x = samp_df[ , specific])) +
-  geom_histogram(fill = "lightgrey", color = "black") +
+  geom_histogram(fill = "lightgrey", color = "black", bins = num_classes) +
   geom_point(aes(x = mean(samp_df[ , specific]), y = 0), shape = 17, size = 4, colour = "darkgrey") +
   geom_vline(xintercept = mean(samp_df[ , specific]), colour = "black", linetype = "dotted") +
 
