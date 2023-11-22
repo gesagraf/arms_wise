@@ -720,6 +720,16 @@ apply-Lösung so aus:</li>
 <p>Man bekommt also dasselbe ohne Indizierung, was die Sache erheblich
 einfacher und flexibler macht. <strong>Wiederholen Sie die Aufgaben 6
 und 7 und versuchen Sie, ohne for-Schleifen auszukommen.</strong></p>
+<pre class="r"><code>sapply6 &lt;- sapply(1:1000, FUN = function(i) { 
+  sp &lt;- create_sp(b0 = 50, b1 = 0, x_mean = 100, x_sd = 15, e_mean = 0, e_sd = 15)
+  reg_par(sp$y, sp$x)
+}, simplify = &quot;array&quot;)
+
+sapply7 &lt;- sapply(seq(-1, 1, .1), FUN = function(b1) {
+    sam &lt;- sampling(index = 100, b0 = 50, b1 = b1, return_results = F)$summary %&gt;% t() %&gt;% as.data.frame() 
+  
+  gather(sam, &#39;mean&#39;, &#39;sd&#39;, key = &quot;statistik&quot;, value = &quot;wert&quot;)$wert
+}, simplify = &quot;array&quot;)</code></pre>
 </div>
 
 
