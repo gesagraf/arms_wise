@@ -27,29 +27,30 @@ mu_hat <- seq(mu - 2 * sd, mu + 2 * sd, length.out = 200)
 #### Prior ####
 prior_dens <- dnorm(mu_hat, mean = mu_prior, sd = tau_prior)
 
-results <- as.data.frame(matrix(ncol = number, nrow = 200))#200 weil wir für 200 punkte die likelihood berechnen
+results <- as.data.frame(matrix(ncol = number, nrow = 200)) # 200 weil wir für 200 punkte die likelihood berechnen
 
 for (i in 1:number) {
 likelihood_function <- sapply(mu_hat, FUN = function(i_mu){
-  prod(dnorm(samp_df[,i], mean = i_mu, sd = sd(samp_df[,i])))#bei i 1 einsetzen für testi
+  prod(dnorm(samp_df[ , i], mean = i_mu, sd = sd(samp_df[ , i]))) # bei i 1 einsetzen für testi
   })
 
-  #Normierung der Likelihood #ich glaube wir müssen das nicht normieren aber macht es trotzdem Sinn? nicht so kleine zahlen
-  den_like <- Bolstad::sintegral(mu_hat, likelihood_function)      # Normierungskonstante
-  likelihood_function_norm <- likelihood_function / den_like$value # normierte Likelihood
-  # Index des Maximums in der Spalte 'y' finden
-  #index_maximum <- which.max(likelihood_function_norm)
-  # Wert von 'x' für das Maximum von 'y' finden
-  #maximum <- mu_hat[index_maximum]
-  #mean(samp_df[,1])
-  #likelihood und mittelwert sind sehr ähnlich
 
-  #calculate posteriori
-  posterior0 <- prior_dens * likelihood_function_norm
+# Normierung der Likelihood # ich glaube wir müssen das nicht normieren aber macht es trotzdem Sinn? nicht so kleine zahlen
+den_like <- Bolstad::sintegral(mu_hat, likelihood_function)      # Normierungskonstante
+likelihood_function_norm <- likelihood_function / den_like$value # normierte Likelihood
+# Index des Maximums in der Spalte 'y' finden
+# index_maximum <- which.max(likelihood_function_norm)
+# Wert von 'x' für das Maximum von 'y' finden
+# maximum <- mu_hat[index_maximum]
+# mean(samp_df[ , 1])
+# likelihood und mittelwert sind sehr ähnlich
 
-  #Posteriori normieren
-  den_post <- Bolstad::sintegral(mu_hat, posterior0)
-  posterior <- posterior0 / den_post$value
+# calculate posteriori
+posterior0 <- prior_dens * likelihood_function_norm
+
+# Posteriori normieren
+den_post <- Bolstad::sintegral(mu_hat, posterior0)
+posterior <- posterior0 / den_post$value
 
 results[[i]] <- posterior
 }
