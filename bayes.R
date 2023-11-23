@@ -3,7 +3,6 @@ library(ggplot2)
 
 ### setting variables ####
 
-est <- mean()     # Estimator
 mu <- 150         # Population mean
 sd <- 15          # Population sd
 n <- 100          # sample size
@@ -47,7 +46,7 @@ likelihood_function <- sapply(mu_hat, FUN = function(i_mu){
   #calculate posteriori
   posterior0 <- prior_dens * likelihood_function_norm
 
-  #Posteriori normieren
+  #Posteriori normieren#hier nochmal
   den_post <- Bolstad::sintegral(mu_hat, posterior0)
   posterior <- posterior0 / den_post$value
 
