@@ -99,9 +99,10 @@ mean_estBayes <- mean(bayesWerte)
 #### Bayes mit nv Priori #####
 # calculate likelihood
 flache_priori <- FALSE
+
 # Prior
 
-prior_densNV <- calculate_prior(flache_priori, mu_hat, mu_prior, tau_prior)
+prior_densNV <- dnorm(mu_hat, mean = mu_prior, sd = tau_prior)
 
 resultsNV <- matrix(ncol = number, nrow = 200) # 200 weil wir für 200 punkte die likelihood berechnen
 
@@ -116,7 +117,7 @@ for (i in 1:number) {
   likelihood_function_norm <- likelihood_function / den_like$value # normierte Likelihood
 
   # calculate posteriori
-  posterior0 <- prior_dens * likelihood_function_norm
+  posterior0 <- prior_densNV * likelihood_function_norm
 
   # Posteriori normieren # hier nochmal
   den_post <- Bolstad::sintegral(mu_hat, posterior0)
@@ -136,6 +137,9 @@ bayesWerteNV <- mu_hat[index_maximumNV]
 
 # over all mean Bayes
 mean_estBayesNV <- mean(bayesWerteNV)
+
+
+
 #### plotting Mean####
 # single Sample
 # setting specific sample
