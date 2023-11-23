@@ -6,7 +6,7 @@ library(ggplot2)
 mu <- 150         # Population mean
 sd <- 15          # Population sd
 n <- 100          # sample size
-number <- 300      # number of samples
+number <- 300     # number of samples
 mu_prior <- 140
 tau_prior <- 10
 
@@ -29,10 +29,11 @@ estimators <- apply(samp_df, MARGIN = 2, mean)
 
 # over all mean
 mean_est <- mean(estimators)
+
 #### min/max ####
 # mean colum wise
 minmax <- sapply(1:ncol(samp_df), function(i) {
-  (max(samp_df[,i]) + min(samp_df[,i])) / 2
+  (max(samp_df[ , i]) + min(samp_df[ , i])) / 2
 })
 
 # over all mean
@@ -45,23 +46,23 @@ mu_hat <- seq(mu - 2 * sd, mu + 2 * sd, length.out = 200)
 # Prior
 prior_dens <- dnorm(mu_hat, mean = mu_prior, sd = tau_prior)
 
-results <- as.data.frame(matrix(ncol = number, nrow = 200))#200 weil wir für 200 punkte die likelihood berechnen
+results <- as.data.frame(matrix(ncol = number, nrow = 200)) # 200 weil wir für 200 punkte die likelihood berechnen
 
 for (i in 1:number) {
 likelihood_function <- sapply(mu_hat, FUN = function(i_mu){
-  prod(dnorm(samp_df[,i], mean = i_mu, sd = sd(samp_df[,i])))#bei i 1 einsetzen für testi
+  prod(dnorm(samp_df[ , i], mean = i_mu, sd = sd(samp_df[ , i]))) # bei i 1 einsetzen für testi
   })
 
-  #Normierung der Likelihood #ich glaube wir müssen das nicht normieren aber macht es trotzdem Sinn? nicht so kleine zahlen
-  den_like <- Bolstad::sintegral(mu_hat, likelihood_function)      # Normierungskonstante
-  likelihood_function_norm <- likelihood_function / den_like$value # normierte Likelihood
+# Normierung der Likelihood # ich glaube wir müssen das nicht normieren aber macht es trotzdem Sinn? nicht so kleine zahlen
+den_like <- Bolstad::sintegral(mu_hat, likelihood_function)      # Normierungskonstante
+likelihood_function_norm <- likelihood_function / den_like$value # normierte Likelihood
 
-  #calculate posteriori
-  posterior0 <- prior_dens * likelihood_function_norm
+# calculate posteriori
+posterior0 <- prior_dens * likelihood_function_norm
 
-  #Posteriori normieren#hier nochmal
-  den_post <- Bolstad::sintegral(mu_hat, posterior0)
-  posterior <- posterior0 / den_post$value
+# Posteriori normieren # hier nochmal
+den_post <- Bolstad::sintegral(mu_hat, posterior0)
+posterior <- posterior0 / den_post$value
 
 results[[i]] <- posterior
 }
@@ -80,8 +81,9 @@ bayesWerte <- sapply(1:length(results), function(i) {
 mean_estBayes <- mean(bayesWerte)
 
 
-#### plotting Mean####
-# single Sample
+
+#### plotting Mean ####
+##### single Sample #####
 # setting specific sample
 specific <- 5
 
@@ -130,6 +132,9 @@ ggplot(NULL, aes(x = estimators)) +
                      labels = c(mu = expression(mu), mean_est = "Mean aller Stichprobenmeans",
                                 estimators = "Stichprobenmittelwerte")) +
   theme_bw()
+
+
+
 #### plotting MinMax####
 # single Sample
 # setting specific sample
@@ -178,6 +183,8 @@ ggplot(NULL, aes(x = estimators)) +
                      labels = c(mu = expression(mu), mean_minmax = "Mean über alle Minima/Maxima",
                                 estimators = "Stichprobenmittelwerte")) +
   theme_bw()
+
+
 
 #### plotting Bayes####
 
