@@ -6,12 +6,15 @@ library(ggplot2)
 mu <- 150         # Population mean
 sd <- 15          # Population sd
 n <- 100          # sample size
-number <- 300      # number of samples
-mu_prior <- 140
-tau_prior <- 10
+number <- 300     # number of samples
+mu_prior <- 130   # mittelwert der priori
+tau_prior <- 10   # sd der priori
+flache_priori <- TRUE #flache oder normalveteile priori
 
-# Anzahl der Klassen nach Sturges' Regel (für Histogram)
+# Anzahl der Klassen nach Sturges' Regel (für Histogram der einzelnen Stichprobe)
 num_classes <- ceiling(log2(n) + 1)
+# Anzahl der Klassen nach Sturges' Regel (für Histogram der SKV)
+num_classesSKV <- ceiling(log2(number) + 1)
 
 #### generating data ####
 
@@ -29,6 +32,7 @@ estimators <- apply(samp_df, MARGIN = 2, mean)
 
 # over all mean
 mean_est <- mean(estimators)
+
 #### min/max ####
 # mean colum wise
 minmax <- sapply(1:ncol(samp_df), function(i) {
@@ -43,7 +47,15 @@ mean_minmax <- mean(minmax)
 mu_hat <- seq(mu - 2 * sd, mu + 2 * sd, length.out = 200)
 
 # Prior
-prior_dens <- dnorm(mu_hat, mean = mu_prior, sd = tau_prior)
+calculate_prior <- function(flache_priori, mu_hat, mu_prior, tau_prior) {
+  if (flache_priori) {
+    return(rep(1/length(mu_hat), length(mu_hat)))
+  } else {
+    return(dnorm(mu_hat, mean = mu_prior, sd = tau_prior))
+  }
+}
+
+prior_dens <- calculate_prior(flache_priori, mu_hat, mu_prior, tau_prior)
 
 results <- as.data.frame(matrix(ncol = number, nrow = 200))#200 weil wir für 200 punkte die likelihood berechnen
 
@@ -104,7 +116,7 @@ ggplot(NULL, aes(x = samp_df[ , specific])) +
 
 # SKV
 ggplot(NULL, aes(x = estimators)) +
-  geom_histogram(fill = "lightgrey", color = "black") +
+  geom_histogram(fill = "lightgrey", color = "black", bins = num_classesSKV) +
 
   # every sample as triangle
   geom_point(aes(x = estimators, y = 0, color = "estimators"), shape = 17, size = 4) +
@@ -153,7 +165,7 @@ ggplot(NULL, aes(x = samp_df[ , specific])) +
 
 # SKV
 ggplot(NULL, aes(x = estimators)) +
-  geom_histogram(fill = "lightgrey", color = "black") +
+  geom_histogram(fill = "lightgrey", color = "black", bins = num_classesSKV) +
 
   # every sample as triangle
   geom_point(aes(x = estimators, y = 0, color = "estimators"), shape = 17, size = 4) +
@@ -203,7 +215,7 @@ ggplot(NULL, aes(x = samp_df[ , specific])) +
 
 # SKV
 ggplot(NULL, aes(x = estimators)) +
-  geom_histogram(fill = "lightgrey", color = "black") +
+  geom_histogram(fill = "lightgrey", color = "black", bins = num_classesSKV) +
 
   # every sample as triangle
   geom_point(aes(x = estimators, y = 0, color = "estimators"), shape = 17, size = 4) +
@@ -221,7 +233,7 @@ ggplot(NULL, aes(x = estimators)) +
   #  xlim(mu - sd, mu + sd) +  # xAchse festlegen
   # coord_cartesian()
   labs(
-    title = "Stichprobenkennwerteverteilung \n des arithmetischen Mittels",
+    title = "Stichprobenkennwerteverteilung \n des arithmetischen Mittels mit mitlerem Bayesschätzer",
     y = "Häufigkeit",
     x = expression(bar(x)),
     colour = NULL) +
@@ -229,3 +241,4 @@ ggplot(NULL, aes(x = estimators)) +
                      labels = c(mu = expression(mu), mean_estBayes = "Mean aller Bayesschätzer",
                                 estimators = "Stichprobenmittelwerte")) +
   theme_bw()
+
