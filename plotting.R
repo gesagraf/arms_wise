@@ -16,7 +16,7 @@ summary_data <- data %>%
   group_by(key) %>%
   summarise(mean_value = mean(value))
 
-#### plot ####
+#### plot skvs ####
 
 ggplot(data, aes(x = value)) +
   geom_histogram(fill = "lightgrey", color = "black") +
