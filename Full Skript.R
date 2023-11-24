@@ -61,6 +61,7 @@ calculate_prior <- function(flache_priori, mu_hat, mu_prior, tau_prior) {
 
 prior_dens <- calculate_prior(flache_priori, mu_hat, mu_prior, tau_prior)
 
+norm_likelihood_uni <- matrix(ncol = number, nrow = 200)
 results <- matrix(ncol = number, nrow = 200) # 200 weil wir für 200 punkte die likelihood berechnen
 
 for (i in 1:number) {
@@ -72,6 +73,8 @@ for (i in 1:number) {
   # Normierung der Likelihood #ich glaube wir müssen das nicht normieren aber macht es trotzdem Sinn? nicht so kleine zahlen
   den_like <- Bolstad::sintegral(mu_hat, likelihood_function)      # Normierungskonstante
   likelihood_function_norm <- likelihood_function / den_like$value # normierte Likelihood
+  # normierte likelihood speicher, für die plots
+  norm_likelihood_uni[ , i] <- likelihood_function_norm
 
   # calculate posteriori
   posterior0 <- prior_dens * likelihood_function_norm
@@ -104,17 +107,21 @@ flache_priori <- FALSE
 
 prior_densNV <- dnorm(mu_hat, mean = mu_prior, sd = tau_prior)
 
+norm_likelihood_nv <- matrix(ncol = number, nrow = 200)
 resultsNV <- matrix(ncol = number, nrow = 200) # 200 weil wir für 200 punkte die likelihood berechnen
+
 
 for (i in 1:number) {
 
   likelihood_function <- sapply(mu_hat, FUN = function(i_mu){   # für jede Stichprobe wird die likelihood unter allen mu_hat werten ausgerechnet
-    prod(dnorm(samp_df[,i], mean = i_mu, sd = sd(samp_df[,i]))) # prod = prdukt (rechnet einzelne wahrscheinlichkeiten zu likelihood zusammen)
+    prod(dnorm(samp_df[ , i], mean = i_mu, sd = sd(samp_df[ , i]))) # prod = produkt (rechnet einzelne wahrscheinlichkeiten zu likelihood zusammen)
   })                                                            # die SP nehmen wir nv an, deswegen hier unabhängig von prior dnorm()
 
   # Normierung der Likelihood #ich glaube wir müssen das nicht normieren aber macht es trotzdem Sinn? nicht so kleine zahlen
   den_like <- Bolstad::sintegral(mu_hat, likelihood_function)      # Normierungskonstante
   likelihood_function_norm <- likelihood_function / den_like$value # normierte Likelihood
+  # normierte likelihood speicher, für die plots
+  norm_likelihood_nv[ , i] <- likelihood_function_norm
 
   # calculate posteriori
   posterior0 <- prior_densNV * likelihood_function_norm
