@@ -1,7 +1,12 @@
 #### setup ####
 # install.packages("gridExtra")
+# install.packages("cowplot")
+# install.packages("grid")
 library(gridExtra)
 library(ggplot2)
+library(grid)
+library(cowplot)
+
 
 
 
@@ -15,7 +20,7 @@ coord <- c(min_coord, max_coord)
 #### plots ####
 p_samp <-
 ggplot(NULL, aes(x = samp_df[ , specific])) +
-  geom_histogram(fill = "lightgrey", color = "black", bins = num_classes) +
+  geom_histogram(fill = "lightgrey", bins = num_classes) +
 
   # mu
   geom_point(aes(x = mu, y = 2, colour = "mu"), shape = 17, size = 4) +
@@ -88,10 +93,10 @@ ggplot(NULL, aes(x = samp_df[ , specific])) +
 
 
 p_mean <- ggplot(NULL, aes(x = estimators)) +
-  geom_histogram(fill = "lightgrey", color = "black", bins = num_classesSKV) +
+  geom_histogram(fill = "green", bins = num_classesSKV, alpha = .5) +
 
   # every sample as triangle
-  geom_point(aes(x = estimators, y = 0), colour = "darkgrey", shape = 17, size = 4) +
+  geom_point(aes(x = estimators, y = 0), colour = "green", shape = 17, size = 4) +
 
   # mu
   geom_point(aes(x = mu, y = 2), colour = "red", shape = 17, size = 4) +
@@ -115,10 +120,10 @@ labs(
 
 
 p_minmax <- ggplot(NULL, aes(x = minmax)) +
-  geom_histogram(fill = "lightgrey", color = "black", bins = num_classesSKV) +
+  geom_histogram(fill = "blue", bins = num_classesSKV, alpha = .5) +
 
   # every sample as triangle
-  geom_point(aes(x = minmax, y = 0), color = "darkgrey", shape = 17, size = 4) +
+  geom_point(aes(x = minmax, y = 0), color = "blue", shape = 17, size = 4) +
 
   # mu
   geom_point(aes(x = mu, y = 2), colour = "red", shape = 17, size = 4) +
@@ -142,18 +147,18 @@ p_minmax <- ggplot(NULL, aes(x = minmax)) +
 
 p_bayes_uni <-
   ggplot(NULL, aes(x = bayesWerte)) +
-  geom_histogram(fill = "lightgrey", color = "black", bins = num_classesSKV) +
+  geom_histogram(fill = "purple", bins = num_classesSKV, alpha = .5) +
 
   # Prior
-  geom_line(aes(x = mu_hat, y = (prior_dens * number), color = "prior")) + # Muss normalisiert werden
+  geom_line(aes(x = mu_hat, y = (prior_dens * number)), color = "orange") + # Muss normalisiert werden
   geom_area(aes(x = mu_hat, y = (prior_dens * number)), fill = "orange", alpha = .4) + # Muss normalisiert werden
 
   # every sample as triangle
-  geom_point(aes(x = bayesWerte, y = 0, color = "estimators"), shape = 17, size = 4) +
+  geom_point(aes(x = bayesWerte, y = 09), color = "purple", shape = 17, size = 4) +
 
   # mu
-  geom_point(aes(x = mu, y = 2, colour = "mu"), shape = 17, size = 4) +
-  geom_vline(aes(xintercept = mu, colour = "mu")) +
+  geom_point(aes(x = mu, y = 2), colour = "red", shape = 17, size = 4) +
+  geom_vline(aes(xintercept = mu), colour = "red") +
 
   # mean over all samples
   geom_point(aes(x = mean_estBayes, y = 4,  colour = "mean_est"), shape = 17, size = 4) +
@@ -170,23 +175,22 @@ p_bayes_uni <-
     colour = NULL) +
 
  # legende
-  scale_color_manual(values = c(mu = "red", mean_est = "black", estimators = "darkgrey", prior = "orange"),
-                     labels = c(mu = expression(mu), mean_est = "Mean aller \n Stichprobenschätzer",
-                                estimators = "Schätzer der \n einzelnen Stichproben", prior = "Priori")) +
+  scale_color_manual(values = c(mean_est = "black"),
+                     labels = c(mean_est = "Mean aller \n Stichprobenschätzer")) +
   theme_bw()
 
 
 
 p_bayes_nv <-
   ggplot(NULL, aes(x = bayesWerteNV)) +
-  geom_histogram(fill = "lightgrey", color = "black", bins = num_classesSKV) +
+  geom_histogram(fill = "hotpink", bins = num_classesSKV, alpha = .5) +
 
   # Prior
-  geom_line(aes(x = mu_hat, y = (prior_densNV * number)), color = "orange") + # Muss normalisiert werden
-  geom_area(aes(x = mu_hat, y = (prior_densNV * number)), fill = "orange", alpha = .4) + # Muss normalisiert werden
+  geom_line(aes(x = mu_hat, y = (prior_densNV * number)), color = "brown") + # Muss normalisiert werden
+  geom_area(aes(x = mu_hat, y = (prior_densNV * number)), fill = "brown", alpha = .4) + # Muss normalisiert werden
 
   # every sample as triangle
-  geom_point(aes(x = bayesWerteNV, y = 0), color = "darkgrey", shape = 17, size = 4) +
+  geom_point(aes(x = bayesWerteNV, y = 0), color = "hotpink", shape = 17, size = 4) +
 
   # mu
   geom_point(aes(x = mu, y = 2), colour = "red", shape = 17, size = 4) +
@@ -224,12 +228,14 @@ combined_plots_skv <- arrangeGrob(p_mean + theme(legend.position = "none"),
                                           p_minmax + theme(legend.position = "none"),
                                           p_bayes_uni + theme(legend.position = "none"),
                                           p_bayes_nv + theme(legend.position = "none"),
-                                          ncol = 2, top = title)
+                                          ncol = 2, top = title_skv)
+
 
 # add legend
 combined_plots_with_legend <- arrangeGrob(
   combined_plots_top, combined_plots_skv, heights = c(1, 2)
 )
+
 
 # show result
 grid.arrange(combined_plots_with_legend)
