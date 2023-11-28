@@ -16,9 +16,13 @@ max_coord <- max(c(mu + 2 * sd, estimators, minmax, bayesWerte, bayesWerteNV, ma
 coord <- c(min_coord, max_coord)
 
 
+sum(prior_dens)
+sum(norm_likelihood_nv[ , specific])
+sum(norm_likelihood_uni[ , specific])
+sum(prior_densNV)
 
 #### plots ####
-p_samp <-
+#p_samp <-
 ggplot(NULL, aes(x = samp_df[ , specific])) +
   geom_histogram(fill = "lightgrey", bins = num_classes) +
 
@@ -29,13 +33,13 @@ ggplot(NULL, aes(x = samp_df[ , specific])) +
 
   # Likelihood of data
   # hier muss nochmal drüber geschaut werden
-  #  geom_line(aes(y = norm_likelihood_uni[ , specific], colour  = "likelihood")) +
-  #  geom_area(aes(y = norm_likelihood_uni[ , specific], fill = "likelihood"), alpha = .4) #+
-  geom_vline(aes(xintercept = max_coord, colour = "likelihood")) +
+  geom_line(aes(x = mu_hat, y = (norm_likelihood_nv[ , specific] * number), color = "likelihood")) + # Muss normalisiert werden
+  geom_area(aes(x = mu_hat, y = (norm_likelihood_nv[ , specific] * number)), fill = "yellow", alpha = .4) + # Muss normalisiert werden
 
   # prior uni
   geom_line(aes(x = mu_hat, y = (prior_dens * number), color = "prior_uni")) + # Muss normalisiert werden
   geom_area(aes(x = mu_hat, y = (prior_dens * number)), fill = "orange", alpha = .4) + # Muss normalisiert werden
+
 
   # prior nv
   geom_line(aes(x = mu_hat, y = (prior_densNV * number), color = "prior_nv")) + # Muss normalisiert werden
@@ -76,7 +80,7 @@ ggplot(NULL, aes(x = samp_df[ , specific])) +
                               est_minmax = "Alternativer Schätzer",
                               est_bayes_uni = "Bayesschätzer mit \n gleichverteilert Priori",
                               est_bayes_nv = "Bayesschätzer mit \n normalverteilert Priori",
-                              likelihood = "Platzhalter für Likelihood",
+                              likelihood = "Likelihood",
                               prior_uni = "Gleichverteilter Prior",
                               prior_nv = "Normalverteilter Prior"),
                    breaks = factor(c("mu","est_mean", "est_minmax","est_bayes_uni", "est_bayes_nv", "likelihood", "prior_uni", "prior_nv"),
