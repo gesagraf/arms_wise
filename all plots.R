@@ -9,7 +9,6 @@ library(cowplot)
 
 
 
-
 #### definitions ####
 min_coord <- min(c(mu - 2 * sd, estimators, minmax, bayesWerte, bayesWerteNV, min_uni_priori))
 max_coord <- max(c(mu + 2 * sd, estimators, minmax, bayesWerte, bayesWerteNV, max_uni_priori))
@@ -22,9 +21,9 @@ sum(norm_likelihood_uni[ , specific])
 sum(prior_densNV)
 
 #### plots ####
-#p_samp <-
+p_samp <-
 ggplot(NULL, aes(x = samp_df[ , specific])) +
-  geom_histogram(fill = "lightgrey", bins = num_classes) +
+  geom_histogram(fill = "lightgrey", binwidth = ((max(samp_df[ , specific]) - min(samp_df[ , specific])) / num_classes)) +
 
   # mu
   geom_point(aes(x = mu, y = 2, colour = "mu"), shape = 17, size = 4) +
@@ -96,7 +95,8 @@ ggplot(NULL, aes(x = samp_df[ , specific])) +
 
 
 
-p_mean <- ggplot(NULL, aes(x = estimators)) +
+p_mean <-
+  ggplot(NULL, aes(x = estimators)) +
   geom_histogram(fill = "green", bins = num_classesSKV, alpha = .5) +
 
   # every sample as triangle
@@ -123,7 +123,8 @@ labs(
 
 
 
-p_minmax <- ggplot(NULL, aes(x = minmax)) +
+p_minmax <-
+  ggplot(NULL, aes(x = minmax)) +
   geom_histogram(fill = "blue", bins = num_classesSKV, alpha = .5) +
 
   # every sample as triangle
@@ -149,9 +150,9 @@ p_minmax <- ggplot(NULL, aes(x = minmax)) +
   theme_bw()
 
 
-p_bayes_uni <-
+#p_bayes_uni <-
   ggplot(NULL, aes(x = bayesWerte)) +
-  geom_histogram(fill = "purple", bins = num_classesSKV, alpha = .5) +
+  geom_histogram(fill = "purple", binwidth = ((max(bayesWerteNV) - min(bayesWerteNV)) / num_classesSKV), alpha = .5) +
 
   # Prior
   geom_line(aes(x = mu_hat, y = (prior_dens * number)), color = "orange") + # Muss normalisiert werden
@@ -185,35 +186,37 @@ p_bayes_uni <-
 
 
 
-p_bayes_nv <-
-  ggplot(NULL, aes(x = bayesWerteNV)) +
-  geom_histogram(fill = "hotpink", bins = num_classesSKV, alpha = .5) +
+#p_bayes_nv <-
+ggplot(NULL, aes(x = bayesWerteNV)) +
+  geom_histogram(fill = "hotpink", binwidth = ((max(bayesWerteNV) - min(bayesWerteNV)) / num_classesSKV), alpha = .5) +
 
   # Prior
   geom_line(aes(x = mu_hat, y = (prior_densNV * number)), color = "brown") + # Muss normalisiert werden
   geom_area(aes(x = mu_hat, y = (prior_densNV * number)), fill = "brown", alpha = .4) + # Muss normalisiert werden
 
+
   # every sample as triangle
-  geom_point(aes(x = bayesWerteNV, y = 0), color = "hotpink", shape = 17, size = 4) +
+  geom_point(aes(x = bayesWerteNV, y = 0), colour = "hotpink", shape = 17, size = 4) +
 
   # mu
   geom_point(aes(x = mu, y = 2), colour = "red", shape = 17, size = 4) +
   geom_vline(aes(xintercept = mu), colour = "red") +
 
   # mean over all samples
-  geom_point(aes(x = mean_estBayesNV, y = 4),  colour = "black", shape = 17, size = 4) +
-  geom_vline(aes(xintercept = mean_estBayesNV), colour = "black", linetype = "dashed") +
+  geom_point(aes(x = mean_est, y = 4),  colour = "black", shape = 17, size = 4) +
+  geom_vline(aes(xintercept = mean_est), colour = "black", linetype = "dashed") +
 
 
   # Skalen, Theme, Labs etc.
   coord_cartesian(xlim = coord) +
 
   labs(
-    title = "Bayesschätzer mit normalverteilter Priori",
+    title = "Arithmetisches Mittel",
     y = "Häufigkeit",
     x = expression(bar(x)),
     colour = NULL) +
   theme_bw()
+
 
 
 #### combine them ####
