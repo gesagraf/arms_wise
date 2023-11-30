@@ -150,7 +150,7 @@ p_minmax <-
   theme_bw()
 
 
-#p_bayes_uni <-
+p_bayes_uni <-
   ggplot(NULL, aes(x = bayesWerte)) +
   geom_histogram(fill = "purple", binwidth = ((max(bayesWerteNV) - min(bayesWerteNV)) / num_classesSKV), alpha = .5) +
 
@@ -186,7 +186,7 @@ p_minmax <-
 
 
 
-#p_bayes_nv <-
+p_bayes_nv <-
 ggplot(NULL, aes(x = bayesWerteNV)) +
   geom_histogram(fill = "hotpink", binwidth = ((max(bayesWerteNV) - min(bayesWerteNV)) / num_classesSKV), alpha = .5) +
 
