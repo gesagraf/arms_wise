@@ -260,4 +260,4 @@ combined_plots_with_legend <- arrangeGrob(
 
 
 # show result
-grid.arrange(combined_plots_with_legend)
+(plot <- grid.arrange(combined_plots_with_legend))
