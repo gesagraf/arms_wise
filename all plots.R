@@ -159,7 +159,7 @@ labs(
 
 (p_bayes_uni <-
   ggplot(NULL, aes(x = bayesWerte)) +
-  geom_histogram(aes(y = ..density..), fill = "purple", bis = num_classesSKV, alpha = .5) +
+  geom_histogram(aes(y = ..density..), fill = "purple", bins = num_classesSKV, alpha = .5) +
 
   # Prior
   geom_line(aes(x = mu_hat, y = prior_dens), color = "orange") + # Muss normalisiert werden
@@ -201,8 +201,8 @@ ggplot(NULL, aes(x = bayesWerteNV)) +
   geom_histogram(aes(y = ..density..), fill = "hotpink", bins = num_classesSKV, alpha = .5) +
 
   # Prior
-  geom_line(aes(x = mu_hat, y = prior_densNV), color = "brown") + # Muss normalisiert werden
-  geom_area(aes(x = mu_hat, y = prior_densNV), fill = "brown", alpha = .4) + # Muss normalisiert werden
+  geom_line(aes(x = mu_hat, y = prior_densNV), color = "brown") +
+  geom_area(aes(x = mu_hat, y = prior_densNV), fill = "brown", alpha = .4) +
 
 
   # every sample as triangle
