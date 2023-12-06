@@ -1,4 +1,5 @@
 server <- function(input, output) {
+  set.seed(12345)
 
   output$skv_plot <- renderPlot({
 
@@ -20,8 +21,6 @@ server <- function(input, output) {
     num_classesSKV <- ceiling(log2(number) + 1)
 
     #### create data ####
-    set.seed(12345)
-
     # draws samples of "number" iterations
     samp_df <- sapply(1:number, FUN = function(i) {
       samp <- rnorm(n = n, mean = mu, sd = sd)
@@ -148,24 +147,27 @@ server <- function(input, output) {
     # over all mean Bayes
     mean_estBayesNV <- mean(bayesWerteNV)
 
+
     #### Plot ####
     #### definitions ####
-    min_coord <- min(c(mu - 2 * sd, estimators, minmax, bayesWerte, bayesWerteNV, min_uni_priori))
-    max_coord <- max(c(mu + 2 * sd, estimators, minmax, bayesWerte, bayesWerteNV, max_uni_priori))
+    min_coord <- mu - 2 * sd
+      # min(c(mu - 2 * sd, estimators, minmax, bayesWerte, bayesWerteNV, min_uni_priori))
+    max_coord <- mu + 2 * sd
+      # max(c(mu + 2 * sd, estimators, minmax, bayesWerte, bayesWerteNV, max_uni_priori))
     coord <- c(min_coord, max_coord)
 
     colours <- c(viridis(7, direction = -1), "red", "black")
     names(colours) <- c("est_mean", "est_minmax", "est_bayes_uni", "est_bayes_nv", "likelihood", "prior_uni", "prior_nv", "mu", "mean_est")
     custom_colors <- scale_color_manual(values = colours,
                                         labels = c(mu = expression(mu),
-                                                   est_mean = "Arithmetisches Mittel",
-                                                   est_minmax = "Alternativer Schätzer",
-                                                   est_bayes_uni = "Bayesschätzer mit \n gleichverteilert Priori",
-                                                   est_bayes_nv = "Bayesschätzer mit \n normalverteilert Priori",
+                                                   est_mean = "Arithmetisches \n Mittel",
+                                                   est_minmax = "Alternativer \n Schätzer",
+                                                   est_bayes_uni = "Bayesschätzer: \n gleichverteile \n Priori",
+                                                   est_bayes_nv = "Bayesschätzer: \n normalverteile \n Priori",
                                                    likelihood = "Likelihood",
-                                                   prior_uni = "Gleichverteilter Prior",
-                                                   prior_nv = "Normalverteilter Prior",
-                                                   mean_est = "Mean aller Mittelwertschätzer"),
+                                                   prior_uni = "Gleichverteilter \n Prior",
+                                                   prior_nv = "Normalverteilter \n Prior",
+                                                   mean_est = "Mean aller \n Mittelwertschätzer"),
                                         breaks = factor(c("mu","est_mean", "est_minmax","est_bayes_uni", "est_bayes_nv", "likelihood",
                                                           "prior_uni", "prior_nv", "mean_est"),
                                                         levels = c("mu", "est_mean", "est_minmax","est_bayes_uni", "est_bayes_nv", "likelihood",
@@ -175,7 +177,8 @@ server <- function(input, output) {
 
     #### plots ####
     # single sample
-    (p_samp <-
+
+    p_samp <-
        ggplot(NULL, aes(x = samp_df[ , specific])) +
 
        # Platzhalter
@@ -236,15 +239,22 @@ server <- function(input, output) {
        # legende
        custom_colors +
 
-       theme_bw() +
+      theme_bw() +
+      theme(legend.text = element_text(size = 15))
 
        # pinke Umrandung
        annotation_custom(
          grob = rectGrob(gp = gpar(col = "magenta", lwd = 5, fill = NA)),
          xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf
-       )
+         )
 
-    )
+
+    # Platzhalter für forestplot
+    p_forest <-
+      ggplot(NULL, aes(x = samp_df[ , specific])) +
+      labs(title = "some title") +
+      theme_bw()
+
 
 
     # Mean
@@ -271,18 +281,17 @@ server <- function(input, output) {
         # Skalen, Theme, Labs etc.
         coord_cartesian(xlim = coord) +
 
-        # 2. y-Achse
-        scale_y_continuous(
-          name = "Relative Häufigkeit",
-          sec.axis = sec_axis( trans=~.*number, name = "Anzahl SP")
-        ) +
+      # 2. y-Achse
+      scale_y_continuous(
+        sec.axis = sec_axis( trans=~.*number)
+      ) +
 
         labs(
           title = "Arithmetisches Mittel",
           x = expression(bar(x)),
+          y = NULL,
           colour = NULL) +
         theme_bw()
-
 
     # Alternativer Schätzer
     p_minmax <-
@@ -308,18 +317,17 @@ server <- function(input, output) {
         # Skalen, Theme, Labs etc.
         coord_cartesian(xlim = coord) +
 
-        # 2. y-Achse
-        scale_y_continuous(
-          name = "Relative Häufigkeit",
-          sec.axis = sec_axis( trans=~.*number, name = "Anzahl SP")
-        ) +
+      # 2. y-Achse
+      scale_y_continuous(
+        sec.axis = sec_axis( trans=~.*number)
+      ) +
 
         labs(
           title = "Alternativer Schätzer",
           x = expression(bar(x)),
+          y = NULL,
           colour = NULL) +
         theme_bw()
-
 
     # Bayes Gleichverteilt
     p_bayes_uni <-
@@ -349,15 +357,15 @@ server <- function(input, output) {
         # Skalen, Theme, Labs etc.
         coord_cartesian(xlim = coord) +
 
-        # 2. y-Achse
-        scale_y_continuous(
-          name = "Relative Häufigkeit",
-          sec.axis = sec_axis( trans=~.*number, name = "Anzahl SP")
-        ) +
+      # 2. y-Achse
+      scale_y_continuous(
+        sec.axis = sec_axis( trans=~.*number)
+      ) +
 
         labs(
           title = "Bayesschätzer mit gleichverteilter Priori",
           x = expression(bar(x)),
+          y = NULL,
           colour = NULL) +
 
         theme_bw()
@@ -394,27 +402,30 @@ server <- function(input, output) {
 
         # 2. y-Achse
         scale_y_continuous(
-          name = "Relative Häufigkeit",
-          sec.axis = sec_axis( trans=~.*number, name = "Anzahl SP")
+          sec.axis = sec_axis( trans=~.*number)
         ) +
 
         labs(
           title = "Bayesschätzer mit normalverteilter Priori",
           x = expression(bar(x)),
+          y = NULL,
           colour = NULL) +
         theme_bw()
-
 
 
     #### combine them ####
     # title, legend
     title_skv <- textGrob("Stichprobenkennwerteverteilung", gp = gpar(fontsize = 15))
-    title_top <- textGrob("Beispielstichprobe", gp = gpar(fontsize = 20))
+    title_top <- textGrob("Beispielstichprobe", gp = gpar(fontsize = 15))
     legend <- cowplot::get_legend(p_samp)
+    label_left <- ggdraw() + draw_label("Relative Häufigkeit", angle = 90, size = 12)
+    label_right <- ggdraw() + draw_label("Anzahl SP", angle = 270, size = 12)
 
-    # combine plots
+
+        # combine plots
     combined_plots_top <- arrangeGrob(p_samp + theme(legend.position = "none"),
-                                      legend, top = title_top, ncol = 2)
+                                      p_forest + theme(legend.position = "none"),
+                                      top = title_top, ncol = 2)
 
     combined_plots_skv <- arrangeGrob(p_mean + theme(legend.position = "none"),
                                       p_minmax + theme(legend.position = "none"),
@@ -422,15 +433,26 @@ server <- function(input, output) {
                                       p_bayes_nv + theme(legend.position = "none"),
                                       ncol = 2, top = title_skv)
 
+    combined_plots_labels <- arrangeGrob(
+      label_left, combined_plots_skv, label_right,
+      widths = c(.1, 2, .1))
+
+
+    # add top
+    combined_plots_with_top <- arrangeGrob(
+      combined_plots_top, combined_plots_labels, heights = c(1, 2)
+    )
 
     # add legend
     combined_plots_with_legend <- arrangeGrob(
-      combined_plots_top, combined_plots_skv, heights = c(1, 2)
+      combined_plots_with_top, legend, widths = c(4, 1.5)
     )
 
 
     # show result
     plot <- grid.arrange(combined_plots_with_legend)
+
+    return(plot)
 
 
 

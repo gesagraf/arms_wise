@@ -9,6 +9,25 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
 
+      #### Organiszing Plots ####
+      # specific sample
+     # checkboxInput("p_samp", "Zeige die spezifische Stichprobe", value = T),
+      # forest plot
+    #  checkboxInput("p_forest", "Zeige den Forestplot", value = F),
+      # SKV Mean
+   #   checkboxInput("p_mean", "Zeige die SKV des means", value = F),
+      # SKV Minmax
+  #    checkboxInput("p_minmax", "Zeige die SKV des alternativen Schätzers", value = F),
+      # SKV Bayes uni
+ #     checkboxInput("p_bayes_uni", "Zeige die SKV mit gleichverteiltem Bayes Schätzer", value = F),
+      # SKV Bayes nv
+#      checkboxInput("p_bayes_nv", "Zeige die SKV mit normalverteiltem Bayes Schätzer", value = F),
+
+      # action Button
+#      actionButton("go", "Go"),
+
+
+
       #### Population ####
       # Population mu
       sliderInput(inputId = "mu",
@@ -38,7 +57,7 @@ ui <- fluidPage(
                   "Gesamtanzahl der Stichproben",
                   min = 0,
                   max = 1000,
-                  value = 1000),
+                  value = 100),
 
       # Specific Sample
       sliderInput(inputId = "specific",
@@ -77,7 +96,7 @@ ui <- fluidPage(
       # Sidebar with a slider input for Prior Tau
       sliderInput(inputId = "tau_prior",
                   label = "Prior Tau",
-                  min = 0,
+                  min = 1,
                   max = 100,
                   value = 10)
 
@@ -85,7 +104,7 @@ ui <- fluidPage(
 
     # Show a plot of the generated distribution
     mainPanel(
-      plotOutput("skv_plot")
+      plotOutput("skv_plot", width = "950px", height = "700px")
     )
   )
 )
