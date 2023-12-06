@@ -1,61 +1,91 @@
-# setting colours
-cols <- viridis::viridis(n = 3)
-
+# defininig UI
 ui <- fluidPage(
 
-  # setting slider colours
-  shinyWidgets::setSliderColor(c(rep(cols[1], 2), rep(cols[2], 2)), 1:4),
-
-
   # Application title
-  titlePanel("Verhältnis von Likelihood der Daten, Priori & Posteoriori"),
+  titlePanel("Überschrift"),
 
   # define sidebars
 
   sidebarLayout(
     sidebarPanel(
-      # Sidebar with a slider input for Data Mean
-      sliderInput(inputId = "m_data",
-                  "Data Mean",
-                  min = 85,
-                  max = 115,
-                  value = 110),
+
+      #### Population ####
+      # Population mu
+      sliderInput(inputId = "mu",
+                  paste0("Populations-", expression(mu)),
+                  min = -100,
+                  max = 100,
+                  value = 0),
+
+      # Population sd
+      sliderInput(inputId = "sd",
+                  "Populations-Standardabweichung",
+                  min = 0,
+                  max = 100,
+                  value = 1),
 
 
-
-      # Sidebar with a slider input for Data sd
-      sliderInput(inputId = "sd_data",
-                  "Data SD",
-                  min = 5,
-                  max = 25,
-                  value = 20),
-
-
-
-
-      # Sidebar with a slider input for Prior Mean
-      sliderInput(inputId = "mu_prior",
-                  label = "Prior Mean",
-                  min = 85,
-                  max = 115,
+      #### Samples ####
+      # Samplesize
+      sliderInput(inputId = "n",
+                  "Größe der einzelnen Stichproben",
+                  min = 0,
+                  max = 1000,
                   value = 100),
 
+      # Number of Samples
+      sliderInput(inputId = "number",
+                  "Gesamtanzahl der Stichproben",
+                  min = 0,
+                  max = 1000,
+                  value = 1000),
+
+      # Specific Sample
+      sliderInput(inputId = "specific",
+                  "Spezifische Stichprobe",
+                  min = 0,
+                  max = 100000,
+                  value = 10),
+
+
+
+      #### Priors ####
+      # Gleichverteiler Prior
+      # Minimum
+      sliderInput(inputId = "min_uni_priori",
+                  "Minimum der Gleichverteilten Priori",
+                  min = -100,
+                  max = 100,
+                  value = -50),
+
+      # Maximum
+      sliderInput(inputId = "max_uni_priori",
+                  "Maximum der Gleichverteilten Priori",
+                  min = -100,
+                  max = 100,
+                  value = -10),
+
+
+      # Normalverteilter Prior
+      # Prior Mean
+      sliderInput(inputId = "mu_prior",
+                  label = "Prior Mean",
+                  min = -100,
+                  max = 100,
+                  value = 50),
 
       # Sidebar with a slider input for Prior Tau
       sliderInput(inputId = "tau_prior",
                   label = "Prior Tau",
-                  min = 5,
-                  max = 25,
-                  value = 15)
-
-
-
+                  min = 0,
+                  max = 100,
+                  value = 10)
 
     ),
 
     # Show a plot of the generated distribution
     mainPanel(
-      plotOutput("distPlot")
+      plotOutput("skv_plot")
     )
   )
 )
