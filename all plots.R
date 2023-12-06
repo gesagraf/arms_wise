@@ -38,7 +38,6 @@ custom_colors <- scale_color_manual(values = colours,
 # single sample
 (p_samp <-
    ggplot(NULL, aes(x = samp_df[ , specific])) +
-   geom_histogram(fill = "lightgrey", bins = num_classes, aes(y = ..density..)) +
 
    # Platzhalter
    geom_point(aes(x = bayesWerte[specific], y = 0, colour = "mean_est"), shape = 24, size = 0.001) +
@@ -55,34 +54,42 @@ custom_colors <- scale_color_manual(values = colours,
    geom_line(aes(x = mu_hat, y = prior_densNV, color = "prior_nv")) +
    geom_area(aes(x = mu_hat, y = prior_densNV), fill = colours["prior_nv"], alpha = .4) +
 
-   # mu
-   geom_point(aes(x = mu, y = 0, colour = "mu"), shape = 17, size = 4) +
-   geom_vline(aes(xintercept = mu, colour = "mu")) +
+   # Verteilung
+   geom_histogram(fill = "lightgrey", colour = "lightgrey", bins = num_classes, aes(y = ..density..), alpha = .9) +
+
 
    # Schätzer
    # Mean
    geom_point(aes(x = estimators[specific], y = 0), fill = colours["est_mean"], colour = "magenta", shape = 24, size = 8) +
-   geom_vline(aes(xintercept = estimators[specific], colour = "est_mean"), linetype = "dotted") +
+   geom_vline(aes(xintercept = estimators[specific], colour = "est_mean"), linetype = "dotted", size = .75) +
 
    # Minmax
    geom_point(aes(x = minmax[specific], y = 0), fill = colours["est_minmax"],  colour = "magenta", shape = 24, size = 8) +
-   geom_vline(aes(xintercept = minmax[specific], colour = "est_minmax"), linetype = "dotted") +
+   geom_vline(aes(xintercept = minmax[specific], colour = "est_minmax"), linetype = "dotted", size = .75) +
 
    # bayes uni
    geom_point(aes(x = bayesWerte[specific], y = 0), fill = colours["est_bayes_uni"], colour = "magenta", shape = 24, size = 8) +
-   geom_vline(aes(xintercept = bayesWerte[specific], colour = "est_bayes_uni"), linetype = "dotted") +
+   geom_vline(aes(xintercept = bayesWerte[specific], colour = "est_bayes_uni"), linetype = "dotted", size = .75) +
 
    # bayes nv
    geom_point(aes(x = bayesWerteNV[specific], y = 0), fill = colours["est_bayes_nv"], colour = "magenta", shape = 24, size = 8) +
-   geom_vline(aes(xintercept = bayesWerteNV[specific], colour = "est_bayes_nv"), linetype = "dotted") +
+   geom_vline(aes(xintercept = bayesWerteNV[specific], colour = "est_bayes_nv"), linetype = "dotted", size = .75) +
 
+   # mu
+   geom_point(aes(x = mu, y = 0, colour = "mu"), shape = 17, size = 4) +
+   geom_vline(aes(xintercept = mu, colour = "mu"), size = 1) +
 
    # Skalen, Theme, Labs etc.
    coord_cartesian(xlim = coord) +
 
+   # 2. y-Achse
+   scale_y_continuous(
+          name = "Relative Häufigkeit",
+          sec.axis = sec_axis( trans=~.*number, name = "Anzahl TN")
+          ) +
+
    labs(
      title = paste0("Einzelne Stichprobe (#", specific,")"),
-     y = "Relative Häufigkeit",
      x = "x",
      colour = NULL,
      fill = NULL) +
@@ -94,7 +101,7 @@ custom_colors <- scale_color_manual(values = colours,
 
    # pinke Umrandung
    annotation_custom(
-     grob = rectGrob(gp = gpar(col = "magenta", lty = "dashed", lwd = 5, fill = NA)),
+     grob = rectGrob(gp = gpar(col = "magenta", lwd = 5, fill = NA)),
      xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf
    )
 
@@ -120,19 +127,26 @@ custom_colors <- scale_color_manual(values = colours,
 
   # mu
   geom_point(aes(x = mu, y = 0), colour = colours["mu"], shape = 17, size = 4) +
-  geom_vline(aes(xintercept = mu), colour = colours["mu"]) +
+  geom_vline(aes(xintercept = mu), colour = colours["mu"], size = 1) +
 
   # mean over all samples
   geom_point(aes(x = mean_est, y = 0),  colour = colours["mean_est"], shape = 17, size = 4) +
-  geom_vline(aes(xintercept = mean_est), colour = colours["mean_est"], linetype = "dashed") +
+  geom_vline(aes(xintercept = mean_est), colour = colours["mean_est"], linetype = "dashed", size = .75) +
+
+
 
 
   # Skalen, Theme, Labs etc.
   coord_cartesian(xlim = coord) +
 
-labs(
+  # 2. y-Achse
+  scale_y_continuous(
+   name = "Relative Häufigkeit",
+    sec.axis = sec_axis( trans=~.*number, name = "Anzahl SP")
+  ) +
+
+  labs(
     title = "Arithmetisches Mittel",
-    y = "Relative Häufigkeit",
     x = expression(bar(x)),
     colour = NULL) +
   theme_bw())
@@ -151,19 +165,25 @@ labs(
 
   # mu
   geom_point(aes(x = mu, y = 0), colour = colours["mu"], shape = 17, size = 4) +
-  geom_vline(aes(xintercept = mu), colour = colours["mu"]) +
+  geom_vline(aes(xintercept = mu), colour = colours["mu"], size = 1) +
 
   # mean over all samples
   geom_point(aes(x = mean_minmax, y = 0),  colour = colours["mean_est"], shape = 17, size = 4) +
-  geom_vline(aes(xintercept = mean_minmax), colour = colours["mean_est"], linetype = "dashed") +
+  geom_vline(aes(xintercept = mean_minmax), colour = colours["mean_est"], linetype = "dashed", size = .75) +
+
 
 
   # Skalen, Theme, Labs etc.
   coord_cartesian(xlim = coord) +
 
+  # 2. y-Achse
+  scale_y_continuous(
+    name = "Relative Häufigkeit",
+    sec.axis = sec_axis( trans=~.*number, name = "Anzahl SP")
+  ) +
+
   labs(
     title = "Alternativer Schätzer",
-    y = "Relative Häufigkeit",
     x = expression(bar(x)),
     colour = NULL) +
   theme_bw())
@@ -186,29 +206,34 @@ labs(
 
   # mu
   geom_point(aes(x = mu, y = 0), colour = colours["mu"], shape = 17, size = 4) +
-  geom_vline(aes(xintercept = mu), colour = colours["mu"]) +
+  geom_vline(aes(xintercept = mu), colour = colours["mu"], size = 1) +
 
   # mean over all samples
   geom_point(aes(x = mean_estBayes, y = 0),  colour = colours["mean_est"], shape = 17, size = 4) +
-  geom_vline(aes(xintercept = mean_estBayes), colour = colours["mean_est"], linetype = "dashed") +
+  geom_vline(aes(xintercept = mean_estBayes), colour = colours["mean_est"], linetype = "dashed", size = .75) +
 
 
   # Skalen, Theme, Labs etc.
   coord_cartesian(xlim = coord) +
 
+  # 2. y-Achse
+  scale_y_continuous(
+    name = "Relative Häufigkeit",
+    sec.axis = sec_axis( trans=~.*number, name = "Anzahl SP")
+  ) +
+
   labs(
     title = "Bayesschätzer mit gleichverteilter Priori",
-    y = "Relative Häufigkeit",
     x = expression(bar(x)),
     colour = NULL) +
 
   theme_bw())
 
-
+#
 
 (p_bayes_nv <-
 ggplot(NULL, aes(x = bayesWerteNV)) +
-  geom_histogram(aes(y = ..density..), fill = colours["est_bayes_nv"], bins = num_classesSKV, alpha = .5) +
+  geom_histogram(aes(y = ..density..), fill = colours["est_bayes_nv"], binwidth = round((max(bayesWerteNV) - min(bayesWerteNV)) / num_classesSKV), alpha = .5) +
 
   # Prior
   geom_line(aes(x = mu_hat, y = prior_densNV), color = colours["prior_nv"]) +
@@ -223,19 +248,25 @@ ggplot(NULL, aes(x = bayesWerteNV)) +
 
   # mu
   geom_point(aes(x = mu, y = 0), colour = colours["mu"], shape = 17, size = 4) +
-  geom_vline(aes(xintercept = mu), colour = colours["mu"]) +
+  geom_vline(aes(xintercept = mu), colour = colours["mu"], size = 1) +
 
   # mean over all samples
-  geom_point(aes(x = mean_est, y = 0),  colour = colours["mean_est"], shape = 17, size = 4) +
-  geom_vline(aes(xintercept = mean_est), colour = colours["mean_est"], linetype = "dashed") +
+  geom_point(aes(x = mean_estBayesNV, y = 0),  colour = colours["mean_est"], shape = 17, size = 4) +
+  geom_vline(aes(xintercept = mean_estBayesNV), colour = colours["mean_est"], linetype = "dashed", size = .75) +
+
 
 
   # Skalen, Theme, Labs etc.
   coord_cartesian(xlim = coord) +
 
+  # 2. y-Achse
+  scale_y_continuous(
+    name = "Relative Häufigkeit",
+    sec.axis = sec_axis( trans=~.*number, name = "Anzahl SP")
+  ) +
+
   labs(
     title = "Bayesschätzer mit normalverteilter Priori",
-    y = "Relative Häufigkeit",
     x = expression(bar(x)),
     colour = NULL) +
   theme_bw())
