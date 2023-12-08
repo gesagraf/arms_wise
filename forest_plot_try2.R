@@ -4,7 +4,8 @@ dat <- data.frame(
   label = c("Arithmetisches Mittel", "Alternativer Schätzer", "Bayesschätzer mit gleichverteilter Priori", "Bayesschätzer mit normalverteilter Priori"),
   OR = c(mean(estimators), mean(minmax), mean(bayesWerte), mean(bayesWerteNV)),
   LL = c(mean(estimators)-1.96*sd(estimators), mean(minmax)-1.96*sd(minmax), mean(bayesWerte)-1.96*sd(bayesWerte), mean(bayesWerteNV)-1.96*sd(bayesWerteNV)),
-  UL = c(mean(estimators)+1.96*sd(estimators), mean(minmax)+1.96*sd(minmax), mean(bayesWerte)+1.96*sd(bayesWerte), mean(bayesWerteNV)+1.96*sd(bayesWerteNV)))
+  UL = c(mean(estimators)+1.96*sd(estimators), mean(minmax)+1.96*sd(minmax), mean(bayesWerte)+1.96*sd(bayesWerte), mean(bayesWerteNV)+1.96*sd(bayesWerteNV)),
+  frb = c("red", "green", "yellow", "purple"))
 dat
 
 plot1 <- ggplot(dat, aes(y = Index, x = OR)) +
@@ -20,7 +21,7 @@ plot1 <- ggplot(dat, aes(y = Index, x = OR)) +
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.text.y = element_text(size = 12, colour = "black"),
+        axis.text.y = element_text(size = 12, colour = dat$frb),
         axis.text.x.bottom = element_text(size = 12, colour = "black"),
         axis.title.x = element_text(size = 12, colour = "black"))
 plot1
