@@ -241,12 +241,12 @@ return_list_uni2 <- reactive({
 
 
 
-      output$plot_samp <- renderPlot({
-        if (!input$p_samp) return(NULL)
+
 
      #### plots ####
      # single sample
-        ggplot(NULL, aes(x = sampfdfspecific())) +
+    p_sample <- reactive({
+      ggplot(NULL, aes(x = sampfdfspecific())) +
 
        # Platzhalter
      geom_point(aes(x = bayeswertespecific(), y = 0, colour = "mean_est"), shape = 24, size = .0001) +
@@ -321,8 +321,28 @@ return_list_uni2 <- reactive({
        grob = rectGrob(gp = gpar(col = "magenta", lwd = 5, fill = NA)),
        xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf
      )
+      })
+
+     output$plot_samp <- renderPlot({
+       if (!input$p_samp) return(NULL)
+    grid::grid.draw(p_sample())
  })
 
+      output$legende <- renderPlot({
+        ggplot(NULL) +
+          annotate("text", x = 0, y = 0, hjust = 0,
+                   label = paste(expression(mu),
+                                 "Arithmetisches \n Mittel",
+                                 "Alternativer \n Schätzer",
+                                 "Bayesschätzer: \n gleichverteile \n Priori",
+                                 "Bayesschätzer: \n normalverteile \n Priori",
+                                 "Likelihood",
+                                 "Gleichverteilter \n Prior",
+                                 "Normalverteilter \n Prior",
+                                 "Mean aller \n Mittelwertschätzer", sep = "\n")) +
+                   #         colour = c("red", "#FDE725FF", "#8FD744FF", "#35B779FF", "#21908CFF", "#31688EFF", "#443A83FF", "#440154FF")) +
+                   theme_void()
+        })
 
 
 
@@ -545,4 +565,6 @@ return_list_uni2 <- reactive({
        theme_bw()
 
 })
+
+
 }

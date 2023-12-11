@@ -99,20 +99,17 @@ column(2,     checkboxInput("p_forest", "Forestplot", value = F)),
         tabPanel("some title",
                  fluidRow(
                           column(5, plotOutput("plot_samp")),
-                          column(5, plotOutput("plot_forest")),
-                      #    column(2, plotOutput("legende"))
+                          column(5, plotOutput("forest")),
+                          column(2, plotOutput("legende"))
                  ),
                 fluidRow(
                          column(5, plotOutput("plot_mean")),
-                         column(5, plotOutput("plot_minmax")),
-                       #  column(2, plotOutput("legende"))
+                         column(5, plotOutput("plot_minmax"))
 
                 ),
                 fluidRow(
                          column(5, plotOutput("plot_bayes_uni")),
-                         column(5, plotOutput("plot_bayes_nv")),
-                        # column(2, plotOutput("legende"))
-
+                         column(5, plotOutput("plot_bayes_nv"))
 
         )
       )
