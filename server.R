@@ -339,7 +339,7 @@ return_list_uni2 <- reactive({
           UL = c(
             mean(estimators()) + 1.96 * sd(estimators()), mean(minmax()) + 1.96 * sd(minmax()),
             mean(bayesWerte()) + 1.96 * sd(bayesWerte()), mean(bayesWerteNV()) + 1.96 * sd(bayesWerteNV())),
-          frb = c("red", "green", "yellow", "purple"))
+          frb = colours[c("est_mean", "est_minmax", "est_bayes_uni", "est_bayes_nv")])
         )
 
         # Forestplot
@@ -347,23 +347,28 @@ return_list_uni2 <- reactive({
           if (!input$p_forest) return(NULL)
 
         ggplot(dat(), aes(y = Index, x = OR)) +
-          geom_point(shape = 18) +
-          geom_errorbarh(aes(xmin = LL, xmax = UL), height = 0.25) +
-          geom_vline(xintercept = mu(), color = "red", linetype = "dashed", cex = 1, alpha = 0.5) +
-          scale_y_continuous(breaks=1:4, labels = dat()$label, trans = "reverse") +
+          geom_errorbarh(aes(xmin = LL, xmax = UL), height = 0.25, linewidth = 1, colour = dat()$frb) +
+          geom_point(shape = 22, colour = "black", fill = "white") +
+          geom_vline(aes(xintercept = mu()), colour = colours["mu"], linewidth = 1) +
+          scale_y_continuous(breaks = 1:4, labels =
+                               c(est_mean = "Arithmetisches \n Mittel",
+                                 est_minmax = "Alternativer \n Schätzer",
+                                 est_bayes_uni = "Bayesschätzer: \n gleichverteile \n Priori",
+                                 est_bayes_nv = "Bayesschätzer: \n normalverteile \n Priori"),
+                             trans = "reverse") +
           labs(
             x = "Werte gemittelt",
             y = NULL
           ) +
-          theme_bw() +
-          theme(panel.border = element_blank(),
-                panel.background = element_blank(),
-                panel.grid.major = element_blank(),
-                panel.grid.minor = element_blank(),
-                axis.line = element_line(colour = "black"),
-                axis.text.y = element_text(size = 12, colour = dat()$frb),
-                axis.text.x.bottom = element_text(size = 12, colour = "black"),
-                axis.title.x = element_text(size = 12, colour = "black"))
+           theme_bw() # +
+          # theme(panel.border = element_blank(),
+          #       panel.background = element_blank(),
+          #       panel.grid.major = element_blank(),
+          #       panel.grid.minor = element_blank(),
+          #       axis.line = element_line(colour = "black"),
+          #       axis.text.y = element_text(size = 12, colour = dat()$frb),
+          #       axis.text.x.bottom = element_text(size = 12, colour = "black"),
+          #       axis.title.x = element_text(size = 12, colour = "black"))
 
        })
 
