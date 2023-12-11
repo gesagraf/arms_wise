@@ -333,7 +333,7 @@ return_list_uni2 <- reactive({
           OR = c(mean(estimators()), mean(minmax()), mean(bayesWerte()), mean(bayesWerteNV())), # Odds Ration
           # Lower Border
           LL = c(
-            mean(estimators()) - 1.96 * sd(estimators()), mean(minmax()) - 1.96 * sd(minmax)(),
+            mean(estimators()) - 1.96 * sd(estimators()), mean(minmax()) - 1.96 * sd(minmax()),
             mean(bayesWerte()) - 1.96 * sd(bayesWerte()), mean(bayesWerteNV()) - 1.96 * sd(bayesWerteNV())),
           # Upper border
           UL = c(
@@ -346,22 +346,22 @@ return_list_uni2 <- reactive({
         output$plot_forest <- renderPlot({
           if (!input$p_forest) return(NULL)
 
-        ggplot(dat(), aes(y = Index(), x = OR())) +
+        ggplot(dat(), aes(y = Index, x = OR)) +
           geom_point(shape = 18) +
-          geom_errorbarh(aes(xmin = LL(), xmax = UL()), height = 0.25) +
+          geom_errorbarh(aes(xmin = LL, xmax = UL), height = 0.25) +
           geom_vline(xintercept = mu(), color = "red", linetype = "dashed", cex = 1, alpha = 0.5) +
-          scale_y_continuous(breaks=1:4, labels = dat$label(), trans = "reverse") +
+          scale_y_continuous(breaks=1:4, labels = dat()$label, trans = "reverse") +
           labs(
             x = "Werte gemittelt",
             y = NULL
-          )
+          ) +
           theme_bw() +
           theme(panel.border = element_blank(),
                 panel.background = element_blank(),
                 panel.grid.major = element_blank(),
                 panel.grid.minor = element_blank(),
                 axis.line = element_line(colour = "black"),
-                axis.text.y = element_text(size = 12, colour = dat$frb()),
+                axis.text.y = element_text(size = 12, colour = dat()$frb),
                 axis.text.x.bottom = element_text(size = 12, colour = "black"),
                 axis.title.x = element_text(size = 12, colour = "black"))
 
