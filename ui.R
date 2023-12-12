@@ -1,5 +1,7 @@
 # defininig UI
-ui <- fluidPage(
+#install.packages("shinythemes")
+
+ui <- fluidPage(shinythemes::themeSelector(),
 
   # Application title
 
