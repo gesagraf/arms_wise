@@ -354,7 +354,7 @@ return_list_uni2 <- reactive({
         )
 
         # Forestplot
-        output$plot_forest <- renderPlot({
+        output$forest <- renderPlot({
           if (!input$p_forest) return(NULL)
 
         ggplot(dat(), aes(y = Index, x = OR)) +
