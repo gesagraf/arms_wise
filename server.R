@@ -31,7 +31,7 @@ server <- function(input, output, session) {
   max_uni_priori <- reactive(input$rangePriori[2]) # max für gleichverteilte priori
   mu_prior <-  reactive(input$mu_prior)            # mittelwert der priori
   tau_prior <- reactive(input$tau_prior)           # sd der priori
-  lengthout <- 400                                # die Länge von mu_hat, NICHT REAKTIV!
+  lengthout <- 1000                                # die Länge von mu_hat, NICHT REAKTIV!
 
 
 
@@ -73,7 +73,7 @@ server <- function(input, output, session) {
 
     #### Bayes mit gleichverteilter Priori mit min max #####
     # calculate likelihood
-    mu_hat <- seq(-200, 200, length.out = lengthout)
+    mu_hat <- seq(-100, 100, length.out = lengthout)
 
     # density of prior
     prior_dens <- reactive(dunif(mu_hat, min_uni_priori(), max_uni_priori()))
@@ -244,6 +244,14 @@ return_list_uni2 <- reactive({
 
 
      #### plots ####
+
+     output$easyplot <- renderPlot({
+       hist(bayesWerteNV())
+     })
+
+     output$penguin_text <- renderText({
+       bayesWerte()
+     })
      # single sample
      p_sample <- reactive({
        ggplot(NULL, aes(x = sampfdfspecific())) +
@@ -474,8 +482,8 @@ return_list_uni2 <- reactive({
        geom_histogram(aes(y = after_stat(density)), fill = colours["est_bayes_uni"], bins = num_classesSKV(), alpha = .5) +
 
        # Prior
-       geom_line(aes(x = mu_hat, y = prior_dens()), color = colours["prior_uni"]) +
-       geom_area(aes(x = mu_hat, y = prior_dens()), fill = colours["prior_uni"], alpha = .4) +
+       #geom_line(aes(x = mu_hat, y = prior_dens()), color = colours["prior_uni"]) +
+       #geom_area(aes(x = mu_hat, y = prior_dens()), fill = colours["prior_uni"], alpha = .4) +
 
 
        # every sample as triangle
@@ -512,6 +520,7 @@ return_list_uni2 <- reactive({
       #
       #
       #
+
        output$plot_bayes_nv <- renderPlot({
          if (!input$p_bayes_nv) return(NULL)
 
@@ -520,8 +529,8 @@ return_list_uni2 <- reactive({
        geom_histogram(aes(y = after_stat(density)), fill = colours["est_bayes_nv"], bins = num_classesSKV(), alpha = .5) +
 
        # Prior
-       geom_line(aes(x = mu_hat, y = prior_densNV()), color = colours["prior_nv"]) +
-       geom_area(aes(x = mu_hat, y = prior_densNV()), fill = colours["prior_nv"], alpha = .4) +
+       #geom_line(aes(x = mu_hat, y = prior_densNV()), color = colours["prior_nv"]) +
+       #geom_area(aes(x = mu_hat, y = prior_densNV()), fill = colours["prior_nv"], alpha = .4) +
 
 
        # every sample as triangle

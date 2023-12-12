@@ -3,8 +3,10 @@
 
 ui <- fluidPage(shinythemes::themeSelector(),
 
-  # Application title
-
+  # zum werte anschauen
+  #tabPanel(title = "Penguin's life",
+  #         textOutput("penguin_text")
+  #),
   # define sidebars
 
 #fluidRow(
@@ -58,7 +60,7 @@ ui <- fluidPage(shinythemes::themeSelector(),
                 "Populations-Standardabweichung",
                 min = 0,
                 max = 50,
-                value = 1),
+                value = 15),
 
 
     #### Samples ####
@@ -74,7 +76,7 @@ ui <- fluidPage(shinythemes::themeSelector(),
                 "Gesamtanzahl der Stichproben",
                 min = 0,
                 max = 1000,
-                value = 10),
+                value = 100),
     checkboxInput("p_mean", "SKV Arithmetisches Mittel", value = F),
     checkboxInput("p_minmax", "SKV Alternativer Schätzer", value = F)),
 
@@ -86,7 +88,7 @@ ui <- fluidPage(shinythemes::themeSelector(),
                 "Range des gleichverteilten Bayes Priors",
                 min = -100,
                 max = 100,
-                value = c(-5,5))),
+                value = c(-50,5))),
 
     wellPanel(
       checkboxInput("p_bayes_nv", "SKV normalverteilter Bayes Schätzer", value = F),
