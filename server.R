@@ -221,7 +221,7 @@ return_list_uni2 <- reactive({
 
      colours <- c(viridis(7, direction = -1), "red", "black")
      names(colours) <- c("est_mean", "est_minmax", "est_bayes_uni", "est_bayes_nv", "likelihood", "prior_uni", "prior_nv", "mu", "mean_est")
-     custom_colors <- scale_color_manual(values = colours,
+     custom_colors <- scale_color_manual(values = colours, name = "Legende",
                                          labels = c(mu = expression(mu),
                                                     est_mean = "Arithmetisches \n Mittel",
                                                     est_minmax = "Alternativer \n Schätzer",
@@ -245,105 +245,96 @@ return_list_uni2 <- reactive({
 
      #### plots ####
      # single sample
-    p_sample <- reactive({
-      ggplot(NULL, aes(x = sampfdfspecific())) +
+     p_sample <- reactive({
+       ggplot(NULL, aes(x = sampfdfspecific())) +
 
-       # Platzhalter
-     geom_point(aes(x = bayeswertespecific(), y = 0, colour = "mean_est"), shape = 24, size = .0001) +
+         # Platzhalter
+         geom_point(aes(x = bayeswertespecific(), y = 0, colour = "mean_est"), shape = 24, size = .0001) +
 
 
-       # Likelihood
-       geom_line(aes(x = mu_hat, y = resultsunispecific(), color = "likelihood")) +
-      geom_area(aes(x = mu_hat, y = resultsunispecific()), alpha = .4) + #  fill = colours["likelihood"],
+         # Likelihood
+         geom_line(aes(x = mu_hat, y = resultsunispecific(), color = "likelihood")) +
+         geom_area(aes(x = mu_hat, y = resultsunispecific()), alpha = .4) + #  fill = colours["likelihood"],
 
-        # prior uni
-        geom_line(aes(x = mu_hat, y = prior_dens(), color = "prior_uni")) +
-        geom_area(aes(x = mu_hat, y = prior_dens()), fill = colours["prior_uni"], alpha = .4) +
+         # prior uni
+         geom_line(aes(x = mu_hat, y = prior_dens(), color = "prior_uni")) +
+         geom_area(aes(x = mu_hat, y = prior_dens()), fill = colours["prior_uni"], alpha = .4) +
 
-#
-#        # prior nv
-        geom_line(aes(x = mu_hat, y = prior_densNV(), color = "prior_nv")) +
-        geom_area(aes(x = mu_hat, y = prior_densNV()),fill = colours["prior_nv"], alpha = .4) +
-#
-#        # Verteilung
-       geom_histogram(aes(y = after_stat(density)), fill = "lightgrey", colour = "lightgrey", bins = num_classes(), alpha = .9) +
-#
-#
-#        # Schätzer
-#        # Mean
-        geom_point(aes(x = estimators()[specific()], y = 0),
-                   colour = "magenta", shape = 24, fill = colours["est_mean"], size = 8) +
-        geom_vline(aes(xintercept = estimators()[specific()], colour = "est_mean"), linetype = "dotted", linewidth = .75) +
-#
-#        # Minmax
-        geom_point(aes(x = minmax()[specific()], y = 0),
-                  colour = "magenta", shape = 24, fill = colours["est_minmax"], size = 8) +
-        geom_vline(aes(xintercept = minmax()[specific()], colour = "est_minmax"), linetype = "dotted", linewidth = .75) +
-#
-#        # bayes uni
-        geom_point(aes(x = bayesWerte()[specific()], y = 0),
-                   colour = "magenta", shape = 24, fill = colours["est_bayes_uni"], size = 8) +
-        geom_vline(aes(xintercept = bayesWerte()[specific()], colour = "est_bayes_uni"), linetype = "dotted", linewidth = .75) +
-#
-#        # bayes nv
-        geom_point(aes(x = bayesWerteNV()[specific()], y = 0),
-                   colour = "magenta", shape = 24, size = 8, fill = colours["est_bayes_nv"],) +
-        geom_vline(aes(xintercept = bayesWerteNV()[specific()], colour = "est_bayes_nv"), linetype = "dotted", linewidth = .75) +
-#
-#        # mu
-        geom_point(aes(x = mu(), y = 0, colour = "mu"), shape = 17, size = 4) +
-        geom_vline(aes(xintercept = mu(), colour = "mu"), linewidth = 1) +
-#
-#        # Skalen, Theme, Labs etc.
-# !!! Hier müssen wir uns noch ne andre Skalierung einfallen lassen
-#        coord_cartesian(xlim = coord()) +
-#
-#        # 2. y-Achse
-        scale_y_continuous(
-          name = "Relative Häufigkeit",
-          sec.axis = sec_axis( trans=~.*number(), name = "Anzahl TN")
-        ) +
-#
-       labs(
-         title = paste0("Einzelne Stichprobe (#", specific(),")"),
-         x = "x",
-         colour = NULL,
-         fill = NULL) +
-#
-#        # legende
-          scale_colour_discrete(guide = "none") +
-      theme_bw() +
-# !!! damit kann R grad nix anfangen
-#      theme(legend.text = element_text(size = 15))
-#
-   # pinke Umrandung
-     annotation_custom(
-       grob = rectGrob(gp = gpar(col = "magenta", lwd = 5, fill = NA)),
-       xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf
-     )
-      })
+         #
+         #        # prior nv
+         geom_line(aes(x = mu_hat, y = prior_densNV(), color = "prior_nv")) +
+         geom_area(aes(x = mu_hat, y = prior_densNV()),fill = colours["prior_nv"], alpha = .4) +
+         #
+         #        # Verteilung
+         geom_histogram(aes(y = after_stat(density)), fill = "lightgrey", colour = "lightgrey", bins = num_classes(), alpha = .9) +
+         #
+         #
+         #        # Schätzer
+         #        # Mean
+         geom_point(aes(x = estimators()[specific()], y = 0),
+                    colour = "magenta", shape = 24, fill = colours["est_mean"], size = 8) +
+         geom_vline(aes(xintercept = estimators()[specific()], colour = "est_mean"), linetype = "dotted", linewidth = .75) +
+         #
+         #        # Minmax
+         geom_point(aes(x = minmax()[specific()], y = 0),
+                    colour = "magenta", shape = 24, fill = colours["est_minmax"], size = 8) +
+         geom_vline(aes(xintercept = minmax()[specific()], colour = "est_minmax"), linetype = "dotted", linewidth = .75) +
+         #
+         #        # bayes uni
+         geom_point(aes(x = bayesWerte()[specific()], y = 0),
+                    colour = "magenta", shape = 24, fill = colours["est_bayes_uni"], size = 8) +
+         geom_vline(aes(xintercept = bayesWerte()[specific()], colour = "est_bayes_uni"), linetype = "dotted", linewidth = .75) +
+         #
+         #        # bayes nv
+         geom_point(aes(x = bayesWerteNV()[specific()], y = 0),
+                    colour = "magenta", shape = 24, size = 8, fill = colours["est_bayes_nv"],) +
+         geom_vline(aes(xintercept = bayesWerteNV()[specific()], colour = "est_bayes_nv"), linetype = "dotted", linewidth = .75) +
+         #
+         #        # mu
+         geom_point(aes(x = mu(), y = 0, colour = "mu"), shape = 17, size = 4) +
+         geom_vline(aes(xintercept = mu(), colour = "mu"), linewidth = 1) +
+         #
+         #        # Skalen, Theme, Labs etc.
+         # !!! Hier müssen wir uns noch ne andre Skalierung einfallen lassen
+         #        coord_cartesian(xlim = coord()) +
+         #
+         #        # 2. y-Achse
+         scale_y_continuous(
+           name = "Relative Häufigkeit",
+           sec.axis = sec_axis( trans=~.*number(), name = "Anzahl TN")
+         ) +
+         #
+         labs(
+           title = paste0("Einzelne Stichprobe (#", specific(),")"),
+           x = "x") +
+
+         # legende
+         custom_colors +
+         theme_bw() +
+         # !!! damit kann R grad nix anfangen
+         #      theme(legend.text = element_text(size = 15))
+         #
+         # pinke Umrandung
+         annotation_custom(
+           grob = rectGrob(gp = gpar(col = "magenta", lwd = 5, fill = NA)),
+           xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf
+         )
+     })
 
      output$plot_samp <- renderPlot({
        if (!input$p_samp) return(NULL)
-    grid::grid.draw(p_sample())
- })
+       grid::grid.draw(p_sample()
+                       + theme(legend.position = "none")
+       )
+     })
 
-      output$legende <- renderPlot({
-        ggplot(NULL) +
-          annotate("text", x = 0, y = 0, hjust = 0,
-                   label = paste(expression(mu),
-                                 "Arithmetisches \n Mittel",
-                                 "Alternativer \n Schätzer",
-                                 "Bayesschätzer: \n gleichverteile \n Priori",
-                                 "Bayesschätzer: \n normalverteile \n Priori",
-                                 "Likelihood",
-                                 "Gleichverteilter \n Prior",
-                                 "Normalverteilter \n Prior",
-                                 "Mean aller \n Mittelwertschätzer", sep = "\n")) +
-                   #         colour = c("red", "#FDE725FF", "#8FD744FF", "#35B779FF", "#21908CFF", "#31688EFF", "#443A83FF", "#440154FF")) +
-                   theme_void()
-        })
+     output$legende <- renderPlot({
 
+       legend <- cowplot::get_legend(p_sample())
+
+       # show result
+       grid.arrange(legend)
+     })
 
 
         # create data for the forest plot
