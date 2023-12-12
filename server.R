@@ -13,12 +13,12 @@ server <- function(input, output, session) {
     updateSliderInput(inputId = "specific", max = input$number)
   })
   #range der priori auf mu hat begrenzen
-  observeEvent(eventExpr = {
-    input$mu
-    input$std
-  }, {
-    updateSliderInput(inputId = "rangePriori", min = (input$mu - 2*input$std), max = (input$mu + 2*input$std))
-  })
+ # observeEvent(eventExpr = {
+  #  input$mu
+   # input$std
+  #}, {
+   # updateSliderInput(inputId = "rangePriori", min = (input$mu - 2*input$std), max = (input$mu + 2*input$std))
+  #})
 
   #### data ####
   # get input from ui
@@ -31,7 +31,7 @@ server <- function(input, output, session) {
   max_uni_priori <- reactive(input$rangePriori[2]) # max für gleichverteilte priori
   mu_prior <-  reactive(input$mu_prior)            # mittelwert der priori
   tau_prior <- reactive(input$tau_prior)           # sd der priori
-  lengthout <- 100                                # die Länge von mu_hat, NICHT REAKTIV!
+  lengthout <- 400                                # die Länge von mu_hat, NICHT REAKTIV!
 
 
 
