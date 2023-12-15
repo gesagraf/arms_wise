@@ -34,14 +34,6 @@ server <- function(input, output, session) {
   lengthout <- 1000                                # die Länge von mu_hat, NICHT REAKTIV!
 
 
-
-  # Anzahl der Klassen nach Sturges' Regel (für Histogram der einzelnen Stichprobe)
-  num_classes <- reactive(ceiling(log2(n()) + 1))
-  # Anzahl der Klassen nach Sturges' Regel (für Histogram der SKV)
-  num_classesSKV <- reactive(ceiling(log2(number()) + 1))
-
-
-
     #### create data ####
     # draws samples of "number" iterations
     samp_df <- reactive(
@@ -239,8 +231,10 @@ return_list_uni2 <- reactive({
      bayeswertespecific <- reactive(bayesWerte()[specific()])
      resultsunispecific <- reactive(return_list_nv1()[ , specific()])
 
-
-
+     # Anzahl der Klassen nach Sturges' Regel (für Histogram der einzelnen Stichprobe)
+     num_classes <- reactive(ceiling(log2(n()) + 1))
+     # Anzahl der Klassen nach Sturges' Regel (für Histogram der SKV)
+     num_classesSKV <- reactive(ceiling(log2(number()) + 1))
 
 
      #### plots ####
@@ -274,7 +268,7 @@ return_list_uni2 <- reactive({
          geom_area(aes(x = mu_hat, y = prior_densNV()),fill = colours["prior_nv"], alpha = .4) +
          #
          #        # Verteilung
-         geom_histogram(aes(y = after_stat(density)), fill = "lightgrey", colour = "lightgrey", bins = num_classes(), alpha = .9) +
+         geom_histogram(aes(y = after_stat(density)), fill = "lightgrey", colour = "lightgrey", bins = (num_classes()*2), alpha = .99) +
          #
          #
          #        # Schätzer
@@ -482,8 +476,8 @@ return_list_uni2 <- reactive({
        geom_histogram(aes(y = after_stat(density)), fill = colours["est_bayes_uni"], bins = num_classesSKV(), alpha = .5) +
 
        # Prior
-       #geom_line(aes(x = mu_hat, y = prior_dens()), color = colours["prior_uni"]) +
-       #geom_area(aes(x = mu_hat, y = prior_dens()), fill = colours["prior_uni"], alpha = .4) +
+       geom_line(aes(x = mu_hat, y = prior_dens()), color = colours["prior_uni"]) +
+       geom_area(aes(x = mu_hat, y = prior_dens()), fill = colours["prior_uni"], alpha = .4) +
 
 
        # every sample as triangle
