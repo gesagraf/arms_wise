@@ -1,7 +1,8 @@
 # defininig UI
 #install.packages("shinythemes")
 
-ui <- fluidPage(shinythemes::themeSelector(),
+ui <- fluidPage(
+  #shinythemes::themeSelector(),
 
   # zum werte anschauen
   #tabPanel(title = "Penguin's life",
@@ -27,14 +28,16 @@ ui <- fluidPage(shinythemes::themeSelector(),
     # # action Button
     #      actionButton("go", "Go"),
 
-  sidebarPanel(width = 3,
+  sidebarPanel(width = 4,
                # selectInput(
                #   "anzeigen", "Welche Plots möchtest du gerne angezeigt bekommen?", possibilities,
                # multiple = TRUE
                # ),
                tabsetPanel(
                  tabPanel(title = "Simulationen",
-    wellPanel(
+    wellPanel(title = "hier kannst du dir eine bestimmte Stichprobe anzeigen lassen (plot 1 oben links)",
+              strong("Überschrift"),
+              p("Erlärungstext"),
                  # Specific Sample
     sliderInput(inputId = "specific",
                   "Spezifische Stichprobe",
@@ -43,14 +46,20 @@ ui <- fluidPage(shinythemes::themeSelector(),
                   value = 3),
     checkboxInput("p_samp", "Plot der spezifischen Stichprobe", value = T)),
 
-    wellPanel(
+    wellPanel(title = "hier kannst du dir die Stichprobenkennwerte-Verteilungen
+für die verschiedenen Schätzer in einem Forest-Plot anzeigen lassen (oben rechts)",
+              strong("Überschrift"),
+              p("Erlärungstext"),
+
     checkboxInput("p_forest", "Forestplot mit allen Schätzern", value = F)),
-    wellPanel(
+    wellPanel(title = "hier kannst du die Parameter für die Population einstellen)",
+              strong("Überschrift"),
+              p("Erlärungstext"),
 
     #### Population ####
     # Population mu
     sliderInput(inputId = "mu",
-                paste0("Populations-", expression(mu)),
+                paste0("Populations-Mittelwert"),
                 min = -100,
                 max = 100,
                 value = 0),
@@ -80,8 +89,13 @@ ui <- fluidPage(shinythemes::themeSelector(),
     checkboxInput("p_mean", "SKV Arithmetisches Mittel", value = F),
     checkboxInput("p_minmax", "SKV Alternativer Schätzer", value = F)),
 
-    wellPanel(
+    wellPanel(title = "Hier kannst du die Priori des gleichverteilten Bayes-Schätzers einstllen.
+Der gleichverteilte Schätzer nimmt an, das alle Werte innerhalb der eingestellten Range gleich
+wahrscheinlich sind, aber Werte außerhalb der Range unmöglich sind.",
+              strong("Überschrift"),
+              p("Erlärungstext"),
       checkboxInput("p_bayes_uni", "SKV gleichverteilter Bayes Schätzer", value = F),
+
     #### Priors ####
     # Gleichverteiler Prior
     sliderInput(inputId = "rangePriori",
@@ -90,7 +104,11 @@ ui <- fluidPage(shinythemes::themeSelector(),
                 max = 100,
                 value = c(-50,5))),
 
-    wellPanel(
+    wellPanel(title = "hier kannst du Mittelwert und Standardabweichung der normalverteilten Priori
+einstellen",
+              strong("Überschrift"),
+              p("Erlärungstext"),
+
       checkboxInput("p_bayes_nv", "SKV normalverteilter Bayes Schätzer", value = F),
     # Normalverteilter Prior
     # Prior Mean
