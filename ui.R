@@ -137,6 +137,9 @@ einstellen",
                           column(4, plotOutput("forest")),
                           column(2, plotOutput("legende"))
                  ),
+                 strong("Überschrift"),
+                 p("Die folgenden 4 Plots zeigen die Stichprobenkennwerteverteilungen der verschiedenen Schätzer.
+Jedes Dreieck symbolisiert eine der XX generierten Stichproben. Das umrandete Dreieck zeigt die spezifische Stichprobe (Plot oben links)."),
                 fluidRow(
                          column(6, plotOutput("plot_mean")),
                          column(6, plotOutput("plot_minmax"))
