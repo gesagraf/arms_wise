@@ -67,7 +67,7 @@ für die verschiedenen Schätzer in einem Forest-Plot anzeigen lassen (oben rech
     # Population sd
     sliderInput(inputId = "std",
                 "Populations-Standardabweichung",
-                min = 0,
+                min = 1, #0=error
                 max = 50,
                 value = 15),
 
@@ -76,14 +76,14 @@ für die verschiedenen Schätzer in einem Forest-Plot anzeigen lassen (oben rech
     # Samplesize
     sliderInput(inputId = "n",
                 "Größe der einzelnen Stichproben",
-                min = 0,
-                max = 1000,
+                min = 2,#unter 2 error
+                max = 200,
                 value = 20),
 
     # Number of Samples
     sliderInput(inputId = "number",
                 "Gesamtanzahl der Stichproben",
-                min = 0,
+                min = 1,#
                 max = 1000,
                 value = 100),
     checkboxInput("p_mean", "SKV Arithmetisches Mittel", value = F),
@@ -126,6 +126,28 @@ einstellen",
                 value = 10)
 
   )),
+  tabPanel(title = "Aufgaben",
+           strong("Aufgabe 1"),
+           p("Finde eine Einstellung, für die im Plot der einzelnen Stichprobe die Verteilung (grau)"),
+p("a: nur einen einzelnen Balken hat"),
+p("b: den gesamten Plot abdeckt (-100 bis 100)"),
+           strong("Aufgabe 2"),
+           br(em("Aktiviere für diese Aufgabe die Plots der SKV des arithmetischen Mittels und des alternativen Schätzers")),
+           p("Stelle die Stichprobengröße so ein, das die Plots der SKV vom arithmetischen Mittel und
+             dem alternativen Schätzer identisch sind. (zur Erinnerung: der alternative Schätzer
+             ist der Mittelwert des Minimums und Maximums)"),
+           strong("Aufgabe 3"),
+           br(em("Aktiviere für diese Aufgabe die Plots der SKV des arithmetischen Mittels und des gleichverteilten Bayes-Schätzers")),
+           p("Finde eine Einstellung, für die die Plots der SKV des arithmetischen Mittels und
+             des gleichverteilten Bayes-Schätzers identisch sind"),
+           strong("Aufgabe 4"),
+           br(em("Aktiviere für diese Aufgabe den Forest-Plot")),
+           p("Vegleiche die verschiedenen Schätzer im Forest-Plot. Welches ist der beste Schätzer?"),
+           p("Kannst du die Regler so verändern, das einer der Schätzer deutlich besser ist als die anderen?"),
+           strong("Aufgabe 5"),
+           p("Für Aufgabe 4 gibt es 2 unterschiedliche Lösungen, findest du beide? Welche der beiden
+             Lösungen könntest du unter Umständen auch in der Forschung anwenden, und welche solltest du eher vermeiden?")),
+
   tabPanel(title = "Einstellungen",
            checkboxInput("scale_true", "Skala an die Werte Anpassen", value = F)
   ))),
