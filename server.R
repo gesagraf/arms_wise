@@ -23,7 +23,7 @@ server <- function(input, output, session) {
   #### data ####
   # get input from ui
   mu <- reactive(input$mu)                         # Population mean
-  std <- reactive(input$std)                         # Population sd
+  std <- reactive(input$std)                       # Population sd
   n  <- reactive(input$n)                          # sample size
   number <- reactive(input$number)                 # number of samples
   specific <- reactive(input$specific)             # specific sample
@@ -205,9 +205,9 @@ return_list_uni2 <- reactive({
 
      #### Plot ####
      #### definitions ####
-     min_coord <- reactive(mu() - 2 * std())
+     min_coord <- reactive(mu() - 3 * std())
      # min(c(mu - 2 * sd, estimators, minmax, bayesWerte, bayesWerteNV, min_uni_priori))
-     max_coord <- reactive(mu() + 2 * std())
+     max_coord <- reactive(mu() + 3 * std())
      # max(c(mu + 2 * sd, estimators, minmax, bayesWerte, bayesWerteNV, max_uni_priori))
      coord <- reactive(c(min_coord(), max_coord()))
 
@@ -238,7 +238,7 @@ return_list_uni2 <- reactive({
 
 
      #### plots ####
-
+     # -> Wofür sind die nächsten 6 Zeilen?
      output$easyplot <- renderPlot({
        hist(bayesWerteNV())
      })
@@ -246,11 +246,49 @@ return_list_uni2 <- reactive({
      output$penguin_text <- renderText({
        bayesWerte()
      })
+
+
      # single sample
-     p_sample <- reactive({
+     # Single Sample Plot erstellen, aber NICHT ausgeben; für die Legende
+     p_sample_basis <- reactive({
        ggplot(NULL, aes(x = sampfdfspecific())) +
 
-         # Platzhalter
+         # Verteilung der Stichprobe
+         geom_histogram(aes(y = after_stat(density)), fill = "lightgrey",
+                        colour = "lightgrey", bins = (num_classes()), alpha = .99,
+                        center = mu()) +
+
+         # mu
+         geom_point(aes(x = mu(), y = 0, colour = "mu"), shape = 17, size = 4) +
+         geom_vline(aes(xintercept = mu(), colour = "mu"), linewidth = 1) +
+
+         # Skalen, Theme, Labs etc.
+         # 2. y-Achse
+         coord_cartesian(xlim = coord()) +
+
+         scale_y_continuous(
+           name = "Relative Häufigkeit",
+           sec.axis = sec_axis( trans=~.*number(), name = "Anzahl TN")
+         ) +
+
+         # breaks der x-Achse
+         scale_x_continuous(
+           breaks = seq(min_coord(), max_coord(), std())
+         ) +
+
+         labs(
+           title = paste0("Einzelne Stichprobe (#", specific(),")"),
+           x = "x") +
+
+         # legende
+         custom_colors +
+         theme_bw()
+     })
+
+     p_sample <- reactive({
+       p_sample_basis() +
+
+         # Platzhalter für Mu
          geom_point(aes(x = bayeswertespecific(), y = 0, colour = "mean_est"), shape = 24, size = .0001) +
 
 
@@ -262,60 +300,32 @@ return_list_uni2 <- reactive({
          geom_line(aes(x = mu_hat, y = prior_dens(), color = "prior_uni")) +
          geom_area(aes(x = mu_hat, y = prior_dens()), fill = colours["prior_uni"], alpha = .4) +
 
-         #
-         #        # prior nv
+
+         # prior nv
          geom_line(aes(x = mu_hat, y = prior_densNV(), color = "prior_nv")) +
          geom_area(aes(x = mu_hat, y = prior_densNV()),fill = colours["prior_nv"], alpha = .4) +
-         #
-         #        # Verteilung
-         geom_histogram(aes(y = after_stat(density)), fill = "lightgrey", colour = "lightgrey", bins = (num_classes()*2), alpha = .99) +
-         #
-         #
-         #        # Schätzer
-         #        # Mean
+
+         # Schätzer
+         # Mean
          geom_point(aes(x = estimators()[specific()], y = 0),
                     colour = "magenta", shape = 24, fill = colours["est_mean"], size = 8) +
          geom_vline(aes(xintercept = estimators()[specific()], colour = "est_mean"), linetype = "dotted", linewidth = .75) +
-         #
-         #        # Minmax
+
+        # Minmax
          geom_point(aes(x = minmax()[specific()], y = 0),
                     colour = "magenta", shape = 24, fill = colours["est_minmax"], size = 8) +
          geom_vline(aes(xintercept = minmax()[specific()], colour = "est_minmax"), linetype = "dotted", linewidth = .75) +
-         #
-         #        # bayes uni
+
+         # bayes uni
          geom_point(aes(x = bayesWerte()[specific()], y = 0),
                     colour = "magenta", shape = 24, fill = colours["est_bayes_uni"], size = 8) +
          geom_vline(aes(xintercept = bayesWerte()[specific()], colour = "est_bayes_uni"), linetype = "dotted", linewidth = .75) +
-         #
-         #        # bayes nv
+
+         # bayes nv
          geom_point(aes(x = bayesWerteNV()[specific()], y = 0),
                     colour = "magenta", shape = 24, size = 8, fill = colours["est_bayes_nv"],) +
          geom_vline(aes(xintercept = bayesWerteNV()[specific()], colour = "est_bayes_nv"), linetype = "dotted", linewidth = .75) +
-         #
-         #        # mu
-         geom_point(aes(x = mu(), y = 0, colour = "mu"), shape = 17, size = 4) +
-         geom_vline(aes(xintercept = mu(), colour = "mu"), linewidth = 1) +
-         #
-         #        # Skalen, Theme, Labs etc.
-         # !!! Hier müssen wir uns noch ne andre Skalierung einfallen lassen
-         #        coord_cartesian(xlim = coord()) +
-         #
-         #        # 2. y-Achse
-         scale_y_continuous(
-           name = "Relative Häufigkeit",
-           sec.axis = sec_axis( trans=~.*number(), name = "Anzahl TN")
-         ) +
-         #
-         labs(
-           title = paste0("Einzelne Stichprobe (#", specific(),")"),
-           x = "x") +
 
-         # legende
-         custom_colors +
-         theme_bw() +
-         # !!! damit kann R grad nix anfangen
-         #      theme(legend.text = element_text(size = 15))
-         #
          # pinke Umrandung
          annotation_custom(
            grob = rectGrob(gp = gpar(col = "magenta", lwd = 5, fill = NA)),
@@ -323,15 +333,39 @@ return_list_uni2 <- reactive({
          )
      })
 
+
+
+     #### Single Sample Plot anzeigen lassen ####
+     #### Reaktiven Teil definieren
+     ## Schätzer
+     # Mean
+     # ## Schätzer
+     # # Mean
+     # reaktivertest <- reactive(input$p_mean)
+     # if (reaktivertest() == F) {
+     #   schaetzer_mean <- geom_blank()
+     # } else {
+     #   schaetzer_mean <- geom_point(aes(x = estimators()[specific()], y = 0),
+     #              colour = "magenta", shape = 24,
+     #              fill = colours["est_mean"], size = 8) +
+     #   geom_vline(aes(xintercept = estimators()[specific()], colour = "est_mean"),
+     #              linetype = "dotted", linewidth = .75)
+     # }
+
+
      output$plot_samp <- renderPlot({
        if (!input$p_samp) return(NULL)
-       grid::grid.draw(p_sample()
-                       + theme(legend.position = "none")
-       )
+
+       p_sample_basis() +
+
+         # # Reaktive Schätzer
+         # schaetzer_mean() +
+
+
+          theme(legend.position = "none")
      })
 
      output$legende <- renderPlot({
-
        legend <- cowplot::get_legend(p_sample())
 
        # show result
@@ -355,7 +389,7 @@ return_list_uni2 <- reactive({
           frb = colours[c("est_mean", "est_minmax", "est_bayes_uni", "est_bayes_nv")])
         )
 
-        # Forestplot
+        #### Forestplot ####
         output$forest <- renderPlot({
           if (!input$p_forest) return(NULL)
 
@@ -387,7 +421,7 @@ return_list_uni2 <- reactive({
 
 
 
-      # Arithmetisches Mittel Plot
+      #### Arithmetisches Mittel Plot ####
        output$plot_mean <- renderPlot({
          if (!input$p_mean) return(NULL)
 
@@ -424,9 +458,9 @@ return_list_uni2 <- reactive({
          colour = NULL) +
        theme_bw()
       })
-     #
-     #
-     #
+
+
+       #### Plot Minmax ####
        output$plot_minmax <- renderPlot({
          if (!input$p_minmax) return(NULL)
 
@@ -465,9 +499,9 @@ return_list_uni2 <- reactive({
          colour = NULL) +
        theme_bw()
        })
-      #
-      #
-      #
+
+
+       #### Plot Bayes Gleichverteilt ####
        output$plot_bayes_uni <- renderPlot({
          if (!input$p_bayes_uni) return(NULL)
 
@@ -511,14 +545,14 @@ return_list_uni2 <- reactive({
 
        theme_bw()
        })
-      #
-      #
-      #
+
+
+
+       #### Bayes Normalverteilt ####
 
        output$plot_bayes_nv <- renderPlot({
          if (!input$p_bayes_nv) return(NULL)
 
-   # Bayes Normalverteilt
        ggplot(NULL, aes(x = bayesWerteNV())) +
        geom_histogram(aes(y = after_stat(density)), fill = colours["est_bayes_nv"], bins = num_classesSKV(), alpha = .5) +
 

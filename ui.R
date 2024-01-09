@@ -76,7 +76,7 @@ für die verschiedenen Schätzer in einem Forest-Plot anzeigen lassen (oben rech
     # Samplesize
     sliderInput(inputId = "n",
                 "Größe der einzelnen Stichproben",
-                min = 2,#unter 2 error
+                min = 2, # unter 2 error
                 max = 200,
                 value = 20),
 
@@ -86,7 +86,9 @@ für die verschiedenen Schätzer in einem Forest-Plot anzeigen lassen (oben rech
                 min = 1,#
                 max = 1000,
                 value = 100),
+
     checkboxInput("p_mean", "SKV Arithmetisches Mittel", value = F),
+
     checkboxInput("p_minmax", "SKV Alternativer Schätzer", value = F)),
 
     wellPanel(title = "Hier kannst du die Priori des gleichverteilten Bayes-Schätzers einstllen.
