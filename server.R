@@ -285,6 +285,7 @@ return_list_uni2 <- reactive({
          theme_bw()
      })
 
+     # für die Legende
      p_sample <- reactive({
        p_sample_basis() +
 
@@ -324,33 +325,65 @@ return_list_uni2 <- reactive({
          # bayes nv
          geom_point(aes(x = bayesWerteNV()[specific()], y = 0),
                     colour = "magenta", shape = 24, size = 8, fill = colours["est_bayes_nv"],) +
-         geom_vline(aes(xintercept = bayesWerteNV()[specific()], colour = "est_bayes_nv"), linetype = "dotted", linewidth = .75) +
-
-         # pinke Umrandung
-         annotation_custom(
-           grob = rectGrob(gp = gpar(col = "magenta", lwd = 5, fill = NA)),
-           xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf
-         )
+         geom_vline(aes(xintercept = bayesWerteNV()[specific()], colour = "est_bayes_nv"), linetype = "dotted", linewidth = .75)
      })
 
 
 
-     #### Single Sample Plot anzeigen lassen ####
-     #### Reaktiven Teil definieren
+     ### Single Sample Plot anzeigen lassen ####
+     ### Reaktiven Teil definieren
      ## Schätzer
      # Mean
-     # ## Schätzer
-     # # Mean
-     # reaktivertest <- reactive(input$p_mean)
-     # if (reaktivertest() == F) {
-     #   schaetzer_mean <- geom_blank()
-     # } else {
-     #   schaetzer_mean <- geom_point(aes(x = estimators()[specific()], y = 0),
-     #              colour = "magenta", shape = 24,
-     #              fill = colours["est_mean"], size = 8) +
-     #   geom_vline(aes(xintercept = estimators()[specific()], colour = "est_mean"),
-     #              linetype = "dotted", linewidth = .75)
-     # }
+     mean_layer <- reactive({
+       if (input$p_mean == TRUE){
+       list(geom_point(aes(x = estimators()[specific()], y = 0),
+                  colour = "magenta", shape = 24,
+                  fill = colours["est_mean"], size = 8),
+       geom_vline(aes(xintercept = estimators()[specific()], colour = "est_mean"),
+                  linetype = "dotted", linewidth = .75))
+       } else NULL
+})
+
+    # Minmax
+     minmax_layer <- reactive({
+       if (input$p_minmax == TRUE){
+         list(geom_point(aes(x = minmax()[specific()], y = 0),
+                    colour = "magenta", shape = 24, fill = colours["est_minmax"], size = 8),
+           geom_vline(aes(xintercept = minmax()[specific()], colour = "est_minmax"), linetype = "dotted", linewidth = .75))
+
+       } else NULL
+     })
+
+     # Bayes uni
+     bayes_uni_layer <- reactive({
+       if (input$p_bayes_uni == TRUE){
+         list(geom_point(aes(x = bayesWerte()[specific()], y = 0),
+                    colour = "magenta", shape = 24, fill = colours["est_bayes_uni"], size = 8),
+           geom_vline(aes(xintercept = bayesWerte()[specific()], colour = "est_bayes_uni"), linetype = "dotted", linewidth = .75))
+       } else NULL
+     })
+
+     # bayes nv
+     bayes_nv_layer <- reactive({
+       if (input$p_bayes_nv == TRUE){
+         list(geom_point(aes(x = bayesWerteNV()[specific()], y = 0),
+                                  colour = "magenta", shape = 24, size = 8, fill = colours["est_bayes_nv"], ),
+                         geom_vline(aes(xintercept = bayesWerteNV()[specific()], colour = "est_bayes_nv"), linetype = "dotted", linewidth = .75))
+       } else NULL
+     })
+
+     # Pinke Umrandung
+     pink_border <- reactive({
+       if(any(c(input$p_mean, input$p_minmax, input$p_bayes_uni, input$p_bayes_nv))) {
+         annotation_custom(
+           grob = rectGrob(gp = gpar(col = "magenta", lwd = 5, fill = NA)),
+           xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf
+         )
+       } else NULL
+     })
+
+
+
 
 
      output$plot_samp <- renderPlot({
@@ -358,9 +391,13 @@ return_list_uni2 <- reactive({
 
        p_sample_basis() +
 
-         # # Reaktive Schätzer
-         # schaetzer_mean() +
+         # Reaktive Schätzer
+         mean_layer() +
+         minmax_layer() +
+         bayes_uni_layer() +
+         bayes_nv_layer() +
 
+         pink_border() +
 
           theme(legend.position = "none")
      })
@@ -549,7 +586,7 @@ return_list_uni2 <- reactive({
 
 
        #### Bayes Normalverteilt ####
-
+        #### Priori fehlt! ###
        output$plot_bayes_nv <- renderPlot({
          if (!input$p_bayes_nv) return(NULL)
 
