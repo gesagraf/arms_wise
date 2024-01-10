@@ -163,7 +163,7 @@ p("b: den gesamten Plot abdeckt (-100 bis 100)"),
   mainPanel(
 #    box(width = 12, height = 10, plotOutput("legendontop")),
         tabPanel("some title",
-                 fluidRow(column(12, height = 10, plotOutput("legendontop"))),
+
                 fluidRow(
                           column(6, shinycssloaders::withSpinner(
                             plotOutput("plot_samp"), type = getOption("spinner.type", 4))),
@@ -188,8 +188,13 @@ Jedes Dreieck symbolisiert eine der XX generierten Stichproben. Das umrandete Dr
 
         )
       )
-  )
-)
+  ),
+absolutePanel(
+  top = 20, right = 20, width = 800,
+  draggable = TRUE, fixed = TRUE,
+    p("code ist ganz unten in der UI um über den anderen sachen zu liegen"),
+    fluidRow(column(12, height = 10, plotOutput("legendontop"))),
+  ))
 
 
 
