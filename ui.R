@@ -40,6 +40,7 @@ ui <- fluidPage(
               strong("Überschrift"),
               p("Erlärungstext"),
                  # Specific Sample
+              tags$style(HTML(".js-irs-0 .irs-single, .js-irs-0 .irs-bar-edge, .js-irs-0 .irs-bar {background: #FF4500}")),
     sliderInput(inputId = "specific",
                   "Spezifische Stichprobe",
                   min = 0,
@@ -59,6 +60,7 @@ für die verschiedenen Schätzer in einem Forest-Plot anzeigen lassen (oben rech
 
     #### Population ####
     # Population mu
+    tags$style(HTML(".js-irs-1 .irs-single, .js-irs-1 .irs-bar-edge, .js-irs-1 .irs-bar {background: red}")),
     sliderInput(inputId = "mu",
                 paste0("Populations-Mittelwert"),
                 min = -100,
@@ -66,6 +68,7 @@ für die verschiedenen Schätzer in einem Forest-Plot anzeigen lassen (oben rech
                 value = 0),
 
     # Population sd
+    tags$style(HTML(".js-irs-2 .irs-single, .js-irs-2 .irs-bar-edge, .js-irs-2 .irs-bar {background: green}")),
     sliderInput(inputId = "std",
                 "Populations-Standardabweichung",
                 min = 1, #0=error
@@ -75,6 +78,7 @@ für die verschiedenen Schätzer in einem Forest-Plot anzeigen lassen (oben rech
 
     #### Samples ####
     # Samplesize
+    tags$style(HTML(".js-irs-3 .irs-single, .js-irs-3 .irs-bar-edge, .js-irs-3 .irs-bar {background: green}")),
     sliderInput(inputId = "n",
                 "Größe der einzelnen Stichproben",
                 min = 2, # unter 2 error
@@ -82,6 +86,7 @@ für die verschiedenen Schätzer in einem Forest-Plot anzeigen lassen (oben rech
                 value = 20),
 
     # Number of Samples
+    tags$style(HTML(".js-irs-4 .irs-single, .js-irs-4 .irs-bar-edge, .js-irs-4 .irs-bar {background: yellow}")),
     sliderInput(inputId = "number",
                 "Gesamtanzahl der Stichproben",
                 min = 1,#
@@ -101,6 +106,7 @@ wahrscheinlich sind, aber Werte außerhalb der Range unmöglich sind.",
 
     #### Priors ####
     # Gleichverteiler Prior
+    tags$style(HTML(".js-irs-5 .irs-single, .js-irs-5 .irs-bar-edge, .js-irs-5 .irs-bar {background: green}")),
     sliderInput(inputId = "rangePriori",
                 "Range des gleichverteilten Bayes Priors",
                 min = -100,
@@ -115,6 +121,7 @@ einstellen",
       checkboxInput("p_bayes_nv", "SKV normalverteilter Bayes Schätzer", value = F),
     # Normalverteilter Prior
     # Prior Mean
+    tags$style(HTML(".js-irs-6 .irs-single, .js-irs-6 .irs-bar-edge, .js-irs-6 .irs-bar {background: green}")),
     sliderInput(inputId = "mu_prior",
                 label = "Prior Mean",
                 min = -100,
@@ -122,6 +129,7 @@ einstellen",
                 value = 50),
 
     # Sidebar with a slider input for Prior Tau
+    tags$style(HTML(".js-irs-7 .irs-single, .js-irs-7 .irs-bar-edge, .js-irs-7 .irs-bar {background: green}")),
     sliderInput(inputId = "tau_prior",
                 label = "Prior Tau",
                 min = 1,
@@ -150,10 +158,7 @@ p("b: den gesamten Plot abdeckt (-100 bis 100)"),
            strong("Aufgabe 5"),
            p("Für Aufgabe 4 gibt es 2 unterschiedliche Lösungen, findest du beide? Welche der beiden
              Lösungen könntest du unter Umständen auch in der Forschung anwenden, und welche solltest du eher vermeiden?")),
-
-  tabPanel(title = "Einstellungen",
-           checkboxInput("scale_true", "Skala an die Werte Anpassen", value = F)
-  ))),
+      )),
   # Show a plot of the generated distribution
   mainPanel(
 #    box(width = 12, height = 10, plotOutput("legendontop")),
