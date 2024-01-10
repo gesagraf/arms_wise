@@ -1,5 +1,6 @@
 # defininig UI
 #install.packages("shinythemes")
+# library(shinydashboard)
 
 ui <- fluidPage(
   #shinythemes::themeSelector(),
@@ -155,14 +156,15 @@ p("b: den gesamten Plot abdeckt (-100 bis 100)"),
   ))),
   # Show a plot of the generated distribution
   mainPanel(
+#    box(width = 12, height = 10, plotOutput("legendontop")),
         tabPanel("some title",
-                 fluidRow(
+                 fluidRow(column(12, height = 10, plotOutput("legendontop"))),
+                fluidRow(
                           column(6, shinycssloaders::withSpinner(
                             plotOutput("plot_samp"), type = getOption("spinner.type", 4))),
-                          column(4, shinycssloaders::withSpinner(
-                                 plotOutput("forest"), type = getOption("spinner.type", 4))),
-                          column(2, plotOutput("legende"))
-                 ),
+                          column(6, shinycssloaders::withSpinner(
+                                 plotOutput("forest"), type = getOption("spinner.type", 4)))
+                          ),
                  strong("Überschrift"),
                  p("Die folgenden 4 Plots zeigen die Stichprobenkennwerteverteilungen der verschiedenen Schätzer.
 Jedes Dreieck symbolisiert eine der XX generierten Stichproben. Das umrandete Dreieck zeigt die spezifische Stichprobe (Plot oben links)."),

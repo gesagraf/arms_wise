@@ -301,7 +301,6 @@ return_list_uni2 <- reactive({
          geom_line(aes(x = mu_hat, y = prior_dens(), color = "prior_uni")) +
          geom_area(aes(x = mu_hat, y = prior_dens()), fill = colours["prior_uni"], alpha = .4) +
 
-
          # prior nv
          geom_line(aes(x = mu_hat, y = prior_densNV(), color = "prior_nv")) +
          geom_area(aes(x = mu_hat, y = prior_densNV()),fill = colours["prior_nv"], alpha = .4) +
@@ -325,7 +324,18 @@ return_list_uni2 <- reactive({
          # bayes nv
          geom_point(aes(x = bayesWerteNV()[specific()], y = 0),
                     colour = "magenta", shape = 24, size = 8, fill = colours["est_bayes_nv"],) +
-         geom_vline(aes(xintercept = bayesWerteNV()[specific()], colour = "est_bayes_nv"), linetype = "dotted", linewidth = .75)
+         geom_vline(aes(xintercept = bayesWerteNV()[specific()], colour = "est_bayes_nv"),
+                    linetype = "dotted", linewidth = .75) +
+
+         # Legende bearbeiten
+         theme(legend.position = "top",
+               legend.title = element_text(size = 12, face = "bold"),
+               legend.text = element_text(size = 10, face = "bold"),
+               legend.spacing.y = unit(1.0, 'cm'),
+               legend.spacing.x = unit(.5, 'cm'),
+               legend.text.align = 0
+ #              legend.box.margin = margin(6, 6, 6, 6)
+               )
      })
 
 
@@ -402,11 +412,14 @@ return_list_uni2 <- reactive({
           theme(legend.position = "none")
      })
 
-     output$legende <- renderPlot({
+
+     output$legendontop <- renderPlot({
        legend <- cowplot::get_legend(p_sample())
+       # print(widthDetails(legend)$unit)
+       # print(str(heightDetails(legend)))
 
        # show result
-       grid.arrange(legend)
+       ggdraw(legend)
      })
 
 
@@ -441,19 +454,11 @@ return_list_uni2 <- reactive({
                                  est_bayes_nv = "Bayesschätzer: \n normalverteile \n Priori"),
                              trans = "reverse") +
           labs(
+            title = "Konfidenzintervalle der einzelnen Schätzer",
             x = "Werte gemittelt",
             y = NULL
           ) +
-           theme_bw() # +
-          # theme(panel.border = element_blank(),
-          #       panel.background = element_blank(),
-          #       panel.grid.major = element_blank(),
-          #       panel.grid.minor = element_blank(),
-          #       axis.line = element_line(colour = "black"),
-          #       axis.text.y = element_text(size = 12, colour = dat()$frb),
-          #       axis.text.x.bottom = element_text(size = 12, colour = "black"),
-          #       axis.title.x = element_text(size = 12, colour = "black"))
-
+           theme_bw()
        })
 
 
