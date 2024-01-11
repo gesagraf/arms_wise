@@ -285,58 +285,58 @@ return_list_uni2 <- reactive({
          theme_bw()
      })
 
-     # für die Legende
-     p_sample <- reactive({
-       p_sample_basis() +
-
-         # Platzhalter für Mu
-         geom_point(aes(x = bayeswertespecific(), y = 0, colour = "mean_est"), shape = 24, size = .0001) +
-
-
-         # Likelihood
-         geom_line(aes(x = mu_hat, y = resultsunispecific(), color = "likelihood")) +
-         geom_area(aes(x = mu_hat, y = resultsunispecific()), alpha = .4) + #  fill = colours["likelihood"],
-
-         # prior uni
-         geom_line(aes(x = mu_hat, y = prior_dens(), color = "prior_uni")) +
-         geom_area(aes(x = mu_hat, y = prior_dens()), fill = colours["prior_uni"], alpha = .4) +
-
-         # prior nv
-         geom_line(aes(x = mu_hat, y = prior_densNV(), color = "prior_nv")) +
-         geom_area(aes(x = mu_hat, y = prior_densNV()),fill = colours["prior_nv"], alpha = .4) +
-
-         # Schätzer
-         # Mean
-         geom_point(aes(x = estimators()[specific()], y = 0),
-                    colour = "magenta", shape = 24, fill = colours["est_mean"], size = 8) +
-         geom_vline(aes(xintercept = estimators()[specific()], colour = "est_mean"), linetype = "dotted", linewidth = .75) +
-
-        # Minmax
-         geom_point(aes(x = minmax()[specific()], y = 0),
-                    colour = "magenta", shape = 24, fill = colours["est_minmax"], size = 8) +
-         geom_vline(aes(xintercept = minmax()[specific()], colour = "est_minmax"), linetype = "dotted", linewidth = .75) +
-
-         # bayes uni
-         geom_point(aes(x = bayesWerte()[specific()], y = 0),
-                    colour = "magenta", shape = 24, fill = colours["est_bayes_uni"], size = 8) +
-         geom_vline(aes(xintercept = bayesWerte()[specific()], colour = "est_bayes_uni"), linetype = "dotted", linewidth = .75) +
-
-         # bayes nv
-         geom_point(aes(x = bayesWerteNV()[specific()], y = 0),
-                    colour = "magenta", shape = 24, size = 8, fill = colours["est_bayes_nv"],) +
-         geom_vline(aes(xintercept = bayesWerteNV()[specific()], colour = "est_bayes_nv"),
-                    linetype = "dotted", linewidth = .75) +
-
-         # Legende bearbeiten
-         theme(legend.position = "top",
-               legend.title = element_text(size = 12, face = "bold"),
-               legend.text = element_text(size = 10, face = "bold"),
-               legend.spacing.y = unit(1.0, 'cm'),
-               legend.spacing.x = unit(.5, 'cm'),
-               legend.text.align = 0
- #              legend.box.margin = margin(6, 6, 6, 6)
-               )
-     })
+ #     # für die Legende
+ #     p_sample <- reactive({
+ #       p_sample_basis() +
+ #
+ #         # Platzhalter für Mu
+ #         geom_point(aes(x = bayeswertespecific(), y = 0, colour = "mean_est"), shape = 24, size = .0001) +
+ #
+ #
+ #         # Likelihood
+ #         geom_line(aes(x = mu_hat, y = resultsunispecific(), color = "likelihood")) +
+ #         geom_area(aes(x = mu_hat, y = resultsunispecific()), alpha = .4) + #  fill = colours["likelihood"],
+ #
+ #         # prior uni
+ #         geom_line(aes(x = mu_hat, y = prior_dens(), color = "prior_uni")) +
+ #         geom_area(aes(x = mu_hat, y = prior_dens()), fill = colours["prior_uni"], alpha = .4) +
+ #
+ #         # prior nv
+ #         geom_line(aes(x = mu_hat, y = prior_densNV(), color = "prior_nv")) +
+ #         geom_area(aes(x = mu_hat, y = prior_densNV()),fill = colours["prior_nv"], alpha = .4) +
+ #
+ #         # Schätzer
+ #         # Mean
+ #         geom_point(aes(x = estimators()[specific()], y = 0),
+ #                    colour = "magenta", shape = 24, fill = colours["est_mean"], size = 8) +
+ #         geom_vline(aes(xintercept = estimators()[specific()], colour = "est_mean"), linetype = "dotted", linewidth = .75) +
+ #
+ #        # Minmax
+ #         geom_point(aes(x = minmax()[specific()], y = 0),
+ #                    colour = "magenta", shape = 24, fill = colours["est_minmax"], size = 8) +
+ #         geom_vline(aes(xintercept = minmax()[specific()], colour = "est_minmax"), linetype = "dotted", linewidth = .75) +
+ #
+ #         # bayes uni
+ #         geom_point(aes(x = bayesWerte()[specific()], y = 0),
+ #                    colour = "magenta", shape = 24, fill = colours["est_bayes_uni"], size = 8) +
+ #         geom_vline(aes(xintercept = bayesWerte()[specific()], colour = "est_bayes_uni"), linetype = "dotted", linewidth = .75) +
+ #
+ #         # bayes nv
+ #         geom_point(aes(x = bayesWerteNV()[specific()], y = 0),
+ #                    colour = "magenta", shape = 24, size = 8, fill = colours["est_bayes_nv"],) +
+ #         geom_vline(aes(xintercept = bayesWerteNV()[specific()], colour = "est_bayes_nv"),
+ #                    linetype = "dotted", linewidth = .75) +
+ #
+ #         # Legende bearbeiten
+ #         theme(legend.position = "top",
+ #               legend.title = element_text(size = 12, face = "bold"),
+ #               legend.text = element_text(size = 10, face = "bold"),
+ #               legend.spacing.y = unit(1.0, 'cm'),
+ #               legend.spacing.x = unit(.5, 'cm'),
+ #               legend.text.align = 0
+ # #              legend.box.margin = margin(6, 6, 6, 6)
+ #               )
+ #     })
 
 
 
@@ -392,6 +392,10 @@ return_list_uni2 <- reactive({
        } else NULL
      })
 
+     #### Legende ####
+     output$legendontop <- renderUI({
+       img(src='legende.png')
+     })
 
 
 
@@ -413,14 +417,14 @@ return_list_uni2 <- reactive({
      })
 
 
-     output$legendontop <- renderPlot({
-       legend <- cowplot::get_legend(p_sample())
-       # print(widthDetails(legend)$unit)
-       # print(str(heightDetails(legend)))
-
-       # show result
-       ggdraw(legend)
-     })
+     # output$legendontop <- renderPlot({
+     #   legend <- cowplot::get_legend(p_sample())
+     #   # print(widthDetails(legend)$unit)
+     #   # print(str(heightDetails(legend)))
+     #
+     #   # show result
+     #   ggdraw(legend)
+     # })
 
 
         # create data for the forest plot

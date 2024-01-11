@@ -189,12 +189,20 @@ Jedes Dreieck symbolisiert eine der XX generierten Stichproben. Das umrandete Dr
         )
       )
   ),
+
+tags$head(tags$style(
+  type="text/css",
+  "#legendontop img {max-width: 100%; width: 100%; height: auto}"
+)),
+
 absolutePanel(
-  top = 20, right = 20, width = 800,
-  draggable = TRUE, fixed = TRUE,
-    p("code ist ganz unten in der UI um über den anderen sachen zu liegen"),
-    fluidRow(column(12, height = 10, plotOutput("legendontop"))),
-  ))
+  top = 00, right = 00, width = 850,
+  fixed = TRUE,
+    fluidRow(column(12, height = 10, uiOutput("legendontop")))
+  )
+
+
+)
 
 
 
