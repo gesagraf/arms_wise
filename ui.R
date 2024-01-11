@@ -163,7 +163,7 @@ p("b: den gesamten Plot abdeckt (-100 bis 100)"),
   mainPanel(
 #    box(width = 12, height = 10, plotOutput("legendontop")),
         tabPanel("some title",
-
+                 fluidRow(column(12, align="center", height = 20, br(".") , br("."), br("."))),
                 fluidRow(
                           column(6, shinycssloaders::withSpinner(
                             plotOutput("plot_samp"), type = getOption("spinner.type", 4))),
@@ -196,9 +196,9 @@ tags$head(tags$style(
 )),
 
 absolutePanel(
-  top = 00, right = 00, width = 850,
+  top = 00, right = 30, width = 850,
   fixed = TRUE,
-    fluidRow(column(12, height = 10, uiOutput("legendontop")))
+    fluidRow(column(12, height = 9, uiOutput("legendontop")))
   )
 
 
