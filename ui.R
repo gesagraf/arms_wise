@@ -1,33 +1,4 @@
-# defininig UI
-#install.packages("shinythemes")
-# library(shinydashboard)
-
 ui <- fluidPage(
-  #shinythemes::themeSelector(),
-
-  # zum werte anschauen
-  #tabPanel(title = "Penguin's life",
-  #         textOutput("penguin_text")
-  #),
-  # define sidebars
-
-#fluidRow(
-#     # #### Organiszing Plots ####
-# # # specific sample
-    #column(2, checkboxInput("p_samp", "konkrete Stichprobe", value = T)),
-    # forest plot
-    #column(2,     checkboxInput("p_forest", "Forestplot", value = F)),
-    # SKV Mean
-    #column(2,     checkboxInput("p_mean", "SKV Arithmetisches Mittel", value = F)),
-    # SKV Minmax
-    #column(2,   checkboxInput("p_minmax", "SKV Alternativer Schätzer", value = F)),
-    # SKV Bayes uni
-    #column(2,   checkboxInput("p_bayes_uni", "SKV gleichverteilter Bayes Schätzer", value = F)),
-    # SKV Bayes nv
-    #column(2,  checkboxInput("p_bayes_nv", "SKV normalverteilter Bayes Schätzer", value = F)),
-#),
-    # # action Button
-    #      actionButton("go", "Go"),
 
   sidebarPanel(width = 4,
                # selectInput(
@@ -40,7 +11,7 @@ ui <- fluidPage(
               strong("Überschrift"),
               p("Erlärungstext"),
                  # Specific Sample
-              tags$style(HTML(".js-irs-0 .irs-single, .js-irs-0 .irs-bar-edge, .js-irs-0 .irs-bar {background: #d3d3d3}")),
+              tags$style(HTML(".js-irs-0 .irs-single, .js-irs-0 .irs-bar-edge, .js-irs-0 .irs-bar {background: #d3d3d3; border-top: #d3d3d3; border-bottom: #d3d3d3}")),
               sliderInput(inputId = "specific",
                   "Spezifische Stichprobe",
                   min = 0,
@@ -60,7 +31,7 @@ für die verschiedenen Schätzer in einem Forest-Plot anzeigen lassen (oben rech
 
     #### Population ####
     # Population mu
-    tags$style(HTML(".js-irs-1 .irs-single, .js-irs-1 .irs-bar-edge, .js-irs-1 .irs-bar {background: red}")),
+    tags$style(HTML(".js-irs-1 .irs-single, .js-irs-1 .irs-bar-edge, .js-irs-1 .irs-bar {background: red; border-top: red; border-bottom: red}")),
     sliderInput(inputId = "mu",
                 paste0("Populations-Mittelwert"),
                 min = -100,
@@ -68,7 +39,7 @@ für die verschiedenen Schätzer in einem Forest-Plot anzeigen lassen (oben rech
                 value = 0),
 
     # Population sd
-    tags$style(HTML(".js-irs-2 .irs-single, .js-irs-2 .irs-bar-edge, .js-irs-2 .irs-bar {background: red}")),
+    tags$style(HTML(".js-irs-2 .irs-single, .js-irs-2 .irs-bar-edge, .js-irs-2 .irs-bar {background: red; border-top: red; border-bottom: red}")),
     sliderInput(inputId = "std",
                 "Populations-Standardabweichung",
                 min = 1, #0=error
@@ -78,7 +49,7 @@ für die verschiedenen Schätzer in einem Forest-Plot anzeigen lassen (oben rech
 
     #### Samples ####
     # Samplesize
-    tags$style(HTML(".js-irs-3 .irs-single, .js-irs-3 .irs-bar-edge, .js-irs-3 .irs-bar {background: #d3d3d3}")),
+    tags$style(HTML(".js-irs-3 .irs-single, .js-irs-3 .irs-bar-edge, .js-irs-3 .irs-bar {background: #d3d3d3; border-top: #d3d3d3; border-bottom: #d3d3d3}")),
     sliderInput(inputId = "n",
                 "Größe der einzelnen Stichproben",
                 min = 2, # unter 2 error
@@ -86,7 +57,7 @@ für die verschiedenen Schätzer in einem Forest-Plot anzeigen lassen (oben rech
                 value = 20),
 
     # Number of Samples
-    tags$style(HTML(".js-irs-4 .irs-single, .js-irs-4 .irs-bar-edge, .js-irs-4 .irs-bar {background: #a9a9a9}")),
+    tags$style(HTML(".js-irs-4 .irs-single, .js-irs-4 .irs-bar-edge, .js-irs-4 .irs-bar {background: #a9a9a9; border-top: #a9a9a9; border-bottom: #a9a9a9}")),
     sliderInput(inputId = "number",
                 "Gesamtanzahl der Stichproben",
                 min = 1,#
@@ -106,7 +77,8 @@ wahrscheinlich sind, aber Werte außerhalb der Range unmöglich sind.",
 
     #### Priors ####
     # Gleichverteiler Prior
-    tags$style(HTML("irs--shiny .irs-from.js-irs-5 .irs-to .js-irs-5 .irs-bar-edge, .js-irs-5 .irs-bar {background: #443A83FF}")),
+    tags$style(HTML(".irs-from span.irs-to .irs-from.js-irs-5 .irs-to .js-irs-5 .irs-bar-edge, .js-irs-5 .irs-bar {background: #443A83FF; background-color: #443A83FF; border-top: #443A83FF; border-bottom: #443A83FF}")),
+
     sliderInput(inputId = "rangePriori",
                 "Range des gleichverteilten Bayes Priors",
                 min = -100,
@@ -121,7 +93,7 @@ einstellen",
       checkboxInput("p_bayes_nv", "SKV normalverteilter Bayes Schätzer", value = F),
     # Normalverteilter Prior
     # Prior Mean
-    tags$style(HTML(".js-irs-6 .irs-single, .js-irs-6 .irs-bar-edge, .js-irs-6 .irs-bar {background: #440154FF}")),
+    tags$style(HTML(".js-irs-6 .irs-single, .js-irs-6 .irs-bar-edge, .js-irs-6 .irs-bar {background: #440154FF; border-top: #440154FF; border-bottom: #440154FF}")),
     sliderInput(inputId = "mu_prior",
                 label = "Prior Mean",
                 min = -100,
@@ -129,7 +101,7 @@ einstellen",
                 value = 50),
 
     # Sidebar with a slider input for Prior Tau
-    tags$style(HTML(".js-irs-7 .irs-single, .js-irs-7 .irs-bar-edge, .js-irs-7 .irs-bar {background: #440154FF}")),
+    tags$style(HTML(".js-irs-7 .irs-single, .js-irs-7 .irs-bar-edge, .js-irs-7 .irs-bar {background: #440154FF; border-top: #440154FF; border-bottom: #440154FF}")),
     sliderInput(inputId = "tau_prior",
                 label = "Prior Tau",
                 min = 1,
@@ -203,12 +175,3 @@ absolutePanel(
 
 
 )
-
-
-
-
-
-
-
-
-
