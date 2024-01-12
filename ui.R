@@ -1,72 +1,101 @@
 ui <- fluidPage(
 
+  # Hier wird die Sidebar (in grau) definiert
   sidebarPanel(width = 4,
-               # selectInput(
-               #   "anzeigen", "Welche Plots möchtest du gerne angezeigt bekommen?", possibilities,
-               # multiple = TRUE
-               # ),
+
+               # Weil es verschiedene Tabs geben soll
                tabsetPanel(
+
+                 # Tab 1: Für die Simulationen
                  tabPanel(title = "Simulationen",
-    wellPanel(title = "hier kannst du dir eine bestimmte Stichprobe anzeigen lassen (plot 1 oben links)",
-              strong("Überschrift"),
-              p("Erlärungstext"),
-                 # Specific Sample
-              tags$style(HTML(".js-irs-0 .irs-single, .js-irs-0 .irs-bar-edge, .js-irs-0 .irs-bar {background: #d3d3d3; border-top: #d3d3d3; border-bottom: #d3d3d3}")),
-              sliderInput(inputId = "specific",
-                  "Spezifische Stichprobe",
-                  min = 0,
-                  max = 1000,
-                  value = 3),
-    checkboxInput("p_samp", "Plot der spezifischen Stichprobe", value = T)),
 
-    wellPanel(title = "hier kannst du dir die Stichprobenkennwerte-Verteilungen
-für die verschiedenen Schätzer in einem Forest-Plot anzeigen lassen (oben rechts)",
-              strong("Überschrift"),
-              p("Erlärungstext"),
+                          # Kasten für die Populationsparameter
+                          ## Überschriften & Text
+                          wellPanel(title = "Hier kannst du die Parameter für die Population einstellen",
+                                    strong("Pupulationsparameter einstellen"),
+                                    # p("Erlärungstext"),
 
-    checkboxInput("p_forest", "Forestplot mit allen Schätzern", value = F)),
-    wellPanel(title = "hier kannst du die Parameter für die Population einstellen)",
-              strong("Überschrift"),
-              p("Erlärungstext"),
+                                    # Slider Inputs
+                                    ## Slider Populationsmittelwert
+                                    ### Styleeinstellunge
+                                    tags$style(HTML(".js-irs-0 .irs-single, .js-irs-0 .irs-bar-edge, .js-irs-0 .irs-bar {background: red; border-top: red; border-bottom: red}")),
+                                    ### Slider
+                                    sliderInput(inputId = "mu",
+                                                paste0("Populations-Mittelwert"),
+                                                min = -100,
+                                                max = 100,
+                                                value = 0),
 
-    #### Population ####
-    # Population mu
-    tags$style(HTML(".js-irs-1 .irs-single, .js-irs-1 .irs-bar-edge, .js-irs-1 .irs-bar {background: red; border-top: red; border-bottom: red}")),
-    sliderInput(inputId = "mu",
-                paste0("Populations-Mittelwert"),
-                min = -100,
-                max = 100,
-                value = 0),
+                                    ## Slider Populationsstandardabweichung
+                                    ### Styleinstellungen
+                                    tags$style(HTML(".js-irs-1 .irs-single, .js-irs-1 .irs-bar-edge, .js-irs-1 .irs-bar {background: red; border-top: red; border-bottom: red}")),
+                                    ### Slider
+                                    sliderInput(inputId = "std",
+                                                "Populations-Standardabweichung",
+                                                min = 1,
+                                                max = 50,
+                                                value = 15),
 
-    # Population sd
-    tags$style(HTML(".js-irs-2 .irs-single, .js-irs-2 .irs-bar-edge, .js-irs-2 .irs-bar {background: red; border-top: red; border-bottom: red}")),
-    sliderInput(inputId = "std",
-                "Populations-Standardabweichung",
-                min = 1, #0=error
-                max = 50,
-                value = 15),
+                                    ## Slider Stichprobengrößen
+                                    ### Styleeinstellungen
+                                    tags$style(HTML(".js-irs-2 .irs-single, .js-irs-2 .irs-bar-edge, .js-irs-2 .irs-bar {background: #d3d3d3; border-top: #d3d3d3; border-bottom: #d3d3d3}")),
+                                    ### Slider
+                                    sliderInput(inputId = "n",
+                                                "Größe der einzelnen Stichproben",
+                                                min = 2,
+                                                max = 200,
+                                                value = 20),
+
+                                    ## Slider Stichprobenanzahl
+                                    ### Styleeinstellungen
+                                    tags$style(HTML(".js-irs-3 .irs-single, .js-irs-3 .irs-bar-edge, .js-irs-3 .irs-bar {background: #a9a9a9; border-top: #a9a9a9; border-bottom: #a9a9a9}")),
+                                    ### Slider
+                                    sliderInput(inputId = "number",
+                                                "Gesamtanzahl der Stichproben",
+                                                min = 1,
+                                                max = 1000,
+                                                value = 100)),
+
+                          # Kasten für die spezifische Stichprobe
+                          ## Überschriften & Text
+                          wellPanel(title = "hier kannst du dir eine bestimmte Stichprobe anzeigen lassen (Plot 1 oben links)",
+                                    strong("Spezifische Stichprobe auswählen"),
+                                    # p("Erlärungstext"),
+
+                                    # Checkbox spezifische Stichprobe
+                                    checkboxInput("p_samp", "Zeigen den Plot der spezifischen Stichprobe an", value = T),
+
+                                    # Slider Input
+                                    ## Styleeinstellungen für die Slider Inputs
+                                    tags$style(HTML(".js-irs-4 .irs-single, .js-irs-4 .irs-bar-edge, .js-irs-4 .irs-bar {background: #d3d3d3; border-top: #d3d3d3; border-bottom: #d3d3d3}")),
+                                    ## Slider Input
+                                    sliderInput(inputId = "specific",
+                                                "Spezifische Stichprobe",
+                                                min = 1,
+                                                max = 1000,
+                                                value = 3)),
+
+                          # Kasten für den Forestplot
+                          ## Überschriften & Text
+                          wellPanel(title = "hier kannst du dir die Stichprobenkennwerte-Verteilungen
+                                    für die verschiedenen Schätzer in einem Forest-Plot anzeigen lassen (oben rechts)",
+                                    strong("Forestplot"),
+                                    # p("Erlärungstext"),
+
+                                    # Checkbox Forestplot
+                                    checkboxInput("p_forest", "Zeige den Forestplot mit allen Schätzern an", value = F)),
 
 
-    #### Samples ####
-    # Samplesize
-    tags$style(HTML(".js-irs-3 .irs-single, .js-irs-3 .irs-bar-edge, .js-irs-3 .irs-bar {background: #d3d3d3; border-top: #d3d3d3; border-bottom: #d3d3d3}")),
-    sliderInput(inputId = "n",
-                "Größe der einzelnen Stichproben",
-                min = 2, # unter 2 error
-                max = 200,
-                value = 20),
+                          # Box für Mean und Minmax
+                          wellPanel(title = "Hier kannst du dir die Stichprobenkennwerteverteilungen vom arithmetischen Mittel und dem alternativen Schätzer anzeigen lassen.",
+                                    strong("Stichprobenkennwerteverteilungen"),
+                                    p("Von Mittelwert und alternativen Schätzer"),
 
-    # Number of Samples
-    tags$style(HTML(".js-irs-4 .irs-single, .js-irs-4 .irs-bar-edge, .js-irs-4 .irs-bar {background: #a9a9a9; border-top: #a9a9a9; border-bottom: #a9a9a9}")),
-    sliderInput(inputId = "number",
-                "Gesamtanzahl der Stichproben",
-                min = 1,#
-                max = 1000,
-                value = 100),
 
-    checkboxInput("p_mean", "SKV Arithmetisches Mittel", value = F),
+                                    checkboxInput("p_mean",
+                                                  "Zeige die SKV des arithmetischen Mittels an", value = F),
 
-    checkboxInput("p_minmax", "SKV Alternativer Schätzer", value = F)),
+    checkboxInput("p_minmax", "Zeige die SKV des alternativen Schätzers an", value = F)),
 
     wellPanel(title = "Hier kannst du die Priori des gleichverteilten Bayes-Schätzers einstllen.
 Der gleichverteilte Schätzer nimmt an, das alle Werte innerhalb der eingestellten Range gleich
@@ -77,7 +106,7 @@ wahrscheinlich sind, aber Werte außerhalb der Range unmöglich sind.",
 
     #### Priors ####
     # Gleichverteiler Prior
-    tags$style(HTML(".irs-from span.irs-to .irs-from.js-irs-5 .irs-to .js-irs-5 .irs-bar-edge, .js-irs-5 .irs-bar {background: #443A83FF; background-color: #443A83FF; border-top: #443A83FF; border-bottom: #443A83FF}")),
+    tags$style(HTML(".irs-from .irs-to .irs-from .js-irs-5 .irs-to .js-irs-5 .irs-bar-edge, .js-irs-5 .irs-bar {background: #443A83FF; background-color: #443A83FF; border-top: #443A83FF; border-bottom: #443A83FF}")),
 
     sliderInput(inputId = "rangePriori",
                 "Range des gleichverteilten Bayes Priors",
