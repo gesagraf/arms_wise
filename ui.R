@@ -6,12 +6,14 @@ ui <- fluidPage(
                # Weil es verschiedene Tabs geben soll
                tabsetPanel(
 
-                 # Tab 1: Für die Simulationen
-                 tabPanel(title = "Simulationen",
+                 # Tab 1: Für die Plots
+                 tabPanel(title = "Simulation",
+
+                          wellPanel(p("In diesem Tab kannst du grundsätzliche Einstellungen für die gesamte Simulation vornehmen.")),
 
                           # Kasten für die Populationsparameter
                           ## Überschriften & Text
-                          wellPanel(title = "Hier kannst du die Parameter für die Population einstellen",
+                          wellPanel(title = "Einstellungen",
                                     strong("Pupulationsparameter einstellen"),
                                     # p("Erlärungstext"),
 
@@ -44,7 +46,7 @@ ui <- fluidPage(
                                                 "Größe der einzelnen Stichproben",
                                                 min = 2,
                                                 max = 200,
-                                                value = 20),
+                                                value = 30),
 
                                     ## Slider Stichprobenanzahl
                                     ### Styleeinstellungen
@@ -54,7 +56,13 @@ ui <- fluidPage(
                                                 "Gesamtanzahl der Stichproben",
                                                 min = 1,
                                                 max = 1000,
-                                                value = 100)),
+                                                value = 100))),
+
+                 # Tab 1: Für die Plots
+                 tabPanel(title = "Plots",
+
+                          wellPanel(p("In diesem Tab kannst du dir die verschiedenen Plots anzeigen lassen.")),
+
 
                           # Kasten für die spezifische Stichprobe
                           ## Überschriften & Text
@@ -70,10 +78,19 @@ ui <- fluidPage(
                                     tags$style(HTML(".js-irs-4 .irs-single, .js-irs-4 .irs-bar-edge, .js-irs-4 .irs-bar {background: #d3d3d3; border-top: #d3d3d3; border-bottom: #d3d3d3}")),
                                     ## Slider Input
                                     sliderInput(inputId = "specific",
-                                                "Spezifische Stichprobe",
+                                                "Wähle eine spezifische Stichprobe aus",
                                                 min = 1,
                                                 max = 1000,
-                                                value = 3)),
+                                                value = 3),
+
+
+                                    # Checkbox Likelihood anzeigen
+                                    checkboxInput("show_likelihood", "Zeigen die Likelihood der spezifischen Stichprobe an", value = F),
+
+
+
+
+                                    ),
 
                           # Kasten für den Forestplot
                           ## Überschriften & Text
@@ -112,7 +129,20 @@ wahrscheinlich sind, aber Werte außerhalb der Range unmöglich sind.",
                 "Range des gleichverteilten Bayes Priors",
                 min = -100,
                 max = 100,
-                value = c(-50,5))),
+                value = c(-50,5)),
+
+    checkboxInput("show_prior_uni", "Zeige den Prior des gleichverteilten Bayes Schätzers", value = F)
+
+
+
+    ),
+
+
+
+
+
+
+
 
     wellPanel(title = "hier kannst du Mittelwert und Standardabweichung der normalverteilten Priori
 einstellen",
@@ -135,7 +165,10 @@ einstellen",
                 label = "Prior Tau",
                 min = 1,
                 max = 100,
-                value = 10)
+                value = 10),
+
+    checkboxInput("show_prior_nv", "Zeige den Prior des normalverteilten Bayes Schätzers", value = F)
+
 
   )),
   tabPanel(title = "Aufgaben",
