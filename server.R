@@ -536,7 +536,7 @@ return_list_uni2 <- reactive({
 
 
        # Skalen, Theme, Labs etc.
-         xlim(coord()) +
+         coord_cartesian(xlim = coord())  +
 
        # 2. y-Achse
        scale_y_continuous(
@@ -584,7 +584,7 @@ return_list_uni2 <- reactive({
 
 
        # Skalen, Theme, Labs etc.
-         xlim(coord()) +
+         coord_cartesian(xlim = coord())  +
 
        # 2. y-Achse
        scale_y_continuous(
