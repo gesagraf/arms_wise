@@ -463,49 +463,60 @@ return_list_uni2 <- reactive({
        theme_bw()
       })
 
-
-       #### Plot Minmax ####
-       output$plot_minmax <- renderPlot({
-         if (!input$p_minmax) return(NULL)
-
-     # Alternativer Schätzer
-       ggplot(NULL, aes(x = minmax())) +
-       geom_histogram(aes(y = after_stat(density)), fill = colours["est_minmax"], bins = num_classesSKV(), alpha = .5) +
-
-       # every sample as triangle
-       geom_point(aes(x = minmax(), y = 0), color = colours["est_minmax"], shape = 17, size = 4) +
-
-       # frame selected sample
-       geom_point(aes(x = minmax()[specific()], y = 0), colour = "magenta", fill = colours["est_minmax"], shape = 24, size = 8) +
-
-       # mu
-       geom_point(aes(x = mu(), y = 0), colour = colours["mu"], shape = 17, size = 4) +
-       geom_vline(aes(xintercept = mu()), colour = colours["mu"], linewidth = 1) +
-
-       # mean over all samples
-       geom_point(aes(x = mean_minmax(), y = 0),  colour = colours["mean_est"], shape = 17, size = 4) +
-       geom_vline(aes(xintercept = mean_minmax()), colour = colours["mean_est"], linetype = "dashed", linewidth = .75) +
+        ## Definitionen für die Annotation der Formel
+        kategorienbreite <- reactive({(max(minmax())-min(minmax())) / num_classesSKV()})
+        # y Wert für die Annotation
+        anno_y <- reactive({max(density(minmax(), bw = kategorienbreite())$y)})
 
 
 
-       # Skalen, Theme, Labs etc.
-       coord_cartesian(xlim = coord()) +
-         annotate("label",
-                  label = TeX(r"( Schätzer = $\frac{max(x) - min(x)}{2}$ )"),
-                  x = mu() - 2 * std(), y = .3) +
+        #### Plot Minmax ####
+        output$plot_minmax <- renderPlot({
+          if (!input$p_minmax) return(NULL)
 
-       # 2. y-Achse
-       scale_y_continuous(
-         sec.axis = sec_axis( trans=~.*number())
-       ) +
+          # Alternativer Schätzer
+          ggplot(NULL, aes(x = minmax())) +
 
-       labs(
-         title = "Alternativer Schätzer",
-         x = expression(bar(x)),
-         y = NULL,
-         colour = NULL) +
-       theme_bw()
-       })
+            geom_histogram(aes(y = after_stat(density)), fill = colours["est_minmax"], bins = num_classesSKV(), alpha = .5) +
+
+            annotate("label",
+                     label = TeX(r"( $\frac{\max(x) - \min(x)}{2}$ )"),
+                     x = mu() - 2 * std(), y = anno_y()) +
+            # every sample as triangle
+            geom_point(aes(x = minmax(), y = 0), color = colours["est_minmax"], shape = 17, size = 4) +
+
+            # frame selected sample
+            geom_point(aes(x = minmax()[specific()], y = 0), colour = "magenta", fill = colours["est_minmax"], shape = 24, size = 8) +
+
+            # mu
+            geom_point(aes(x = mu(), y = 0), colour = colours["mu"], shape = 17, size = 4) +
+            geom_vline(aes(xintercept = mu()), colour = colours["mu"], linewidth = 1) +
+
+            # mean over all samples
+            geom_point(aes(x = mean_minmax(), y = 0),  colour = colours["mean_est"], shape = 17, size = 4) +
+            geom_vline(aes(xintercept = mean_minmax()), colour = colours["mean_est"], linetype = "dashed", linewidth = .75) +
+
+
+
+            # Skalen, Theme, Labs etc.
+            coord_cartesian(xlim = coord()) +
+
+
+            # 2. y-Achse
+            scale_y_continuous(
+              sec.axis = sec_axis( trans=~.*number())
+            ) +
+
+            labs(
+              title = "Alternativer Schätzer",
+              x = expression(bar(x)),
+              y = NULL,
+              colour = NULL) +
+            theme_bw()
+        })
+
+
+
 
 
        #### Plot Bayes Gleichverteilt ####

@@ -172,6 +172,9 @@ einstellen",
 
   )),
   tabPanel(title = "Aufgaben",
+
+           wellPanel(p("In diesem Tab findest du Aufgaben, die dich durch die Plots leiten und dir helfen können, sie gut zu verstehen.")),
+
            strong("Aufgabe 1"),
            p("Finde eine Einstellung, für die im Plot der einzelnen Stichprobe die Verteilung (grau)"),
 p("a: nur einen einzelnen Balken hat"),
