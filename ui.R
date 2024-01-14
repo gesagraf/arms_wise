@@ -233,7 +233,7 @@ tags$head(tags$style(
 )),
 
 absolutePanel(
-  top = 00, right = 30, width = 850,
+  top = 00, right = 30, width = "64%",
   fixed = TRUE,
     fluidRow(column(12, height = 9, uiOutput("legendontop")))
   )
