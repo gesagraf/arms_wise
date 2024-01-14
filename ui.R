@@ -117,9 +117,10 @@ ui <- fluidPage(
     wellPanel(title = "Hier kannst du die Priori des gleichverteilten Bayes-Schätzers einstllen.
 Der gleichverteilte Schätzer nimmt an, das alle Werte innerhalb der eingestellten Range gleich
 wahrscheinlich sind, aber Werte außerhalb der Range unmöglich sind.",
-              strong("Überschrift"),
-              p("Erlärungstext"),
-      checkboxInput("p_bayes_uni", "SKV gleichverteilter Bayes Schätzer", value = F),
+              strong("SKV von Bayesschätzern"),
+              p("mit gleichverteilter Priori"),
+
+      checkboxInput("p_bayes_uni", "Zeige die SKV des Bayesschätzers", value = F),
 
     #### Priors ####
     # Gleichverteiler Prior
@@ -146,10 +147,10 @@ wahrscheinlich sind, aber Werte außerhalb der Range unmöglich sind.",
 
     wellPanel(title = "hier kannst du Mittelwert und Standardabweichung der normalverteilten Priori
 einstellen",
-              strong("Überschrift"),
-              p("Erlärungstext"),
+              strong("SKV von Bayesschätzern"),
+              p("mit normalverteiltem Prior"),
 
-      checkboxInput("p_bayes_nv", "SKV normalverteilter Bayes Schätzer", value = F),
+      checkboxInput("p_bayes_nv", "Zeige die SKV des Bayesschätzers", value = F),
     # Normalverteilter Prior
     # Prior Mean
     tags$style(HTML(".js-irs-6 .irs-single, .js-irs-6 .irs-bar-edge, .js-irs-6 .irs-bar {background: #440154FF; border-top: #440154FF; border-bottom: #440154FF}")),
