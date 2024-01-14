@@ -257,11 +257,11 @@ return_list_uni2 <- reactive({
          geom_point(aes(x = mu(), y = 0, colour = "mu"), shape = 17, size = 4) +
          geom_vline(aes(xintercept = mu(), colour = "mu"), linewidth = 1) +
 
-         #        # 2. y-Achse
-         scale_y_continuous(
-           name = "Relative Häufigkeit",
-           sec.axis = sec_axis( trans=~.*number(), name = "Anzahl TN")
-         ) +
+         # #        # 2. y-Achse
+         # scale_y_continuous(
+         #   name = "Relative Häufigkeit",
+         #   sec.axis = sec_axis( trans=~.*number(), name = "Anzahl TN")
+         # ) +
          #
          labs(
            title = paste0("Einzelne Stichprobe (#", specific(),")"),
@@ -450,10 +450,10 @@ return_list_uni2 <- reactive({
        # Skalen, Theme, Labs etc.
        coord_cartesian(xlim = coord()) +
 
-       # 2. y-Achse
-       scale_y_continuous(
-         sec.axis = sec_axis( trans=~.*number())
-       ) +
+       # # 2. y-Achse
+       # scale_y_continuous(
+       #   sec.axis = sec_axis( trans=~.*number())
+       # ) +
 
        labs(
          title = "Arithmetisches Mittel",
@@ -502,10 +502,10 @@ return_list_uni2 <- reactive({
             coord_cartesian(xlim = coord()) +
 
 
-            # 2. y-Achse
-            scale_y_continuous(
-              sec.axis = sec_axis( trans=~.*number())
-            ) +
+            # # 2. y-Achse
+            # scale_y_continuous(
+            #   sec.axis = sec_axis( trans=~.*number())
+            # ) +
 
             labs(
               title = "Alternativer Schätzer",
@@ -549,10 +549,10 @@ return_list_uni2 <- reactive({
        # Skalen, Theme, Labs etc.
          coord_cartesian(xlim = coord())  +
 
-       # 2. y-Achse
-       scale_y_continuous(
-         sec.axis = sec_axis( trans=~.*number())
-       ) +
+       # # 2. y-Achse
+       # scale_y_continuous(
+       #   sec.axis = sec_axis( trans=~.*number())
+       # ) +
 
        labs(
          title = "Bayesschätzer mit gleichverteilter Priori",
@@ -597,10 +597,10 @@ return_list_uni2 <- reactive({
        # Skalen, Theme, Labs etc.
          coord_cartesian(xlim = coord())  +
 
-       # 2. y-Achse
-       scale_y_continuous(
-         sec.axis = sec_axis( trans=~.*number())
-       ) +
+       # # 2. y-Achse
+       # scale_y_continuous(
+       #   sec.axis = sec_axis( trans=~.*number())
+       # ) +
 
        labs(
          title = "Bayesschätzer mit normalverteilter Priori",
