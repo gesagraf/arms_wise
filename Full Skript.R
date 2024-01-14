@@ -11,7 +11,7 @@ mu_prior <- 130   # mittelwert der priori
 tau_prior <- 10   # sd der priori
 flache_priori <- TRUE # flache oder normalveteile priori
 min_uni_priori <- 135 # minimum für gleichverteilte priori
-max_uni_priori <- 145 # max für gleichverteilte priori
+max_uni_priori <- 170 # max für gleichverteilte priori
 
 # Anzahl der Klassen nach Sturges' Regel (für Histogram der einzelnen Stichprobe)
 num_classes <- ceiling(log2(n) + 1)

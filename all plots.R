@@ -193,16 +193,16 @@ custom_colors <- scale_color_manual(values = colours,
   ggplot(NULL, aes(x = bayesWerte)) +
   geom_histogram(aes(y = ..density..), fill = colours["est_bayes_uni"], binwidth = 1, alpha = .5) +
 
-  # Prior
-  geom_line(aes(x = mu_hat, y = prior_dens), color = colours["prior_uni"]) +
-  geom_area(aes(x = mu_hat, y = prior_dens), fill = colours["prior_uni"], alpha = .4) +
+# Prior
+geom_line(aes(x = mu_hat, y = prior_dens), color = colours["prior_uni"]) +
+geom_area(aes(x = mu_hat, y = prior_dens), fill = colours["prior_uni"], alpha = .4) +
 
 
   # every sample as triangle
   geom_point(aes(x = bayesWerte, y = 0), color = colours["est_bayes_uni"], shape = 17, size = 4) +
 
   # frame selected sample
-  geom_point(aes(x = bayesWerte[specific], y = 0), colour = "magenta", fill = colours["est_bayes_uni"], shape = 24, size = 8) +
+  #geom_point(aes(x = bayesWerte[specific], y = 0), colour = "magenta", fill = colours["est_bayes_uni"], shape = 24, size = 8) +
 
   # mu
   geom_point(aes(x = mu, y = 0), colour = colours["mu"], shape = 17, size = 4) +
@@ -216,11 +216,11 @@ custom_colors <- scale_color_manual(values = colours,
   # Skalen, Theme, Labs etc.
   coord_cartesian(xlim = coord) +
 
-  # 2. y-Achse
-  scale_y_continuous(
-    name = "Relative Häufigkeit",
-    sec.axis = sec_axis( trans=~.*number, name = "Anzahl SP")
-  ) +
+  # # 2. y-Achse
+  # scale_y_continuous(
+  #   name = "Relative Häufigkeit",
+  #   sec.axis = sec_axis( trans=~.*number, name = "Anzahl SP")
+  # ) +
 
   labs(
     title = "Bayesschätzer mit gleichverteilter Priori",
@@ -244,7 +244,7 @@ ggplot(NULL, aes(x = bayesWerteNV)) +
   geom_point(aes(x = bayesWerteNV, y = 0), colour = colours["est_bayes_nv"], shape = 17, size = 4) +
 
   # frame selected sample
-  geom_point(aes(x = bayesWerteNV[specific], y = 0), colour = "magenta", fill = colours["est_bayes_nv"], shape = 24, size = 8) +
+  # geom_point(aes(x = bayesWerteNV[specific], y = 0), colour = "magenta", fill = colours["est_bayes_nv"], shape = 24, size = 8) +
 
   # mu
   geom_point(aes(x = mu, y = 0), colour = colours["mu"], shape = 17, size = 4) +
@@ -259,11 +259,11 @@ ggplot(NULL, aes(x = bayesWerteNV)) +
   # Skalen, Theme, Labs etc.
   coord_cartesian(xlim = coord) +
 
-  # 2. y-Achse
-  scale_y_continuous(
-    name = "Relative Häufigkeit",
-    sec.axis = sec_axis( trans=~.*number, name = "Anzahl SP")
-  ) +
+  # # 2. y-Achse
+  # scale_y_continuous(
+  #   name = "Relative Häufigkeit",
+  #   sec.axis = sec_axis( trans=~.*number, name = "Anzahl SP")
+  # ) +
 
   labs(
     title = "Bayesschätzer mit normalverteilter Priori",
