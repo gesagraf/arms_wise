@@ -416,6 +416,8 @@ return_list_uni2 <- reactive({
                                  est_bayes_uni = "Bayesschätzer: \n gleichverteile \n Priori",
                                  est_bayes_nv = "Bayesschätzer: \n normalverteile \n Priori"),
                              trans = "reverse") +
+          xlim(coord()) +
+
           labs(
             title = "Konfidenzintervalle der einzelnen Schätzer",
             x = "Werte gemittelt",
@@ -478,7 +480,8 @@ return_list_uni2 <- reactive({
           # Alternativer Schätzer
           ggplot(NULL, aes(x = minmax())) +
 
-            geom_histogram(aes(y = after_stat(density)), fill = colours["est_minmax"], bins = num_classesSKV(), alpha = .5) +
+            geom_histogram(aes(y = after_stat(density)), fill = colours["est_minmax"],
+                           bins = num_classesSKV(), alpha = .5) +
 
             annotate("label",
                      label = TeX(r"( $\frac{\max(x) - \min(x)}{2}$ )"),
@@ -517,7 +520,7 @@ return_list_uni2 <- reactive({
         })
 
 
-binweite <- reactive({(max(bayesWerte()) - min(bayesWerte())) / num_classesSKV()})
+binweite <- reactive({(max(bayesWerte()) - min(bayesWerte())) / (num_classesSKV() * 2)})
 
 
        #### Plot Bayes Gleichverteilt ####

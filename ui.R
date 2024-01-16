@@ -8,6 +8,7 @@ ui <- fluidPage(
 
                  # Tab 1: Für die Plots
                  tabPanel(title = "Simulation",
+                          style = "overflow-y:scroll; max-height: 600px",
 
                           wellPanel(p("In diesem Tab kannst du grundsätzliche Einstellungen für die gesamte Simulation vornehmen.")),
 
@@ -60,6 +61,7 @@ ui <- fluidPage(
 
                  # Tab 1: Für die Plots
                  tabPanel(title = "Plots",
+                          style = "overflow-y:scroll; max-height: 600px",
 
                           wellPanel(p("In diesem Tab kannst du dir die verschiedenen Plots anzeigen lassen.")),
 
@@ -120,7 +122,7 @@ wahrscheinlich sind, aber Werte außerhalb der Range unmöglich sind.",
               strong("SKV von Bayesschätzern"),
               p("mit gleichverteilter Priori"),
 
-      checkboxInput("p_bayes_uni", "Zeige die SKV des Bayesschätzers", value = F),
+      checkboxInput("p_bayes_uni", "Zeige die SKV dieses Bayesschätzers", value = F),
 
     #### Priors ####
     # Gleichverteiler Prior
@@ -150,7 +152,7 @@ einstellen",
               strong("SKV von Bayesschätzern"),
               p("mit normalverteiltem Prior"),
 
-      checkboxInput("p_bayes_nv", "Zeige die SKV des Bayesschätzers", value = F),
+      checkboxInput("p_bayes_nv", "Zeige die SKV dieses Bayesschätzers", value = F),
     # Normalverteilter Prior
     # Prior Mean
     tags$style(HTML(".js-irs-6 .irs-single, .js-irs-6 .irs-bar-edge, .js-irs-6 .irs-bar {background: #440154FF; border-top: #440154FF; border-bottom: #440154FF}")),
@@ -173,6 +175,7 @@ einstellen",
 
   )),
   tabPanel(title = "Aufgaben",
+           style = "overflow-y:scroll; max-height: 600px",
 
            wellPanel(p("In diesem Tab findest du Aufgaben, die dich durch die Plots leiten und dir helfen können, sie gut zu verstehen.")),
 
@@ -199,8 +202,8 @@ p("b: den gesamten Plot abdeckt (-100 bis 100)"),
       )),
   # Show a plot of the generated distribution
   mainPanel(
-#    box(width = 12, height = 10, plotOutput("legendontop")),
-        tabPanel("some title",
+        tabPanel("Stichprobenkennwerteverteilungen",
+                 style = "overflow-y:scroll; max-height: 600px",
                  fluidRow(column(12, align="center", height = 20, br(".") , br("."), br("."))),
                 fluidRow(
                           column(6, shinycssloaders::withSpinner(
@@ -208,9 +211,10 @@ p("b: den gesamten Plot abdeckt (-100 bis 100)"),
                           column(6, shinycssloaders::withSpinner(
                                  plotOutput("forest"), type = getOption("spinner.type", 4)))
                           ),
-                 strong("Überschrift"),
-                 p("Die folgenden 4 Plots zeigen die Stichprobenkennwerteverteilungen der verschiedenen Schätzer.
-Jedes Dreieck symbolisiert eine der XX generierten Stichproben. Das umrandete Dreieck zeigt die spezifische Stichprobe (Plot oben links)."),
+                 h3("Stichprobenkennwerteverteilungen verschiedender Schätzer"),
+                 # p("Die folgenden 4 Plots zeigen die Stichprobenkennwerteverteilungen der verschiedenen
+                 # Schätzer. Jedes Dreieck symbolisiert eine der XX generierten Stichproben. Das umrandete
+                 #   Dreieck zeigt die spezifische Stichprobe (Plot oben links)."),
                 fluidRow(
                          column(6, shinycssloaders::withSpinner(
                                 plotOutput("plot_mean"), type = getOption("spinner.type", 4))),
