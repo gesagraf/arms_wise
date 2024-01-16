@@ -520,7 +520,7 @@ return_list_uni2 <- reactive({
         })
 
 
-binweite <- reactive({(max(bayesWerte()) - min(bayesWerte())) / (num_classesSKV() * 2)})
+binweite <- reactive({(max(bayesWerte()) - min(bayesWerte())) / 4})
 
 
        #### Plot Bayes Gleichverteilt ####
