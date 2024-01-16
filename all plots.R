@@ -191,7 +191,8 @@ custom_colors <- scale_color_manual(values = colours,
 
 (p_bayes_uni <-
   ggplot(NULL, aes(x = bayesWerte)) +
-  geom_histogram(aes(y = ..density..), fill = colours["est_bayes_uni"], binwidth = 1, alpha = .5) +
+  geom_histogram(aes(y = after_stat(density)), fill = colours["est_bayes_uni"],
+                 binwidth = 1, alpha = .5) +
 
 # Prior
 geom_line(aes(x = mu_hat, y = prior_dens), color = colours["prior_uni"]) +
