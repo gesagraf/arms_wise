@@ -249,7 +249,8 @@ return_list_uni2 <- reactive({
 
          #        #
          #        # Verteilung
-         geom_histogram(aes(y = after_stat(density)), fill = "lightgrey", colour = "lightgrey", bins = (num_classes()*2), alpha = .99) +
+         geom_histogram(aes(y = after_stat(density)), fill = "lightgrey",
+                        colour = "lightgrey", bins = (num_classes()*2), alpha = .99) +
          #
          xlim(coord()) +
 
@@ -464,7 +465,7 @@ return_list_uni2 <- reactive({
       })
 
         ## Definitionen für die Annotation der Formel
-        kategorienbreite <- reactive({(max(minmax())-min(minmax())) / num_classesSKV()})
+        kategorienbreite <- reactive({(max(minmax()) - min(minmax())) / num_classesSKV()})
         # y Wert für die Annotation
         anno_y <- reactive({max(density(minmax(), bw = kategorienbreite())$y)})
 
@@ -516,20 +517,23 @@ return_list_uni2 <- reactive({
         })
 
 
-
+binweite <- reactive({(max(bayesWerte()) - min(bayesWerte())) / num_classesSKV()})
 
 
        #### Plot Bayes Gleichverteilt ####
        output$plot_bayes_uni <- renderPlot({
          if (!input$p_bayes_uni) return(NULL)
 
+
      # Bayes Gleichverteilt
        ggplot(NULL, aes(x = bayesWerte())) +
-       geom_histogram(aes(y = after_stat(density)), fill = colours["est_bayes_uni"], bins = num_classesSKV(), alpha = .5) +
+       geom_histogram(aes(y = after_stat(density)), fill = colours["est_bayes_uni"],
+                      # bins = num_classesSKV(),
+                      binwidth = binweite(),
+                      alpha = .5) +
 
        # Prior
          prior_uni_layer() +
-
 
        # every sample as triangle
        geom_point(aes(x = bayesWerte(), y = 0), color = colours["est_bayes_uni"], shape = 17, size = 4) +
@@ -543,16 +547,11 @@ return_list_uni2 <- reactive({
 
        # mean over all samples
        geom_point(aes(x = mean_estBayes(), y = 0),  colour = colours["mean_est"], shape = 17, size = 4) +
-       geom_vline(aes(xintercept = mean_estBayes()), colour = colours["mean_est"], linetype = "dashed", linewidth = .75) +
-
+       geom_vline(aes(xintercept = mean_estBayes()),
+                  colour = colours["mean_est"], linetype = "dashed", linewidth = .75) +
 
        # Skalen, Theme, Labs etc.
          coord_cartesian(xlim = coord())  +
-
-       # # 2. y-Achse
-       # scale_y_continuous(
-       #   sec.axis = sec_axis( trans=~.*number())
-       # ) +
 
        labs(
          title = "Bayesschätzer mit gleichverteilter Priori",
@@ -566,15 +565,15 @@ return_list_uni2 <- reactive({
 
 
        #### Bayes Normalverteilt ####
-        #### Priori fehlt! ###
        output$plot_bayes_nv <- renderPlot({
          if (!input$p_bayes_nv) return(NULL)
 
-         print(num_classesSKV())
 
        ggplot(NULL, aes(x = bayesWerteNV())) +
        geom_histogram(aes(y = after_stat(density)), fill = colours["est_bayes_nv"],
-                      bins = num_classesSKV(), alpha = .5) +
+                      #bins = num_classesSKV(),
+                      binwidth = binweite(),
+                      alpha = .5) +
 
          prior_nv_layer() +
 
