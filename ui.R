@@ -98,11 +98,11 @@ ui <- fluidPage(
                           ## Überschriften & Text
                           wellPanel(title = "hier kannst du dir die Stichprobenkennwerte-Verteilungen
                                     für die verschiedenen Schätzer in einem Forest-Plot anzeigen lassen (oben rechts)",
-                                    strong("Forestplot"),
+                                    strong("Plot mit Konfidenzintervallen"),
                                     # p("Erlärungstext"),
 
                                     # Checkbox Forestplot
-                                    checkboxInput("p_forest", "Zeige den Forestplot mit allen Schätzern an", value = F)),
+                                    checkboxInput("p_forest", "Zeige den Plot mit Konfidenzintervallen aller Schätzer an", value = F)),
 
 
                           # Box für Mean und Minmax
