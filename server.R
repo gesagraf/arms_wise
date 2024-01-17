@@ -239,6 +239,7 @@ return_list_uni2 <- reactive({
 
 
      #### plots ####
+     # x_layer <- reactive({scale_x_continuous(breaks = seq(min_coord(), max_coord(), std()), limits = coord())})
 
      # single sample
      # Single Sample Plot erstellen, aber NICHT ausgeben; für die Legende
@@ -252,7 +253,6 @@ return_list_uni2 <- reactive({
          geom_histogram(aes(y = after_stat(density)), fill = "lightgrey",
                         colour = "lightgrey", bins = (num_classes()*2), alpha = .99) +
          #
-         xlim(coord()) +
 
          #        # mu
          geom_point(aes(x = mu(), y = 0, colour = "mu"), shape = 17, size = 4) +
@@ -264,6 +264,9 @@ return_list_uni2 <- reactive({
          #   sec.axis = sec_axis( trans=~.*number(), name = "Anzahl TN")
          # ) +
          #
+         xlim(coord()) +
+         # x_layer() +
+
          labs(
            title = paste0("Einzelne Stichprobe (#", specific(),")"),
            x = "x") +
@@ -434,7 +437,10 @@ return_list_uni2 <- reactive({
 
      # Mean
        ggplot(NULL, aes(x = estimators())) +
-       geom_histogram(aes(y = after_stat(density)), fill = colours["est_mean"], bins = num_classesSKV(), alpha = .5) +
+       geom_histogram(aes(y = after_stat(density)), fill = colours["est_mean"],
+                      # bins = num_classesSKV(),
+                      binwidth = binweite(),
+                      alpha = .5) +
        # every sample as triangle
        geom_point(aes(x = estimators(), y = 0), colour = colours["est_mean"], shape = 17, size = 4) +
 
@@ -451,7 +457,9 @@ return_list_uni2 <- reactive({
 
 
        # Skalen, Theme, Labs etc.
-       coord_cartesian(xlim = coord()) +
+        coord_cartesian(xlim = coord()) +
+         # x_layer() +
+
 
        # # 2. y-Achse
        # scale_y_continuous(
