@@ -203,7 +203,7 @@ p("b: den gesamten Plot abdeckt (-100 bis 100)"),
   # Show a plot of the generated distribution
   mainPanel(
         tabPanel("Stichprobenkennwerteverteilungen",
-                 style = "overflow-y:scroll; max-height: 600px",
+                 style = "overflow-x: scroll",
                  fluidRow(column(12, align="center", height = 20, br(".") , br("."), br("."))),
                 fluidRow(
                           column(6, shinycssloaders::withSpinner(
