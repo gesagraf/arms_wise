@@ -15,7 +15,7 @@ ui <- fluidPage(
                           # Kasten für die Populationsparameter
                           ## Überschriften & Text
                           wellPanel(title = "Einstellungen",
-                                    strong("Pupulationsparameter einstellen"),
+                                    strong("Populationsparameter einstellen"),
                                     # p("Erlärungstext"),
 
                                     # Slider Inputs
