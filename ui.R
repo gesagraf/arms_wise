@@ -8,7 +8,6 @@ ui <- fluidPage(
 
                  # Tab 1: Für die Plots
                  tabPanel(title = "Simulation",
-                          style = "overflow-y:scroll; max-height: 600px",
 
                           wellPanel(p("In diesem Tab kannst du grundsätzliche Einstellungen für die gesamte Simulation vornehmen.")),
 
@@ -46,7 +45,7 @@ ui <- fluidPage(
                                     sliderInput(inputId = "n",
                                                 "Größe der einzelnen Stichproben",
                                                 min = 2,
-                                                max = 200,
+                                                max = 150,
                                                 value = 30),
 
                                     ## Slider Stichprobenanzahl
@@ -55,13 +54,13 @@ ui <- fluidPage(
                                     ### Slider
                                     sliderInput(inputId = "number",
                                                 "Gesamtanzahl der Stichproben",
-                                                min = 1,
+                                                min = 10,
                                                 max = 1000,
                                                 value = 100))),
 
-                 # Tab 1: Für die Plots
+                 # Tab 2: Für die Plots
                  tabPanel(title = "Plots",
-                          style = "overflow-y:scroll; max-height: 600px",
+                          #style = "overflow-y:scroll",
 
                           wellPanel(p("In diesem Tab kannst du dir die verschiedenen Plots anzeigen lassen.")),
 
@@ -175,35 +174,39 @@ einstellen",
 
   )),
   tabPanel(title = "Aufgaben",
-           style = "overflow-y:scroll; max-height: 600px",
+          # style = "overflow-y:scroll; max-height: 1200px",
 
            wellPanel(p("In diesem Tab findest du Aufgaben, die dich durch die Plots leiten und dir helfen können, sie gut zu verstehen.")),
 
            strong("Aufgabe 1"),
-           p("Finde eine Einstellung, für die im Plot der einzelnen Stichprobe die Verteilung (grau)"),
-p("a: nur einen einzelnen Balken hat"),
-p("b: den gesamten Plot abdeckt (-100 bis 100)"),
-           strong("Aufgabe 2"),
+           p("Finde eine Einstellung für der Mittelwert, wo der rote Strich (µ) genau auf der 50 liegt"),
+          strong("Aufgabe 2"),
+          p("Verändere den Mittelwert und die Standardabweichung so, dass die Zahlen 0,50,100 auf der X-Achse zu lesen sind"),
+          strong("Aufgabe 3"),
+          p("Verschiebe die Größe der einzelnen Stichproben, bis das Histogramm optisch einer Normalverteilung an nächsten kommt"),
+          strong("Aufgabe 4"),
+          p("Schaue dir verschiedene spezifische Stichproben an, wieso unterscheiden sie sich?"),
+          strong("Aufgabe 5"),
            br(em("Aktiviere für diese Aufgabe die Plots der SKV des arithmetischen Mittels und des alternativen Schätzers")),
            p("Stelle die Stichprobengröße so ein, das die Plots der SKV vom arithmetischen Mittel und
              dem alternativen Schätzer identisch sind. (zur Erinnerung: der alternative Schätzer
              ist der Mittelwert des Minimums und Maximums)"),
-           strong("Aufgabe 3"),
+           strong("Aufgabe 6"),
            br(em("Aktiviere für diese Aufgabe die Plots der SKV des arithmetischen Mittels und des gleichverteilten Bayes-Schätzers")),
            p("Finde eine Einstellung, für die die Plots der SKV des arithmetischen Mittels und
-             des gleichverteilten Bayes-Schätzers identisch sind"),
-           strong("Aufgabe 4"),
-           br(em("Aktiviere für diese Aufgabe den Forest-Plot")),
-           p("Vegleiche die verschiedenen Schätzer im Forest-Plot. Welches ist der beste Schätzer?"),
+             des gleichverteilten Bayes-Schätzers ähnlich sind"),
+           strong("Aufgabe 7"),
+           br(em("Aktiviere für diese Aufgabe den Konfidenzintervall-Plot")),
+           p("Vergleiche die verschiedenen Schätzer im Konfidenzintervall-Plot. Welches ist der beste Schätzer?"),
            p("Kannst du die Regler so verändern, das einer der Schätzer deutlich besser ist als die anderen?"),
-           strong("Aufgabe 5"),
-           p("Für Aufgabe 4 gibt es 2 unterschiedliche Lösungen, findest du beide? Welche der beiden
+           strong("Aufgabe 8"),
+           p("Für Aufgabe 7 gibt es unterschiedliche Lösungen, findest du 2? Welche der
              Lösungen könntest du unter Umständen auch in der Forschung anwenden, und welche solltest du eher vermeiden?")),
       )),
   # Show a plot of the generated distribution
   mainPanel(
         tabPanel("Stichprobenkennwerteverteilungen",
-                 style = "overflow-x: scroll",
+                 #style = "overflow-x: scroll",
                  fluidRow(column(12, align="center", height = 20, br(".") , br("."), br("."))),
                 fluidRow(
                           column(6, shinycssloaders::withSpinner(
@@ -211,7 +214,7 @@ p("b: den gesamten Plot abdeckt (-100 bis 100)"),
                           column(6, shinycssloaders::withSpinner(
                                  plotOutput("forest"), type = getOption("spinner.type", 4)))
                           ),
-                 h3("Stichprobenkennwerteverteilungen verschiedender Schätzer"),
+                # h3("Stichprobenkennwerteverteilungen verschiedender Schätzer"),
                  # p("Die folgenden 4 Plots zeigen die Stichprobenkennwerteverteilungen der verschiedenen
                  # Schätzer. Jedes Dreieck symbolisiert eine der XX generierten Stichproben. Das umrandete
                  #   Dreieck zeigt die spezifische Stichprobe (Plot oben links)."),

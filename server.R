@@ -66,7 +66,7 @@ server <- function(input, output, session) {
 
     #### Bayes mit gleichverteilter Priori mit min max #####
     # calculate likelihood
-    mu_hat <- seq(-100, 100, length.out = lengthout)
+    mu_hat <- seq(-200, 200, length.out = lengthout)
 
     # density of prior
     prior_dens <- reactive(dunif(mu_hat, min_uni_priori(), max_uni_priori()))
@@ -438,8 +438,8 @@ return_list_uni2 <- reactive({
      # Mean
        ggplot(NULL, aes(x = estimators())) +
        geom_histogram(aes(y = after_stat(density)), fill = colours["est_mean"],
-                      # bins = num_classesSKV(),
-                      binwidth = binweite(),
+                      bins = num_classesSKV(),
+                      #binwidth = binweite(),
                       alpha = .5) +
        # every sample as triangle
        geom_point(aes(x = estimators(), y = 0), colour = colours["est_mean"], shape = 17, size = 4) +
