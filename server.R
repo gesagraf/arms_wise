@@ -492,7 +492,7 @@ return_list_uni2 <- reactive({
                            bins = num_classesSKV(), alpha = .5) +
 
             annotate("label",
-                     label = TeX(r"( $\frac{\max(x) - \min(x)}{2}$ )"),
+                     label = TeX(r"( $\frac{\max(x) + \min(x)}{2}$ )"),
                      x = mu() - 2 * std(), y = anno_y()) +
             # every sample as triangle
             geom_point(aes(x = minmax(), y = 0), color = colours["est_minmax"], shape = 17, size = 4) +

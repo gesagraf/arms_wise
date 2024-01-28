@@ -68,7 +68,7 @@ ui <- fluidPage(
                           # Kasten für die spezifische Stichprobe
                           ## Überschriften & Text
                           wellPanel(title = "hier kannst du dir eine bestimmte Stichprobe anzeigen lassen (Plot 1 oben links)",
-                                    strong("Spezifische Stichprobe auswählen"),
+                                    strong("Spezifische Stichprobe"),
                                     # p("Erlärungstext"),
 
                                     # Checkbox spezifische Stichprobe
@@ -107,7 +107,7 @@ ui <- fluidPage(
                           # Box für Mean und Minmax
                           wellPanel(title = "Hier kannst du dir die Stichprobenkennwerteverteilungen vom arithmetischen Mittel und dem alternativen Schätzer anzeigen lassen.",
                                     strong("Stichprobenkennwerteverteilungen"),
-                                    p("Von Mittelwert und alternativen Schätzer"),
+                                    p("Von Mittelwert und alternativem Schätzer"),
 
 
                                     checkboxInput("p_mean",
@@ -159,7 +159,7 @@ einstellen",
                 label = "Prior Mean",
                 min = -100,
                 max = 100,
-                value = 50),
+                value = 35),
 
     # Sidebar with a slider input for Prior Tau
     tags$style(HTML(".js-irs-7 .irs-single, .js-irs-7 .irs-bar-edge, .js-irs-7 .irs-bar {background: #440154FF; border-top: #440154FF; border-bottom: #440154FF}")),
@@ -167,7 +167,7 @@ einstellen",
                 label = "Prior Tau",
                 min = 1,
                 max = 100,
-                value = 10),
+                value = 5),
 
     checkboxInput("show_prior_nv", "Zeige den Prior des normalverteilten Bayes Schätzers", value = F)
 
@@ -179,28 +179,34 @@ einstellen",
            wellPanel(p("In diesem Tab findest du Aufgaben, die dich durch die Plots leiten und dir helfen können, sie gut zu verstehen.")),
 
            strong("Aufgabe 1"),
-           p("Finde eine Einstellung für der Mittelwert, wo der rote Strich (µ) genau auf der 50 liegt"),
+           p("Finde eine Einstellung für der Mittelwert, wo der rote Strich (µ) genau auf der 50 liegt."),
           strong("Aufgabe 2"),
-          p("Verändere den Mittelwert und die Standardabweichung so, dass die Zahlen 0,50,100 auf der X-Achse zu lesen sind"),
+          p("Verändere den Mittelwert und die Standardabweichung so, dass die Zahlen {0, 50, 100} auf der X-Achse zu lesen sind."),
           strong("Aufgabe 3"),
-          p("Verschiebe die Größe der einzelnen Stichproben, bis das Histogramm optisch einer Normalverteilung an nächsten kommt"),
+          p("Verschiebe die Größe der einzelnen Stichproben, bis das Histogramm optisch einer Normalverteilung an nächsten kommt."),
           strong("Aufgabe 4"),
           p("Schaue dir verschiedene spezifische Stichproben an, wieso unterscheiden sie sich?"),
           strong("Aufgabe 5"),
-           br(em("Aktiviere für diese Aufgabe die Plots der SKV des arithmetischen Mittels und des alternativen Schätzers")),
+           br(em("Aktiviere für diese Aufgabe die Plots der SKV des arithmetischen Mittels und des alternativen Schätzers.")),
            p("Stelle die Stichprobengröße so ein, das die Plots der SKV vom arithmetischen Mittel und
-             dem alternativen Schätzer identisch sind. (zur Erinnerung: der alternative Schätzer
-             ist der Mittelwert des Minimums und Maximums)"),
+             dem alternativen Schätzer identisch sind. (Zur Erinnerung: der alternative Schätzer
+             ist der Mittelwert des Minimums und Maximums.)"),
            strong("Aufgabe 6"),
-           br(em("Aktiviere für diese Aufgabe die Plots der SKV des arithmetischen Mittels und des gleichverteilten Bayes-Schätzers")),
+           br(em("Aktiviere für diese Aufgabe die Plots der SKV des arithmetischen Mittels und des gleichverteilten Bayes-Schätzers.")),
            p("Finde eine Einstellung, für die die Plots der SKV des arithmetischen Mittels und
-             des gleichverteilten Bayes-Schätzers ähnlich sind"),
-           strong("Aufgabe 7"),
-           br(em("Aktiviere für diese Aufgabe den Konfidenzintervall-Plot")),
+             des gleichverteilten Bayes-Schätzers maximal ähnlich sind."),
+          strong("Aufgabe 7"),
+          br(em("Aktiviere für diese Aufgabe den Plot des gleichverteilten Bayes-Schätzers und lade die Seite neu.")),
+          p("Der Mittelwert aller Bayesschätzer (schwarzer Strich) ist ziemlich eindeutig unterschiedlich zum tatsächlichen Poplulationsmittelwert (µ, roter Strich). Woran liegt das?"),
+          p("Finde eine Einstellung, in dem der Mean aller Bayesschätzer (schwarzer Strich) und der tatsächliche Populationsmittelwert (roter Strich) direkt übereinander liegen."),
+
+          strong("Aufgabe 8"),
+           br(em("Aktiviere für diese Aufgabe den Konfidenzintervall-Plot.")),
            p("Vergleiche die verschiedenen Schätzer im Konfidenzintervall-Plot. Welches ist der beste Schätzer?"),
-           p("Kannst du die Regler so verändern, das einer der Schätzer deutlich besser ist als die anderen?"),
-           strong("Aufgabe 8"),
-           p("Für Aufgabe 7 gibt es unterschiedliche Lösungen, findest du 2? Welche der
+           p("Wie kannst du die Regler so einstellen, das einer der Schätzer den Populationsmittelwert (µ) nicht mehr mit einschließt? "),
+          p("Kannst du die Regler so verändern, das einer der Schätzer deutlich besser ist als die anderen?"),
+           strong("Aufgabe 9"),
+           p("Für Aufgabe 8 gibt es unterschiedliche Lösungen, findest du 2? Welche der
              Lösungen könntest du unter Umständen auch in der Forschung anwenden, und welche solltest du eher vermeiden?")),
       )),
   # Show a plot of the generated distribution
