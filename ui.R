@@ -196,7 +196,7 @@ einstellen",
            p("Finde eine Einstellung, für die die Plots der SKV des arithmetischen Mittels und
              des gleichverteilten Bayes-Schätzers maximal ähnlich sind."),
           strong("Aufgabe 7"),
-          br(em("Aktiviere für diese Aufgabe den Plot des gleichverteilten Bayes-Schätzers und lade die Seite neu.")),
+          br(em("Lade für diese Aufgabe die Seite neu und aktiviere den Plot des normalverteilten Bayes-Schätzers.")),
           p("Der Mittelwert aller Bayesschätzer (schwarzer Strich) ist ziemlich eindeutig unterschiedlich zum tatsächlichen Poplulationsmittelwert (µ, roter Strich). Woran liegt das?"),
           p("Finde eine Einstellung, in dem der Mean aller Bayesschätzer (schwarzer Strich) und der tatsächliche Populationsmittelwert (roter Strich) direkt übereinander liegen."),
 
@@ -213,7 +213,7 @@ einstellen",
   mainPanel(
         tabPanel("Stichprobenkennwerteverteilungen",
                  #style = "overflow-x: scroll",
-                 fluidRow(column(12, align="center", height = 20, br(".") , br("."), br("."))),
+                 fluidRow(column(12, align="center", height = 20, br("."), br(".") , br("."), br("."))),
                 fluidRow(
                           column(6, shinycssloaders::withSpinner(
                             plotOutput("plot_samp"), type = getOption("spinner.type", 4))),
