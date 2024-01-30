@@ -196,7 +196,7 @@ einstellen",
            p("Finde eine Einstellung, für die die Plots der SKV des arithmetischen Mittels und
              des gleichverteilten Bayes-Schätzers maximal ähnlich sind."),
           strong("Aufgabe 7"),
-          br(em("Lade für diese Aufgabe die Seite neu und aktiviere den Plot des normalverteilten Bayes-Schätzers.")),
+          br(em("Lade für diese Aufgabe die Seite neu und aktiviere den Plot des normalverteilten Bayes-Schätzers")),
           p("Der Mittelwert aller Bayesschätzer (schwarzer Strich) ist ziemlich eindeutig unterschiedlich zum tatsächlichen Poplulationsmittelwert (µ, roter Strich). Woran liegt das?"),
           p("Finde eine Einstellung, in dem der Mean aller Bayesschätzer (schwarzer Strich) und der tatsächliche Populationsmittelwert (roter Strich) direkt übereinander liegen."),
 
@@ -251,6 +251,10 @@ absolutePanel(
   fixed = TRUE,
     fluidRow(column(12, height = 9, uiOutput("legendontop")))
   )
+,p("."),p("."),p("."),p(".")
+,p("Erstellt im Rahmen des ARMS II Seminars
+bei Prof. Dr. Florian Scharf. Projekt von Gesa Graf und Ian Buhmann.
+")
 
 
 )
