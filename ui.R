@@ -251,7 +251,7 @@ absolutePanel(
   fixed = TRUE,
     fluidRow(column(12, height = 9, uiOutput("legendontop")))
   )
-,p("."),p("."),p("."),p(".")
+,p("."),p("."),p(".")
 ,p("Erstellt im Rahmen des ARMS II Seminars
 bei Prof. Dr. Florian Scharf. Projekt von Gesa Graf und Ian Buhmann.
 ")
