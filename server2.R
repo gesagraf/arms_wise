@@ -76,15 +76,17 @@ server <- function(input, output, session) {
   # max 50*2.5*6
   #set to 6*std() since every
 
-  lengthout <- 2.5*abs(isolate({min_coord()-max_coord()}))
+  lengthout <- reactive(2.5*abs(min_coord()-max_coord()))
 
   # calculate likelihood
-  mu_hat <- isolate({seq(min_coord(), max_coord(), length.out = lengthout)})
+  mu_hat <- reactive({seq(min_coord(), max_coord(), length.out = lengthout())})
 
   # density of prior
-  prior_dens <- reactive(dunif(mu_hat, min_uni_priori(), max_uni_priori()))
+  prior_dens <- reactive(dunif(mu_hat(), min_uni_priori(), max_uni_priori()))
 
 
+
+  ##start computations
 
 
   ## get Likelihood of Date for all Bayes Estimates
@@ -100,7 +102,7 @@ server <- function(input, output, session) {
       likelihood_function <-
           # apply(matrix(c(samp_df[,i],rep(i_mu, nrow(samp_df))))
 
-          sapply(mu_hat, FUN = function(i_mu){                                # für jede Stichprobe wird die likelihood unter allen mu_hat werten ausgerechnet
+          sapply(mu_hat(), FUN = function(i_mu){                                # für jede Stichprobe wird die likelihood unter allen mu_hat werten ausgerechnet
             prod(dnorm(samp_df[ , i], mean = i_mu, sd = sd_i[i])) # prod = prdukt (rechnet einzelne wahrscheinlichkeiten zu likelihood zusammen)
           })                                                                  # die SP nehmen wir nv an, deswegen hier unabhängig von prior dnorm()
 
@@ -109,9 +111,8 @@ server <- function(input, output, session) {
 
 
 
-
         # Normierung der Likelihood
-        den_like <- Bolstad::sintegral(mu_hat, likelihood_function)      # Normierungskonstante
+        den_like <- Bolstad::sintegral(mu_hat(), likelihood_function)      # Normierungskonstante
         likelihood_function / den_like$value # normierte Likelihood
       # })
     })
@@ -121,7 +122,7 @@ server <- function(input, output, session) {
   #   # mit festgesetztem objekt
   #   # norm_likelihood_uni
   #   # mit berechnetem objekt
-  #   norm_likelihood_uni <- matrix(ncol = number(), nrow = lengthout)
+  #   norm_likelihood_uni <- matrix(ncol = number(), nrow = lengthout())
   #
   #
   #   for (i in 1:number()) {
@@ -137,7 +138,7 @@ server <- function(input, output, session) {
   #
   #
   #     # Normierung der Likelihood
-  #     den_like <- Bolstad::sintegral(mu_hat, likelihood_function)      # Normierungskonstante
+  #     den_like <- Bolstad::sintegral(mu_hat(), likelihood_function)      # Normierungskonstante
   #     likelihood_function_norm <- likelihood_function / den_like$value # normierte Likelihood
   #
   #     # normierte likelihood speicher, für die plots
@@ -150,7 +151,7 @@ server <- function(input, output, session) {
 
   return_list_uni2 <- reactive({
 
-    results <- matrix(ncol = number(), nrow = lengthout)
+    results <- matrix(ncol = number(), nrow = lengthout())
 
     # isolate({
       norm_likelihood_uni <- norm_likelihood() # likelihood_function_norm aus vorheriger for schleife dazu holen
@@ -167,7 +168,7 @@ server <- function(input, output, session) {
         posterior0 <- prior_dens() * norm_likelihood_uni[ , i]
         #
         #   # Posteriori normieren
-        den_post <- Bolstad::sintegral(mu_hat, posterior0)
+        den_post <- Bolstad::sintegral(mu_hat(), posterior0)
         posterior <- posterior0 / den_post$value
 
         # !!! Hier brauchen wir dringend eine Kontrollfunktion: wenn NaN, dann Fehlermeldung: "Die Daten sind bei deiner Gewählten gleichverteilten Priori (super starke annahme!!) unmöglich!"
@@ -187,7 +188,7 @@ server <- function(input, output, session) {
 
 
   # Wert von 'x' für das Maximum von 'y' finden
-  bayesWerte <- reactive(mu_hat[index_maximum()])
+  bayesWerte <- reactive(mu_hat()[index_maximum()])
 
 
 
@@ -198,23 +199,23 @@ server <- function(input, output, session) {
   #### Bayes mit nv Priori #####
   # Prior
 
-  prior_densNV <- reactive(dnorm(mu_hat, mean = mu_prior(), sd = tau_prior()))
+  prior_densNV <- reactive(dnorm(mu_hat(), mean = mu_prior(), sd = tau_prior()))
 
   # return_list_nv1 <- reactive({
-  #   norm_likelihood_nv = matrix(ncol = number(), nrow = lengthout)
+  #   norm_likelihood_nv = matrix(ncol = number(), nrow = lengthout())
   #
   #
   #   for (i in 1:number()) {
   #
   #     likelihood_function <-
-  #       sapply(mu_hat, FUN = function(i_mu){                                  # für jede Stichprobe wird die likelihood unter allen mu_hat werten ausgerechnet
+  #       sapply(mu_hat(), FUN = function(i_mu){                                  # für jede Stichprobe wird die likelihood unter allen mu_hat werten ausgerechnet
   #         prod(dnorm(samp_df()[ , i], mean = i_mu, sd = sd(samp_df()[ , i]))) # prod = produkt (rechnet einzelne wahrscheinlichkeiten zu likelihood zusammen)
   #       })                                                                      # die SP nehmen wir nv an, deswegen hier unabhängig von prior dnorm()
   #
   #
   #
   #     # Normierung der Likelihood #ich glaube wir müssen das nicht normieren aber macht es trotzdem Sinn? nicht so kleine zahlen
-  #     den_like <- Bolstad::sintegral(mu_hat, likelihood_function)      # Normierungskonstante
+  #     den_like <- Bolstad::sintegral(mu_hat(), likelihood_function)      # Normierungskonstante
   #     likelihood_function_norm <- likelihood_function / den_like$value # normierte Likelihood
   #
   #     # normierte likelihood speicher, für die plots
@@ -227,7 +228,7 @@ server <- function(input, output, session) {
 
   return_list_nv2 <- reactive({
 
-    resultsNV = matrix(ncol = number(), nrow = lengthout)
+    resultsNV = matrix(ncol = number(), nrow = lengthout())
     # isolate({
       norm_likelihood_nv <- norm_likelihood() # likelihood_function_norm aus vorheriger for schleife dazu holen
 
@@ -238,7 +239,7 @@ server <- function(input, output, session) {
         posterior0 <- prior_densNV() * norm_likelihood_nv[ , i]
 
         # Posteriori normieren # hier nochmal
-        den_post <- Bolstad::sintegral(mu_hat, posterior0)
+        den_post <- Bolstad::sintegral(mu_hat(), posterior0)
         posterior <- posterior0 / den_post$value
 
         resultsNV[ , i] <- posterior
@@ -256,8 +257,9 @@ server <- function(input, output, session) {
     apply(return_list_nv2(), MARGIN = 2, which.max)
   )
 
+
   # Wert von 'x' für das Maximum von 'y' finden
-  bayesWerteNV <- reactive(mu_hat[index_maximumNV()])
+  bayesWerteNV <- reactive(mu_hat()[index_maximumNV()])
 
   # over all mean Bayes
   mean_estBayesNV <- reactive(mean(bayesWerteNV()))
@@ -379,8 +381,8 @@ server <- function(input, output, session) {
   # Bayes Spezifika
   likelihood_layer <- reactive({
     if (input$show_likelihood == TRUE){
-      list(     geom_line(aes(x = mu_hat, y = resultsunispecific(), color = "likelihood")),
-                geom_area(aes(x = mu_hat, y = resultsunispecific()), alpha = .4, fill = colours["likelihood"]))
+      list(     geom_line(aes(x = mu_hat(), y = resultsunispecific(), color = "likelihood")),
+                geom_area(aes(x = mu_hat(), y = resultsunispecific()), alpha = .4, fill = colours["likelihood"]))
     } else NULL
   })
 
@@ -388,8 +390,8 @@ server <- function(input, output, session) {
   prior_uni_layer <- reactive({
     if (input$show_prior_uni == TRUE){
       list(
-        geom_line(aes(x = mu_hat, y = prior_dens()), color = colours["prior_uni"]),
-        geom_area(aes(x = mu_hat, y = prior_dens()), fill = colours["prior_uni"], alpha = .4)
+        geom_line(aes(x = mu_hat(), y = prior_dens()), color = colours["prior_uni"]),
+        geom_area(aes(x = mu_hat(), y = prior_dens()), fill = colours["prior_uni"], alpha = .4)
       )
     } else NULL
   })
@@ -398,8 +400,8 @@ server <- function(input, output, session) {
   prior_nv_layer <- reactive({
     if (input$show_prior_nv == TRUE){
       list(
-        geom_line(aes(x = mu_hat, y = prior_densNV()), color = colours["prior_nv"]),
-        geom_area(aes(x = mu_hat, y = prior_densNV()),fill = colours["prior_nv"], alpha = .4)
+        geom_line(aes(x = mu_hat(), y = prior_densNV()), color = colours["prior_nv"]),
+        geom_area(aes(x = mu_hat(), y = prior_densNV()),fill = colours["prior_nv"], alpha = .4)
       )
     } else NULL
   })
