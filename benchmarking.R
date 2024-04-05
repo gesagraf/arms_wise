@@ -1,5 +1,4 @@
 if(!require(microbenchmark))install.packages("microbenchmark");library(microbenchmark)
-if(!require(Rfast))install.packages("Rfast");library(Rfast)
 
 ## benchmark likelihood estimation
 set.seed(666)
