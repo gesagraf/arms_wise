@@ -52,7 +52,7 @@ server <- function(input, output, session) {
 
   plot_l<-reactiveValues()
 
-  specific<-reactiveVal()
+  specific<-reactive(input$specific)
   norm_likelihood<-reactiveVal()
   estimators<-reactiveVal()
   minmax<-reactiveVal()
@@ -100,7 +100,7 @@ server <- function(input, output, session) {
     std <- input$std                      # Population sd
     n  <- input$n                       # sample size
     number(input$number)                 # number of samples
-    specific(input$specific)             # specific sample
+    # specific()             # specific sample
 
     # mu_prior <-  input$mu_prior            # mittelwert der priori
     # tau_prior <- input$tau_prior          # sd der priori
@@ -444,7 +444,7 @@ server <- function(input, output, session) {
     # reactive({
     ggplot(NULL, aes(x = sampfdfspecific)) +
       # Platzhalter
-      geom_point(aes(x = bayeswertespecific, y = 0, colour = "mean_est"), shape = 24, size = 1) +
+      geom_point(aes(x = bayeswertespecific, y = 0, colour = "mean_est"), shape = 24, size = 1, alpha = 0) +
 
       #        #
       #        # Verteilung
@@ -571,6 +571,8 @@ server <- function(input, output, session) {
   })
 
   observe({
+    req(p_sample_basis())
+    # browser() #debug
     # reactive({
     # if (input$p_samp) {
     plot_l$plot_samp <-p_sample_basis() +
@@ -682,10 +684,7 @@ server <- function(input, output, session) {
     # req(bayesWerte(), specific(), plot_l$plot_samp)
     req(done_computing())
     # browser() #debug
-    plot_l$plot_samp +
-
-      # frame selected sample
-      geom_point(aes(x = bayesWerte()[specific()], y = 0), colour = "magenta", fill = colours["est_bayes_uni"], shape = 24, size = 8)
+    plot_l$plot_samp
   })
 
   output$plot_mean <- renderPlot({
@@ -766,10 +765,14 @@ server <- function(input, output, session) {
     #     geom_point(aes(x = bayesWerte()[specific()], y = 0), colour = "magenta", fill = colours["est_bayes_uni"], shape = 24, size = 8) +
     #     mu_layer()
     #   #
+
       if (input$show_prior_uni == TRUE) {
-        browser() #debug
-        plot_l$plot_bayes_uni<-plot_l$plot_bayes_uni + isolate(prior_uni_layer())
+        isolate({
+        plot_l$plot_bayes_uni<-plot_l$plot_bayes_uni + prior_uni_layer()
+        })
       }
+
+
     # })
 
 
@@ -803,11 +806,12 @@ server <- function(input, output, session) {
       #sample specific
       geom_point(aes(x = bayesWerteNV()[specific()], y = 0), colour = "magenta", fill = colours["est_bayes_nv"], shape = 24, size = 8) +
 
+      mu_layer() +
+
       # mean over all samples
       geom_point(aes(x = mean_estBayesNV, y = 0),  colour = colours["mean_est"], shape = 17, size = 4) +
       geom_vline(aes(xintercept = mean_estBayesNV), colour = colours["mean_est"], linetype = "dashed", linewidth = .75) +
 
-      mu_layer() +
 
       # Skalen, Theme, Labs etc.
       coord_cartesian(xlim = coord())  +
@@ -833,7 +837,12 @@ server <- function(input, output, session) {
     #
     #
     #
-    if (input$show_prior_nv == TRUE) plot_l$plot_bayes_nv <- plot_l$plot_bayes_nv +  isolate(prior_nv_layer())
+    if (input$show_prior_nv == TRUE){
+      isolate({
+        plot_l$plot_bayes_nv <- plot_l$plot_bayes_nv +  isolate(prior_nv_layer())
+      })
+    }
+
     #
     # # browser() #debug
     return(plot_l$plot_bayes_nv)
