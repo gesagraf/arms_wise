@@ -13,3 +13,7 @@ profvis({
   runApp(shinyApp(ui, server))
 })
 
+source("server_new.R")
+profvis({
+  runApp(shinyApp(ui, server))
+})
