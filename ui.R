@@ -56,7 +56,8 @@ ui <- fluidPage(
                                                 "Gesamtanzahl der Stichproben",
                                                 min = 10,
                                                 max = 1000,
-                                                value = 100))),
+                                                value = 100)),
+                          actionButton("compute", "Draw Random Samples")),
 
                  # Tab 2: Für die Plots
                  tabPanel(title = "Plots",
@@ -215,27 +216,27 @@ einstellen",
                  #style = "overflow-x: scroll",
                  fluidRow(column(12, align="center", height = 20, br("."), br(".") , br("."), br("."))),
                 fluidRow(
-                          column(6, shinycssloaders::withSpinner(
-                            plotOutput("plot_samp"), type = getOption("spinner.type", 4))),
-                          column(6, shinycssloaders::withSpinner(
-                                 plotOutput("forest"), type = getOption("spinner.type", 4)))
+                  conditionalPanel("input.p_samp == 1", column(6, shinycssloaders::withSpinner(
+                            plotOutput("plot_samp"), type = getOption("spinner.type", 4)))),
+                          conditionalPanel("input.p_forest == 1", column(6, shinycssloaders::withSpinner(
+                                 plotOutput("forest"), type = getOption("spinner.type", 4))))
                           ),
                 # h3("Stichprobenkennwerteverteilungen verschiedender Schätzer"),
                  # p("Die folgenden 4 Plots zeigen die Stichprobenkennwerteverteilungen der verschiedenen
                  # Schätzer. Jedes Dreieck symbolisiert eine der XX generierten Stichproben. Das umrandete
                  #   Dreieck zeigt die spezifische Stichprobe (Plot oben links)."),
                 fluidRow(
-                         column(6, shinycssloaders::withSpinner(
-                                plotOutput("plot_mean"), type = getOption("spinner.type", 4))),
-                         column(6, shinycssloaders::withSpinner(
-                                plotOutput("plot_minmax"), type = getOption("spinner.type", 4)))
+                         conditionalPanel("input.p_mean == 1", column(6, shinycssloaders::withSpinner(
+                                plotOutput("plot_mean"), type = getOption("spinner.type", 4)))),
+                         conditionalPanel("input.p_minmax == 1", column(6, shinycssloaders::withSpinner(
+                                plotOutput("plot_minmax"), type = getOption("spinner.type", 4))))
 
                 ),
                 fluidRow(
-                         column(6, shinycssloaders::withSpinner(
-                                plotOutput("plot_bayes_uni"), type = getOption("spinner.type", 4))),
-                         column(6, shinycssloaders::withSpinner(
-                                plotOutput("plot_bayes_nv"), type = getOption("spinner.type", 4)))
+                         conditionalPanel("input.p_bayes_uni == 1", column(6, shinycssloaders::withSpinner(
+                                plotOutput("plot_bayes_uni"), type = getOption("spinner.type", 4)))),
+                         conditionalPanel("input.p_bayes_nv == 1", column(6, shinycssloaders::withSpinner(
+                                plotOutput("plot_bayes_nv"), type = getOption("spinner.type", 4))))
 
         )
       )
