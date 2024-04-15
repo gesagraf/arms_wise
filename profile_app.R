@@ -1,7 +1,7 @@
 if(!require(profvis))install.packages("profvis");library(profvis)
 library(shiny)
 source("ui.R")
-source("server.R")
+source("server_old.R")
 
 profvis({
   runApp(shinyApp(ui, server))
@@ -13,7 +13,7 @@ profvis({
   runApp(shinyApp(ui, server))
 })
 
-source("server_new.R")
+source("server.R") #newest server version
 profvis({
   runApp(shinyApp(ui, server))
 })
