@@ -11,6 +11,13 @@ server <- function(input, output, session) {
 
   set.seed(12345)
 
+  #functions
+  which.max_custom<-function(...){
+    x<-which.max(...)
+    if(length(x) == 0) return(NA) else return(x)
+  }
+
+
   ## constants
 
   colours <- c(viridis(7, direction = -1), "red", "black")
@@ -69,11 +76,15 @@ server <- function(input, output, session) {
   # mean_estBayesNV<-reactiveVal()
   coord<-reactiveVal()
   binweite<-reactiveVal()
+  binweiteNV<-reactiveVal()
   done_computing<-reactiveVal()
   mu_layer<-reactiveVal()
   samp_df<-reactiveVal()
   mu_forest<-reactiveVal()
   num_classes<-reactiveVal()
+  nas_NV<-reactiveVal()
+  nas_uni<-reactiveVal()
+  mu<-reactiveVal()
 
 
 
@@ -146,6 +157,7 @@ server <- function(input, output, session) {
     #1000/400 = 2.5
     # use same ratio
     # max 50*2.5*6
+    # browser() #debug
 
 
     lengthout(2.5*abs(min_coord-max_coord))
@@ -371,16 +383,19 @@ server <- function(input, output, session) {
         theme_bw()
     # })
 
-
+    # browser() #debug
 
     mu_layer(list(
       geom_point(aes(x = mu, y = 0), colour = colours["mu"], shape = 17, size = 4),
         geom_vline(aes(xintercept = mu), colour = colours["mu"], linewidth = 1))
     )
+    # browser() #debug
 
     mu_forest(list(
       geom_vline(aes(xintercept = mu), colour = colours["mu"], linewidth = 1)
     ))
+
+    mu(mu)
 
 
 
@@ -390,28 +405,34 @@ server <- function(input, output, session) {
   }) #end of observeEvent
 
   observe({
-    req(estimators(), minmax(), bayesWerte(), bayesWerteNV())
+    req(done_computing())
     ## forest needs to get into observer or directly renderPlot
     # create data for the forest plot
+    # browser() #debug
+
+
+
+    #
     dat <- data.frame( #prev reactive
       Index = 1:4, # This provides an order to the data
-      label = c("Arithmetisches Mittel", "Alternativer Schätzer", "Bayesschätzer mit gleichverteilter Priori", "Bayesschätzer mit normalverteilter Priori"),
-      OR = c(mean(estimators()), mean(minmax()), mean(bayesWerte()), mean(bayesWerteNV())), # Odds Ration
+      label = c("Arithmetisches Mittel", "Alternativer Schätzer", NA, NA),
+      OR = c(mean(estimators()), mean(minmax()),
+             NA, NA), # Odds Ration
       # Lower Border
       LL = c(
         mean(estimators()) - 1.96 * sd(estimators()), mean(minmax()) - 1.96 * sd(minmax()),
-        mean(bayesWerte()) - 1.96 * sd(bayesWerte()), mean(bayesWerteNV()) - 1.96 * sd(bayesWerteNV())),
+        NA, NA),
       # Upper border
       UL = c(
-        mean(estimators()) + 1.96 * sd(estimators()), mean(minmax()) + 1.96 * sd(minmax()),
-        mean(bayesWerte()) + 1.96 * sd(bayesWerte()), mean(bayesWerteNV()) + 1.96 * sd(bayesWerteNV())),
-      frb = colours[c("est_mean", "est_minmax", "est_bayes_uni", "est_bayes_nv")])
+        mean(estimators()) + 1.96 * sd(estimators()), mean(minmax()) + 1.96 * sd(minmax()), NA, NA),
+      frb = colours[c("est_mean", "est_minmax", NA, NA)])
+    # browser() #debug
 
-    plot_l$forest<-
+    p_forest<-
       # renderPlot({
       # if (input$p_forest) {
-      ggplot(dat, aes(y = Index, x = OR)) +
-      geom_errorbarh(aes(xmin = LL, xmax = UL), height = 0.25, linewidth = 1, colour = dat$frb) +
+      ggplot(dat, aes(y = Index, x = OR, xmin = LL, xmax = UL)) +
+      geom_errorbarh(height = 0.25, linewidth = 1, colour = dat$frb) +
       geom_point(shape = 22, colour = "black", fill = "white") +
       mu_forest() +
 
@@ -430,6 +451,89 @@ server <- function(input, output, session) {
       ) +
       theme_bw()
     # }
+
+
+    if(all(is.na(bayesWerte()))){
+      p_forest<-p_forest + geom_text(aes(y = 3, x = mu(), label = paste0(
+        "All posteriori values are NA \nchange prior settings"
+      )))
+
+    } else{
+      req(bayesWerte())
+      bayes_mean<-mean(bayesWerte(), na.rm = TRUE)
+      bayes_sd<-sd(bayesWerte(), na.rm = TRUE)
+      bay_dat<-list(Index = 3,
+                          label ="Bayesschätzer mit gleichverteilter Priori",
+                          OR = bayes_mean,
+                          LL = bayes_mean - 1.96 * bayes_sd,
+                          UL = bayes_mean + 1.96 * bayes_sd,
+                          frb = colours["est_bayes_uni"])
+      dat[bay_dat$Index, ]<-bay_dat
+      p_forest<-ggplot(dat, aes(y = Index, x = OR, xmin = LL, xmax = UL)) +
+        geom_errorbarh(height = 0.25, linewidth = 1, colour = dat$frb) +
+        geom_point(shape = 22, colour = "black", fill = "white") +
+        mu_forest() +
+
+        scale_y_continuous(breaks = 1:4, labels =
+                             c(est_mean = "Arithmetisches \n Mittel",
+                               est_minmax = "Alternativer \n Schätzer",
+                               est_bayes_uni = "Bayesschätzer: \n gleichverteile \n Priori",
+                               est_bayes_nv = "Bayesschätzer: \n normalverteile \n Priori"),
+                           trans = "reverse") +
+        xlim(coord()) +
+
+        labs(
+          title = "Konfidenzintervalle der einzelnen Schätzer",
+          x = "Werte gemittelt",
+          y = NULL
+        ) +
+        theme_bw()
+    }
+
+
+    if(all(is.na(bayesWerteNV()))){
+      p_forest<-p_forest + geom_text(aes(y = 4, x = mu(), label = paste0(
+        "All posteriori values are NA \nchange prior settings"
+      )))
+
+    } else{
+      req(bayesWerteNV())
+      bayes_meanNV<-mean(bayesWerteNV(), na.rm = TRUE)
+      bayes_sdNV<-sd(bayesWerteNV(), na.rm = TRUE)
+      bayNV_dat<-list(Index = 4,
+                          label = "Bayesschätzer mit normalverteilter Priori",
+                          OR = bayes_meanNV,
+                          LL = bayes_meanNV - 1.96 * bayes_sdNV,
+                          UL = bayes_meanNV + 1.96 * bayes_sdNV,
+                          frb = colours["est_bayes_nv"])
+      dat[bayNV_dat$Index, ]<-bayNV_dat
+      p_forest<-ggplot(dat, aes(y = Index, x = OR, xmin = LL, xmax = UL)) +
+        geom_errorbarh(height = 0.25, linewidth = 1, colour = dat$frb) +
+        geom_point(shape = 22, colour = "black", fill = "white") +
+        mu_forest() +
+
+        scale_y_continuous(breaks = 1:4, labels =
+                             c(est_mean = "Arithmetisches \n Mittel",
+                               est_minmax = "Alternativer \n Schätzer",
+                               est_bayes_uni = "Bayesschätzer: \n gleichverteile \n Priori",
+                               est_bayes_nv = "Bayesschätzer: \n normalverteile \n Priori"),
+                           trans = "reverse") +
+        xlim(coord()) +
+
+        labs(
+          title = "Konfidenzintervalle der einzelnen Schätzer",
+          x = "Werte gemittelt",
+          y = NULL
+        ) +
+        theme_bw()
+      #this needs to be double coded since %+% is not working here so we cant change the plot but redo it every time
+      if(all(is.na(bayesWerte())))  p_forest<-p_forest + geom_text(aes(y = 3, x = mu(), label = paste0(
+        "All posteriori values are NA \nchange prior settings"
+      )))
+    }
+    plot_l$forest<-p_forest
+
+
 
   })
 
@@ -503,8 +607,9 @@ server <- function(input, output, session) {
   # Bayes uni
   bayes_uni_layer <-
     reactive({
-      req(bayesWerte(), specific()) #require this values to be not empty
+      req(specific()) #require this values to be not empty
       # browser() #debug
+      if(all(is.na(bayesWerte()))) return(NULL)
       if (input$p_bayes_uni == TRUE){
       list(geom_point(aes(x = bayesWerte()[specific()], y = 0),
                       colour = "magenta", shape = 24, fill = colours["est_bayes_uni"], size = 8),
@@ -514,8 +619,8 @@ server <- function(input, output, session) {
 
   # bayes nv
   bayes_nv_layer <-reactive({
-    req(bayesWerteNV(), specific()) #require this values to be not empty
-
+    req(specific()) #require this values to be not empty
+    if(all(is.na(bayesWerte()))) return(NULL)
     if (input$p_bayes_nv == TRUE){
       list(geom_point(aes(x = bayesWerteNV()[specific()], y = 0),
                       colour = "magenta", shape = 24, size = 8, fill = colours["est_bayes_nv"], ),
@@ -627,10 +732,14 @@ server <- function(input, output, session) {
 
     # })
     # Index des Maximums in jeder Spalte finden
-    index_maximum <- apply(results, MARGIN = 2, which.max) #prev reactive
+    index_maximum <- apply(results, MARGIN = 2, which.max_custom) #prev reactive
     # Wert von 'x' für das Maximum von 'y' finden
     bayesWerte(mu_hat()[index_maximum])
-    binweite((max(bayesWerte()) - min(bayesWerte())) / 4)
+    # browser() #debug
+    nas_uni(length(which(is.na(bayesWerte()))))
+
+    binweite<-((max(bayesWerte()) - min(bayesWerte())) / 4)
+    if(is.na(binweite)) binweite(NULL) else if(binweite>0)binweite(binweite)else if(binweite == 0) binweite(1) else binweite(NULL)
 
 
 
@@ -667,11 +776,18 @@ server <- function(input, output, session) {
 
 
     # })
+        # browser() #debug
 
     # Index des Maximums in jeder Spalte finden
-    index_maximumNV <- apply(resultsNV, MARGIN = 2, which.max) #prev reactive
+    index_maximumNV <- apply(resultsNV, MARGIN = 2, which.max_custom) #prev reactive
     # Wert von 'x' für das Maximum von 'y' finden
     bayesWerteNV(mu_hat()[index_maximumNV])
+    # browser() #debug
+    nas_NV(length(which(is.na(bayesWerteNV()))))
+
+    binweiteNV<-((max(bayesWerteNV()) - min(bayesWerteNV())) / 4)
+    if(is.na(binweiteNV)) binweiteNV(NULL) else if(binweiteNV>0) binweiteNV(binweiteNV)else if(binweiteNV == 0) binweiteNV(1) else binweiteNV(NULL)
+
 
 
   })
@@ -713,9 +829,14 @@ server <- function(input, output, session) {
 
 
     # over all mean Bayes
-    mean_estBayes <- mean(bayesWerte()) #prev reactive
+    mean_estBayes <- mean(bayesWerte(), na.rm = TRUE) #prev reactive
+    # browser()
 
-
+    if(all(is.na(bayesWerte()))){
+      plot_l$plot_bayes_uni<-ggplot(NULL) + geom_text(aes(y = 0, x =0, label = paste0(
+        "All posterior values are NA \n please choose another prior"
+      ))) + ggtitle("Bayesschätzer mit gleichverteilter Priori") + theme_minimal()
+    } else{
 
     # browser() #debug
     plot_l$plot_bayes_uni <- ggplot(NULL, aes(x = bayesWerte())) +
@@ -757,20 +878,14 @@ server <- function(input, output, session) {
 
 
 
-    # isolate({
-    #   plot_l$plot_bayes_uni <- plot_l$plot_bayes_uni +
-    #
-    #     # frame selected sample
-    #     # geom_point(aes(x = minmax()[specific()], y = 0), colour = "magenta", fill = colours["est_minmax"], shape = 24, size = 8) +
-    #     geom_point(aes(x = bayesWerte()[specific()], y = 0), colour = "magenta", fill = colours["est_bayes_uni"], shape = 24, size = 8) +
-    #     mu_layer()
-    #   #
+
 
       if (input$show_prior_uni == TRUE) {
         isolate({
         plot_l$plot_bayes_uni<-plot_l$plot_bayes_uni + prior_uni_layer()
         })
       }
+    }
 
 
     # })
@@ -782,66 +897,67 @@ server <- function(input, output, session) {
   output$plot_bayes_nv <- renderPlot({
     # req(bayesWerteNV(), specific(), plot_l$plot_bayes_nv)
     req(done_computing())
+    # browser() #debug
 
     # over all mean Bayes
-    mean_estBayesNV <- mean(bayesWerteNV()) #prev reactive
+    mean_estBayesNV <- mean(bayesWerteNV(), na.rm = TRUE) #prev reactive
+
+    if(all(is.na(bayesWerteNV()))){
+      plot_l$plot_bayes_nv<-ggplot(NULL) + geom_text(aes(y = 0, x =0, label = paste0(
+        "All posterior values are NA \n please choose another prior"
+      ))) + ggtitle("Bayesschätzer mit normalverteilter Priori") + theme_minimal()
+    } else{
+      plot_l$plot_bayes_nv <-
+        # renderPlot({
+        # if (!input$p_bayes_nv) return(NULL)
 
 
-    plot_l$plot_bayes_nv <-
-      # renderPlot({
-      # if (!input$p_bayes_nv) return(NULL)
-
-
-      ggplot(NULL, aes(x = bayesWerteNV())) +
-      geom_histogram(aes(y = after_stat(density)), fill = colours["est_bayes_nv"],
-                     #bins = num_classesSKV(),
-                     binwidth = binweite(),
-                     alpha = .5) +
+        ggplot(NULL, aes(x = bayesWerteNV())) +
+        geom_histogram(aes(y = after_stat(density)), fill = colours["est_bayes_nv"],
+                       #bins = num_classesSKV(),
+                       binwidth = binweite(),
+                       alpha = .5) +
 
 
 
-      # every sample as triangle
-      geom_point(aes(x = bayesWerteNV(), y = 0), colour = colours["est_bayes_nv"], shape = 17, size = 4)   +
+        # every sample as triangle
+        geom_point(aes(x = bayesWerteNV(), y = 0), colour = colours["est_bayes_nv"], shape = 17, size = 4)   +
 
-      #sample specific
-      geom_point(aes(x = bayesWerteNV()[specific()], y = 0), colour = "magenta", fill = colours["est_bayes_nv"], shape = 24, size = 8) +
+        #sample specific
+        geom_point(aes(x = bayesWerteNV()[specific()], y = 0), colour = "magenta", fill = colours["est_bayes_nv"], shape = 24, size = 8) +
 
-      mu_layer() +
+        mu_layer() +
 
-      # mean over all samples
-      geom_point(aes(x = mean_estBayesNV, y = 0),  colour = colours["mean_est"], shape = 17, size = 4) +
-      geom_vline(aes(xintercept = mean_estBayesNV), colour = colours["mean_est"], linetype = "dashed", linewidth = .75) +
-
-
-      # Skalen, Theme, Labs etc.
-      coord_cartesian(xlim = coord())  +
-
-      # # 2. y-Achse
-      # scale_y_continuous(
-      #   sec.axis = sec_axis( trans=~.*number())
-      # ) +
-
-      labs(
-        title = "Bayesschätzer mit normalverteilter Priori",
-        x = expression(bar(x)),
-        y = NULL,
-        colour = NULL) +
-      theme_bw()
+        # mean over all samples
+        geom_point(aes(x = mean_estBayesNV, y = 0),  colour = colours["mean_est"], shape = 17, size = 4) +
+        geom_vline(aes(xintercept = mean_estBayesNV), colour = colours["mean_est"], linetype = "dashed", linewidth = .75) +
 
 
-    # plot_l$plot_bayes_nv<- plot_l$plot_bayes_nv +
-    #
-    #   # frame selected sample
-    #   geom_point(aes(x = bayesWerteNV()[specific()], y = 0), colour = "magenta", fill = colours["est_bayes_nv"], shape = 24, size = 8) +
-    #   mu_layer()
-    #
-    #
-    #
-    if (input$show_prior_nv == TRUE){
-      isolate({
-        plot_l$plot_bayes_nv <- plot_l$plot_bayes_nv +  isolate(prior_nv_layer())
-      })
+        # Skalen, Theme, Labs etc.
+        coord_cartesian(xlim = coord())  +
+
+        # # 2. y-Achse
+        # scale_y_continuous(
+        #   sec.axis = sec_axis( trans=~.*number())
+        # ) +
+
+        labs(
+          title = "Bayesschätzer mit normalverteilter Priori",
+          x = expression(bar(x)),
+          y = NULL,
+          colour = NULL) +
+        theme_bw()
+
+
+      if (input$show_prior_nv == TRUE){
+        isolate({
+          plot_l$plot_bayes_nv <- plot_l$plot_bayes_nv +  isolate(prior_nv_layer())
+        })
+      }
+
     }
+
+
 
     #
     # # browser() #debug
@@ -849,6 +965,11 @@ server <- function(input, output, session) {
     })
   #
   #
+  output$nas_uni<-renderText({
+    req(nas_uni());
+    paste0(nas_uni(),"/", number(), " posterior values are NAs")})
+  output$nas_NV<-renderText({req(nas_NV()); paste0(nas_NV(),"/", number(), " posterior values are NAs")})
+
   #### Legende ####
   output$legendontop <- renderUI({
     img(src='legende.png')
