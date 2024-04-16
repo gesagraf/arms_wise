@@ -134,7 +134,8 @@ wahrscheinlich sind, aber Werte außerhalb der Range unmöglich sind.",
                 max = 100,
                 value = c(-50,5)),
 
-    checkboxInput("show_prior_uni", "Zeige den Prior des gleichverteilten Bayes Schätzers", value = F)
+    checkboxInput("show_prior_uni", "Zeige den Prior des gleichverteilten Bayes Schätzers", value = F),
+    textOutput("nas_uni")
 
 
 
@@ -170,7 +171,8 @@ einstellen",
                 max = 100,
                 value = 5),
 
-    checkboxInput("show_prior_nv", "Zeige den Prior des normalverteilten Bayes Schätzers", value = F)
+    checkboxInput("show_prior_nv", "Zeige den Prior des normalverteilten Bayes Schätzers", value = F),
+    textOutput("nas_NV")
 
 
   )),
