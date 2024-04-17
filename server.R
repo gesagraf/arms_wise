@@ -834,7 +834,7 @@ server <- function(input, output, session) {
 
     if(all(is.na(bayesWerte()))){
       plot_l$plot_bayes_uni<-ggplot(NULL) + geom_text(aes(y = 0, x =0, label = paste0(
-        "All posterior values are NA \n please choose another prior"
+        "All posterior values are NA \n please choose a different prior"
       ))) + ggtitle("Bayesschätzer mit gleichverteilter Priori") + theme_minimal()
     } else{
 
@@ -904,7 +904,7 @@ server <- function(input, output, session) {
 
     if(all(is.na(bayesWerteNV()))){
       plot_l$plot_bayes_nv<-ggplot(NULL) + geom_text(aes(y = 0, x =0, label = paste0(
-        "All posterior values are NA \n please choose another prior"
+        "All posterior values are NA \n please choose a different prior"
       ))) + ggtitle("Bayesschätzer mit normalverteilter Priori") + theme_minimal()
     } else{
       plot_l$plot_bayes_nv <-
