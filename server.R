@@ -965,10 +965,10 @@ server <- function(input, output, session) {
     })
   #
   #
-  output$nas_uni<-renderText({
-    req(nas_uni());
-    paste0(nas_uni(),"/", number(), " posterior values are NAs")})
-  output$nas_NV<-renderText({req(nas_NV()); paste0(nas_NV(),"/", number(), " posterior values are NAs")})
+  # output$nas_uni<-renderText({
+  #   req(nas_uni());
+  #   paste0(nas_uni(),"/", number(), " posterior values are NAs")})
+  # output$nas_NV<-renderText({req(nas_NV()); paste0(nas_NV(),"/", number(), " posterior values are NAs")})
 
   #### Legende ####
   output$legendontop <- renderUI({
