@@ -45,6 +45,43 @@ server <- function(input, output, session) {
     updateSliderInput(inputId = "specific", max = input$number)
   })
 
+  # observeEvent(input$pop_out, {
+  #   showModal(modalDialog(
+  #     strong("Aufgabe 1"),
+  #     p("Finde eine Einstellung für der Mittelwert, wo der rote Strich (µ) genau auf der 50 liegt."),
+  #     strong("Aufgabe 2"),
+  #     p("Verändere den Mittelwert und die Standardabweichung so, dass die Zahlen {0, 50, 100} auf der X-Achse zu lesen sind."),
+  #     strong("Aufgabe 3"),
+  #     p("Verschiebe die Größe der einzelnen Stichproben, bis das Histogramm optisch einer Normalverteilung an nächsten kommt."),
+  #     strong("Aufgabe 4"),
+  #     p("Schaue dir verschiedene spezifische Stichproben an, wieso unterscheiden sie sich?"),
+  #     strong("Aufgabe 5"),
+  #     br(em("Aktiviere für diese Aufgabe die Plots der SKV des arithmetischen Mittels und des alternativen Schätzers.")),
+  #     p("Stelle die Stichprobengröße so ein, das die Plots der SKV vom arithmetischen Mittel und
+  #            dem alternativen Schätzer identisch sind. (Zur Erinnerung: der alternative Schätzer
+  #            ist der Mittelwert des Minimums und Maximums.)"),
+  #     strong("Aufgabe 6"),
+  #     br(em("Aktiviere für diese Aufgabe die Plots der SKV des arithmetischen Mittels und des gleichverteilten Bayes-Schätzers.")),
+  #     p("Finde eine Einstellung, für die die Plots der SKV des arithmetischen Mittels und
+  #            des gleichverteilten Bayes-Schätzers maximal ähnlich sind."),
+  #     strong("Aufgabe 7"),
+  #     br(em("Lade für diese Aufgabe die Seite neu und aktiviere den Plot des normalverteilten Bayes-Schätzers")),
+  #     p("Der Mittelwert aller Bayesschätzer (schwarzer Strich) ist ziemlich eindeutig unterschiedlich zum tatsächlichen Poplulationsmittelwert (µ, roter Strich). Woran liegt das?"),
+  #     p("Finde eine Einstellung, in dem der Mean aller Bayesschätzer (schwarzer Strich) und der tatsächliche Populationsmittelwert (roter Strich) direkt übereinander liegen."),
+  #
+  #     strong("Aufgabe 8"),
+  #     br(em("Aktiviere für diese Aufgabe den Konfidenzintervall-Plot.")),
+  #     p("Vergleiche die verschiedenen Schätzer im Konfidenzintervall-Plot. Welches ist der beste Schätzer?"),
+  #     p("Wie kannst du die Regler so einstellen, das einer der Schätzer den Populationsmittelwert (µ) nicht mehr mit einschließt? "),
+  #     p("Kannst du die Regler so verändern, das einer der Schätzer deutlich besser ist als die anderen?"),
+  #     strong("Aufgabe 9"),
+  #     p("Für Aufgabe 8 gibt es unterschiedliche Lösungen, findest du 2? Welche der
+  #            Lösungen könntest du unter Umständen auch in der Forschung anwenden, und welche solltest du eher vermeiden?"),
+  #     # actionButton("close", "close")
+  #   ))
+  #   })
+
+
   #unecessary ??
   # # get input from ui
   # mu <- reactive(input$mu)                         # Population mean
@@ -554,7 +591,7 @@ server <- function(input, output, session) {
     # reactive({
     ggplot(NULL, aes(x = sampfdfspecific)) +
       # Platzhalter
-      geom_point(aes(x = bayeswertespecific, y = 0, colour = "mean_est"), shape = 24, size = 1, alpha = 0) +
+      # geom_point(aes(x = bayeswertespecific, y = 0, colour = "mean_est"), shape = 24, size = 1, alpha = 0) +
 
       #        #
       #        # Verteilung
@@ -704,6 +741,7 @@ server <- function(input, output, session) {
     pink_border() +
 
     theme(legend.position = "none")
+    # theme(legend.position = "top")
   })
 
 
@@ -979,6 +1017,47 @@ server <- function(input, output, session) {
   #### Legende ####
   output$legendontop <- renderUI({
     img(src='legende.png')
+  })
+#
+  # output$legendontop<-renderPlot({
+  #   req(done_computing())
+  #   browser()
+  #   data <- data.frame(
+  #     class = c("est_mean", "est_minmax", "est_bayes_uni", "est_bayes_nv", "likelihood", "prior_uni", "prior_nv", "mu", "mean_est"),
+  #     x = 1:9
+  #   )
+  #
+  #
+  #   leg<-ggplot(data = data, aes(x = x, y = x, colour = class, fill = class)) +
+  #     geom_point(shape = 24, size = 6) +
+  #     custom_colors +
+  #     scale_fill_manual(values = colours, name = "Legende",
+  #                       labels = c(mu = expression(mu),
+  #                                  est_mean = "Arithmetisches \n Mittel",
+  #                                  est_minmax = "Alternativer \n Schätzer",
+  #                                  est_bayes_uni = "Bayesschätzer: \n gleichverteile \n Priori",
+  #                                  est_bayes_nv = "Bayesschätzer: \n normalverteile \n Priori",
+  #                                  likelihood = "Likelihood",
+  #                                  prior_uni = "Gleichverteilter \n Prior",
+  #                                  prior_nv = "Normalverteilter \n Prior",
+  #                                  mean_est = "Mean aller \n Mittelwertschätzer"),
+  #                       breaks = factor(c("mu","est_mean", "est_minmax","est_bayes_uni", "est_bayes_nv", "likelihood",
+  #                                         "prior_uni", "prior_nv", "mean_est"),
+  #                                       levels = c("mu", "est_mean", "est_minmax","est_bayes_uni", "est_bayes_nv", "likelihood",
+  #                                                  "prior_uni", "prior_nv", "mean_est"))) +
+  #     theme_minimal() +
+  #     theme(legend.position = "top",
+  #           legend.text.align = 0
+  #     )
+    # plot_grid(cowplot::get_plot_component(leg, "guide-box-top", return_all = TRUE),rel_heights = c(0.05, 0.95))
+
+    # leg_ex<-cowplot::get_plot_component(leg, "guide-box-top", return_all = TRUE)
+    # plot(leg_ex)
+    # leg_ex2<-leg_ex
+    # leg_ex2$layout$t<-c(2,1)
+    # plot(leg_ex2)
+    #
+    # plot(cowplot::get_plot_component(leg, "guide-box-top", return_all = TRUE))
   })
 
 }
