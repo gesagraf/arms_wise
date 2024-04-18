@@ -221,8 +221,8 @@ einstellen",
     # fixedPanel(fluidRow(column(12, height = 9, uiOutput("legendontop")))),
     tabPanel("Stichprobenkennwerteverteilungen",
                  #style = "overflow-x: scroll",
-                 # fluidRow(column(12, height = 9, uiOutput("legendontop"))),
-                 fluidRow(column(12, height = 4, plotOutput("legendontop"))),
+                 fluidRow(column(12, height = 9, uiOutput("legendontop"))),
+                 # fluidRow(column(12, height = 4, plotOutput("legendontop"))),
                  # fluidRow(column(12, align="center", height = 20, br("."), br(".") , br("."), br("."))),
                 fluidRow(
                   conditionalPanel("input.p_samp == 1", column(6, shinycssloaders::withSpinner(
