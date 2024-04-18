@@ -180,6 +180,8 @@ einstellen",
           # style = "overflow-y:scroll; max-height: 1200px",
 
            wellPanel(p("In diesem Tab findest du Aufgaben, die dich durch die Plots leiten und dir helfen können, sie gut zu verstehen.")),
+          # actionButton("pop_out", "pop-out-Aufgaben"),
+          p(""),
 
            strong("Aufgabe 1"),
            p("Finde eine Einstellung für der Mittelwert, wo der rote Strich (µ) genau auf der 50 liegt."),
@@ -210,13 +212,17 @@ einstellen",
           p("Kannst du die Regler so verändern, das einer der Schätzer deutlich besser ist als die anderen?"),
            strong("Aufgabe 9"),
            p("Für Aufgabe 8 gibt es unterschiedliche Lösungen, findest du 2? Welche der
-             Lösungen könntest du unter Umständen auch in der Forschung anwenden, und welche solltest du eher vermeiden?")),
+             Lösungen könntest du unter Umständen auch in der Forschung anwenden, und welche solltest du eher vermeiden?")
+
+          )
       )),
   # Show a plot of the generated distribution
   mainPanel(
-        tabPanel("Stichprobenkennwerteverteilungen",
+    # fixedPanel(fluidRow(column(12, height = 9, uiOutput("legendontop")))),
+    tabPanel("Stichprobenkennwerteverteilungen",
                  #style = "overflow-x: scroll",
-                 fluidRow(column(12, height = 9, uiOutput("legendontop"))),
+                 # fluidRow(column(12, height = 9, uiOutput("legendontop"))),
+                 fluidRow(column(12, height = 4, plotOutput("legendontop"))),
                  # fluidRow(column(12, align="center", height = 20, br("."), br(".") , br("."), br("."))),
                 fluidRow(
                   conditionalPanel("input.p_samp == 1", column(6, shinycssloaders::withSpinner(
@@ -251,14 +257,15 @@ tags$head(tags$style(
 )),
 
 # absolutePanel(
-#   top = 00, right = 30, width = "64%",
-#   fixed = TRUE,
-#     fluidRow(column(12, height = 9, uiOutput("legendontop")))
-#   )
-# ,p("."),p("."),p(".")
-# ,p("Erstellt im Rahmen des ARMS II Seminars
-# bei Prof. Dr. Florian Scharf. Projekt von Gesa Graf und Ian Buhmann.
-# ")
+#   top = 00, right = 30, width = "64%", height = 9,
+  # fixed = TRUE,
+  #   fluidRow(column(12, height = 9, uiOutput("legendontop")))
+  # )
+# ,
+p("."),p("."),p(".")
+,p("Erstellt im Rahmen des ARMS II Seminars
+bei Prof. Dr. Florian Scharf. Projekt von Gesa Graf und Ian Buhmann.
+")
 
 
 )
