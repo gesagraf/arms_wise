@@ -90,6 +90,12 @@ server <- function(input, output, session) {
 
   prior_dens<-reactive({
     req(lengthout(), mu_hat())
+    validate(need(
+      input$rangePriori[1] != input$rangePriori[2], "Range of uniform prior must be at least 1"
+    ))
+    validate(need(
+      input$rangePriori[1] < input$rangePriori[2], "Lower Boundary of uniform prior must be smaller than upper Boundary"
+    ))
     # density of prior
     dunif(mu_hat(), input$rangePriori[1], input$rangePriori[2])
 
