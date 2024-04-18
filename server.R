@@ -1058,7 +1058,7 @@ server <- function(input, output, session) {
     # plot(leg_ex2)
     #
     # plot(cowplot::get_plot_component(leg, "guide-box-top", return_all = TRUE))
-  })
+  # })
 
 }
 
