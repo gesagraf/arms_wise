@@ -216,7 +216,8 @@ einstellen",
   mainPanel(
         tabPanel("Stichprobenkennwerteverteilungen",
                  #style = "overflow-x: scroll",
-                 fluidRow(column(12, align="center", height = 20, br("."), br(".") , br("."), br("."))),
+                 fluidRow(column(12, height = 9, uiOutput("legendontop"))),
+                 # fluidRow(column(12, align="center", height = 20, br("."), br(".") , br("."), br("."))),
                 fluidRow(
                   conditionalPanel("input.p_samp == 1", column(6, shinycssloaders::withSpinner(
                             plotOutput("plot_samp"), type = getOption("spinner.type", 4)))),
@@ -249,15 +250,15 @@ tags$head(tags$style(
   "#legendontop img {max-width: 100%; width: 100%; height: auto}"
 )),
 
-absolutePanel(
-  top = 00, right = 30, width = "64%",
-  fixed = TRUE,
-    fluidRow(column(12, height = 9, uiOutput("legendontop")))
-  )
-,p("."),p("."),p(".")
-,p("Erstellt im Rahmen des ARMS II Seminars
-bei Prof. Dr. Florian Scharf. Projekt von Gesa Graf und Ian Buhmann.
-")
+# absolutePanel(
+#   top = 00, right = 30, width = "64%",
+#   fixed = TRUE,
+#     fluidRow(column(12, height = 9, uiOutput("legendontop")))
+#   )
+# ,p("."),p("."),p(".")
+# ,p("Erstellt im Rahmen des ARMS II Seminars
+# bei Prof. Dr. Florian Scharf. Projekt von Gesa Graf und Ian Buhmann.
+# ")
 
 
 )
