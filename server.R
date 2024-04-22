@@ -211,82 +211,6 @@ server <- function(input, output, session) {
       })
 
       )
-    # browser() #debug
-        # validate(
-        #   need(isTRUE(any(apply(norm_likelihood(), 2, function(x) all(is.na(x))))), "Computation for at least one sample failed. \nPlease choose another prior"))
-
-    # })
-
-    # return_list_uni2 <-
-    #   # reactive({
-    #
-    #   results <- matrix(ncol = number(), nrow = lengthout())
-    #
-    #   # isolate({
-    #   # norm_likelihood_uni <- norm_likelihood() # likelihood_function_norm aus vorheriger for schleife dazu holen
-    #
-    #   for (i in 1:number()) {
-    #
-    #     # calculate posteriori
-    #     posterior0 <- prior_dens() * norm_likelihood()[ , i]
-    #     #
-    #     #   # Posteriori normieren
-    #     den_post <- Bolstad::sintegral(mu_hat(), posterior0)
-    #     posterior <- posterior0 / den_post$value
-    #
-    #     # !!! Hier brauchen wir dringend eine Kontrollfunktion: wenn NaN, dann Fehlermeldung: "Die Daten sind bei deiner Gewählten gleichverteilten Priori (super starke annahme!!) unmöglich!"
-    #     results[ , i] <- posterior
-    #   }
-    #   # return(results)
-    #   # })
-    #
-    # # })
-    # # Index des Maximums in jeder Spalte finden
-    # index_maximum <- apply(return_list_uni2, MARGIN = 2, which.max) #prev reactive
-    # # Wert von 'x' für das Maximum von 'y' finden
-    # bayesWerte(mu_hat()[index_maximum])
-    #
-    # # over all mean Bayes
-    # mean_estBayes <- mean(bayesWerte) #prev reactive
-    #
-
-    #### Bayes mit nv Priori #####
-    # Prior
-
-
-
-    # return_list_nv2 <-
-    #   # reactive({
-    #
-    #   resultsNV = matrix(ncol = number(), nrow = lengthout())
-    #   # isolate({
-    #   # norm_likelihood_nv <- norm_likelihood # likelihood_function_norm aus vorheriger for schleife dazu holen
-    #
-    #   for (i in 1:number()) {
-    #
-    #
-    #     # calculate posteriori
-    #     posterior0 <- prior_densNV() * norm_likelihood()[ , i]
-    #
-    #     # Posteriori normieren # hier nochmal
-    #     den_post <- Bolstad::sintegral(mu_hat(), posterior0)
-    #     posterior <- posterior0 / den_post$value
-    #
-    #     resultsNV[ , i] <- posterior
-    #   }
-    #
-    #   # return(resultsNV)
-    #   # })
-    #
-    # # })
-    #
-    #   # Index des Maximums in jeder Spalte finden
-    #   index_maximumNV <- apply(return_list_nv2, MARGIN = 2, which.max) #prev reactive
-    #   # Wert von 'x' für das Maximum von 'y' finden
-    #   bayesWerteNV(mu_hat()[index_maximumNV])
-    #
-    #   # over all mean Bayes
-    #   mean_estBayesNV <- mean(bayesWerteNV) #prev reactive
 
       #### Plot ####
       #### definitions ####
@@ -304,14 +228,6 @@ server <- function(input, output, session) {
   num_classesSKV <- ceiling(log2(number()) + 1) #prev reactive
 
 
-  #### plots ####
-  # x_layer <- reactive({scale_x_continuous(breaks = seq(min_coord(), max_coord(), std()), limits = coord())})
-  # browser() #debug
-  # single sample
-  # Single Sample Plot erstellen, aber NICHT ausgeben; für die Legende
-
-  # })
-  # browser() #debug
 
    ## Definitionen für die Annotation der Formel
   kategorienbreite <- (max(minmax()) - min(minmax())) / num_classesSKV #prev reactive
@@ -411,13 +327,13 @@ server <- function(input, output, session) {
         theme_bw()
     # })
 
-    # browser() #debug
+
 
     mu_layer(list(
       geom_point(aes(x = mu, y = 0), colour = colours["mu"], shape = 17, size = 4),
         geom_vline(aes(xintercept = mu), colour = colours["mu"], linewidth = 1))
     )
-    # browser() #debug
+
 
     mu_forest(list(
       geom_vline(aes(xintercept = mu), colour = colours["mu"], linewidth = 1)
@@ -570,7 +486,7 @@ server <- function(input, output, session) {
   p_sample_basis<-reactive({
     req(mu_layer())
     sampfdfspecific <- samp_df()[ , specific()]
-    # browser() #debug
+
     bayeswertespecific <- bayesWerte()[specific()]
     resultsunispecific(norm_likelihood()[ , specific()])
     # reactive({
@@ -606,7 +522,7 @@ server <- function(input, output, session) {
   ### Reaktiven Teil definieren
   ## Schätzer
   # Mean
-  # browser() #debug
+
   mean_layer <-reactive({
     req(estimators(), specific()) #require this values to be not empty
 
@@ -705,9 +621,8 @@ server <- function(input, output, session) {
 
   observe({
     req(p_sample_basis())
-    # browser() #debug
-    # reactive({
-    # if (input$p_samp) {
+
+    #
     plot_l$plot_samp <-p_sample_basis() +
 
     # Reaktive Schätzer
@@ -736,7 +651,7 @@ server <- function(input, output, session) {
   observe({
     # req(lengthout())
     req(number(), lengthout(), mu_hat(), coord())
-    # browser() #debug
+
     # if (!input$p_bayes_uni) return(NULL)
 
     results <- matrix(ncol = number(), nrow = lengthout())
@@ -783,9 +698,6 @@ server <- function(input, output, session) {
   ##norm
   observe({
     req(number(), lengthout(), mu_hat(), coord())
-    # if (input$p_bayes_nv == TRUE) return(NULL)
-
-
 
         resultsNV = matrix(ncol = number(), nrow = lengthout())
     # isolate({
@@ -805,12 +717,6 @@ server <- function(input, output, session) {
       }
     }
 
-
-
-
-    # })
-        # browser() #debug
-
     # Index des Maximums in jeder Spalte finden
     index_maximumNV <- apply(resultsNV, MARGIN = 2, which.max_custom) #prev reactive
     # Wert von 'x' für das Maximum von 'y' finden
@@ -820,9 +726,6 @@ server <- function(input, output, session) {
 
     binweiteNV<-((max(bayesWerteNV()) - min(bayesWerteNV())) / 4)
     if(is.na(binweiteNV)) binweiteNV(NULL) else if(binweiteNV>0) binweiteNV(binweiteNV)else if(binweiteNV == 0) binweiteNV(1) else binweiteNV(NULL)
-
-
-
   })
  ################### Output ##########################
   output$forest<- renderPlot({
@@ -832,14 +735,14 @@ server <- function(input, output, session) {
   output$plot_samp <- renderPlot({
     # req(bayesWerte(), specific(), plot_l$plot_samp)
     req(done_computing())
-    # browser() #debug
+
     plot_l$plot_samp
   })
 
   output$plot_mean <- renderPlot({
     # req(estimators(), specific(), plot_l$plot_mean)
     req(done_computing())
-    # browser() #debug
+
     plot_l$plot_mean +
       # frame selected sample
       geom_point(aes(x = estimators()[specific()], y = 0), colour = "magenta", fill = colours["est_mean"], shape = 24, size = 8)
@@ -857,9 +760,6 @@ server <- function(input, output, session) {
   output$plot_bayes_uni <- renderPlot({
     # req(bayesWerte(), specific(), plot_l$plot_bayes_uni)
     req(done_computing())
-    # browser() #debug
-    # plot_l$plot_bayes_uni
-
 
     # over all mean Bayes
     mean_estBayes <- mean(bayesWerte(), na.rm = TRUE) #prev reactive
@@ -902,17 +802,6 @@ server <- function(input, output, session) {
       theme_bw()
     # })
 
-
-
-
-
-
-
-
-
-
-
-
       if (input$show_prior_uni == TRUE) {
         isolate({
         plot_l$plot_bayes_uni<-plot_l$plot_bayes_uni + prior_uni_layer()
@@ -941,9 +830,6 @@ server <- function(input, output, session) {
       ))) + ggtitle("Bayesschätzer mit normalverteilter Priori") + theme_minimal()
     } else{
       plot_l$plot_bayes_nv <-
-        # renderPlot({
-        # if (!input$p_bayes_nv) return(NULL)
-
 
         ggplot(NULL, aes(x = bayesWerteNV())) +
         geom_histogram(aes(y = after_stat(density)), fill = colours["est_bayes_nv"],
@@ -987,13 +873,8 @@ server <- function(input, output, session) {
           plot_l$plot_bayes_nv <- plot_l$plot_bayes_nv +  isolate(prior_nv_layer())
         })
       }
-
     }
 
-
-
-    #
-    # # browser() #debug
     return(plot_l$plot_bayes_nv)
     })
   #
@@ -1061,7 +942,6 @@ server <- function(input, output, session) {
       points(x_est_mean-point_to_text_x_diff, upper_row, type = "p", pch = 17, col = colours["est_mean"], cex = 2)
     }
 
-
     #density
     if(isTRUE(input$p_bayes_uni)){
       text(x_prior_uni, lower_row, "gleichverteilte\nPriori", adj = 0)
@@ -1080,50 +960,6 @@ server <- function(input, output, session) {
 
   }
   )
-  # , height = 220, width = 1240)
-
-#
-  # output$legendontop<-renderPlot({
-  #   req(done_computing())
-  #   browser()
-  #   data <- data.frame(
-  #     class = c("est_mean", "est_minmax", "est_bayes_uni", "est_bayes_nv", "likelihood", "prior_uni", "prior_nv", "mu", "mean_est"),
-  #     x = 1:9
-  #   )
-  #
-  #
-  #   leg<-ggplot(data = data, aes(x = x, y = x, colour = class, fill = class)) +
-  #     geom_point(shape = 24, size = 6) +
-  #     custom_colors +
-  #     scale_fill_manual(values = colours, name = "Legende",
-  #                       labels = c(mu = expression(mu),
-  #                                  est_mean = "Arithmetisches \n Mittel",
-  #                                  est_minmax = "Alternativer \n Schätzer",
-  #                                  est_bayes_uni = "Bayesschätzer: \n gleichverteile \n Priori",
-  #                                  est_bayes_nv = "Bayesschätzer: \n normalverteile \n Priori",
-  #                                  likelihood = "Likelihood",
-  #                                  prior_uni = "Gleichverteilter \n Prior",
-  #                                  prior_nv = "Normalverteilter \n Prior",
-  #                                  mean_est = "Mean aller \n Mittelwertschätzer"),
-  #                       breaks = factor(c("mu","est_mean", "est_minmax","est_bayes_uni", "est_bayes_nv", "likelihood",
-  #                                         "prior_uni", "prior_nv", "mean_est"),
-  #                                       levels = c("mu", "est_mean", "est_minmax","est_bayes_uni", "est_bayes_nv", "likelihood",
-  #                                                  "prior_uni", "prior_nv", "mean_est"))) +
-  #     theme_minimal() +
-  #     theme(legend.position = "top",
-  #           legend.text.align = 0
-  #     )
-    # plot_grid(cowplot::get_plot_component(leg, "guide-box-top", return_all = TRUE),rel_heights = c(0.05, 0.95))
-
-    # leg_ex<-cowplot::get_plot_component(leg, "guide-box-top", return_all = TRUE)
-    # plot(leg_ex)
-    # leg_ex2<-leg_ex
-    # leg_ex2$layout$t<-c(2,1)
-    # plot(leg_ex2)
-    #
-    # plot(cowplot::get_plot_component(leg, "guide-box-top", return_all = TRUE))
-  # })
-
 }
 
 
