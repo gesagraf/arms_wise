@@ -887,82 +887,82 @@ server <- function(input, output, session) {
   #   paste0(nas_uni(),"/", number(), " posterior values are NAs")})
   # output$nas_NV<-renderText({req(nas_NV()); paste0(nas_NV(),"/", number(), " posterior values are NAs")})
 
-  #### Legende ####
-  # output$legendontop <- renderUI({
-  #   img(src='legende.png')
-  # })
+  ### Legende ####
+  output$legendontop <- renderUI({
+    img(src='legende.png')
+  })
 
-  output$legendontop <- renderPlot({
-    # browser() #debug
-    req(done_computing())
-    upper_row<-0.6
-    lower_row<-0.4
-    point_to_text_x_diff<-0.025
-    x_mu<-00 + .9/6*2
-    x_est_minmax<-00 + .9/6*4
-    x_est_bayes_nv<-00 + .9/6*6
-    x_est_bayes_uni<-00 + .9/6*5
-    x_mean_est <-00 + .9/6*1
-    x_est_mean<-00 + .9/6*3
-    x_likelihood<-00 + .9/6*1
-    x_prior_uni<-00 + .9/6*2
-    x_prior_nv<-00 + .9/6*3
-
-
-    par(mar = rep(0, 4))
-    plot.new()
-
-    #legend titles
-    text(0.00, upper_row, "Point\nEstimates", adj = 0)
-
-    text(0.00, lower_row, "Density\nFunktionen", adj = 0)
-
-    # point estimates
-    if(isTRUE(input$p_samp)){
-      text(x_mu, upper_row, expression(mu), adj = 0)
-      points(x_mu-point_to_text_x_diff, upper_row, type = "p", pch = 17, col = colours["mu"], cex = 2)
-    }
-    if(isTRUE(input$p_minmax)){
-      text(x_est_minmax, upper_row, "Alternativer\nSchätzer", adj = 0)
-      points(x_est_minmax-point_to_text_x_diff, upper_row, type = "p", pch = 17, col = colours["est_minmax"], cex = 2)
-    }
-
-    if(isTRUE(input$p_bayes_nv)){
-      text(x_est_bayes_nv, upper_row, "normalverteilte\nPriori", adj = 0)
-      points(x_est_bayes_nv-point_to_text_x_diff, upper_row, type = "p", pch = 17, col = colours["est_bayes_nv"], cex = 2)
-    }
-
-    if(isTRUE(input$p_bayes_uni)){
-      text(x_est_bayes_uni, upper_row, "gleichverteilte\nPriori", adj = 0)
-      points(x_est_bayes_uni-point_to_text_x_diff, upper_row, type = "p", pch = 17, col = colours["est_bayes_uni"], cex = 2)
-    }
-
-      text(x_mean_est, upper_row, "Mean aller\nMittelwertschätzer", adj = 0)
-      points(x_mean_est-point_to_text_x_diff, upper_row, type = "p", pch = 17, col = colours["mean_est"], cex = 2)
-
-    if(isTRUE(input$p_mean)){
-      text(x_est_mean, upper_row, "Arithmetisches\nMittel", adj = 0)
-      points(x_est_mean-point_to_text_x_diff, upper_row, type = "p", pch = 17, col = colours["est_mean"], cex = 2)
-    }
-
-    #density
-    if(isTRUE(input$p_bayes_uni)){
-      text(x_prior_uni, lower_row, "gleichverteilte\nPriori", adj = 0)
-      points(x_prior_uni-point_to_text_x_diff, lower_row, type = "p", pch = 19, col = colours["prior_uni"], cex = 2)
-    }
-
-    if(isTRUE(input$show_likelihood)){
-      text(x_likelihood, lower_row, "Likelihood", adj = 0)
-      points(x_likelihood-point_to_text_x_diff, lower_row, type = "p", pch = 19, col = colours["likelihood"], cex = 2)
-    }
-
-    if(isTRUE(input$p_bayes_nv)){
-      text(x_prior_nv, lower_row, "Normalverteilter\nPrior", adj = 0)
-      points(x_prior_nv-point_to_text_x_diff, lower_row, type = "p", pch = 19, col = colours["prior_nv"], cex = 2)
-    }
-
-  }
-  )
+  # output$legendontop <- renderPlot({
+  #   # browser() #debug
+  #   req(done_computing())
+  #   upper_row<-0.6
+  #   lower_row<-0.4
+  #   point_to_text_x_diff<-0.025
+  #   x_mu<-00 + .9/6*2
+  #   x_est_minmax<-00 + .9/6*4
+  #   x_est_bayes_nv<-00 + .9/6*6
+  #   x_est_bayes_uni<-00 + .9/6*5
+  #   x_mean_est <-00 + .9/6*1
+  #   x_est_mean<-00 + .9/6*3
+  #   x_likelihood<-00 + .9/6*1
+  #   x_prior_uni<-00 + .9/6*2
+  #   x_prior_nv<-00 + .9/6*3
+  #
+  #
+  #   par(mar = rep(0, 4))
+  #   plot.new()
+  #
+  #   #legend titles
+  #   text(0.00, upper_row, "Point\nEstimates", adj = 0)
+  #
+  #   text(0.00, lower_row, "Density\nFunktionen", adj = 0)
+  #
+  #   # point estimates
+  #   if(isTRUE(input$p_samp)){
+  #     text(x_mu, upper_row, expression(mu), adj = 0)
+  #     points(x_mu-point_to_text_x_diff, upper_row, type = "p", pch = 17, col = colours["mu"], cex = 2)
+  #   }
+  #   if(isTRUE(input$p_minmax)){
+  #     text(x_est_minmax, upper_row, "Alternativer\nSchätzer", adj = 0)
+  #     points(x_est_minmax-point_to_text_x_diff, upper_row, type = "p", pch = 17, col = colours["est_minmax"], cex = 2)
+  #   }
+  #
+  #   if(isTRUE(input$p_bayes_nv)){
+  #     text(x_est_bayes_nv, upper_row, "normalverteilte\nPriori", adj = 0)
+  #     points(x_est_bayes_nv-point_to_text_x_diff, upper_row, type = "p", pch = 17, col = colours["est_bayes_nv"], cex = 2)
+  #   }
+  #
+  #   if(isTRUE(input$p_bayes_uni)){
+  #     text(x_est_bayes_uni, upper_row, "gleichverteilte\nPriori", adj = 0)
+  #     points(x_est_bayes_uni-point_to_text_x_diff, upper_row, type = "p", pch = 17, col = colours["est_bayes_uni"], cex = 2)
+  #   }
+  #
+  #     text(x_mean_est, upper_row, "Mean aller\nMittelwertschätzer", adj = 0)
+  #     points(x_mean_est-point_to_text_x_diff, upper_row, type = "p", pch = 17, col = colours["mean_est"], cex = 2)
+  #
+  #   if(isTRUE(input$p_mean)){
+  #     text(x_est_mean, upper_row, "Arithmetisches\nMittel", adj = 0)
+  #     points(x_est_mean-point_to_text_x_diff, upper_row, type = "p", pch = 17, col = colours["est_mean"], cex = 2)
+  #   }
+  #
+  #   #density
+  #   if(isTRUE(input$p_bayes_uni)){
+  #     text(x_prior_uni, lower_row, "gleichverteilte\nPriori", adj = 0)
+  #     points(x_prior_uni-point_to_text_x_diff, lower_row, type = "p", pch = 19, col = colours["prior_uni"], cex = 2)
+  #   }
+  #
+  #   if(isTRUE(input$show_likelihood)){
+  #     text(x_likelihood, lower_row, "Likelihood", adj = 0)
+  #     points(x_likelihood-point_to_text_x_diff, lower_row, type = "p", pch = 19, col = colours["likelihood"], cex = 2)
+  #   }
+  #
+  #   if(isTRUE(input$p_bayes_nv)){
+  #     text(x_prior_nv, lower_row, "Normalverteilter\nPrior", adj = 0)
+  #     points(x_prior_nv-point_to_text_x_diff, lower_row, type = "p", pch = 19, col = colours["prior_nv"], cex = 2)
+  #   }
+  #
+  # }
+  # )
 }
 
 
