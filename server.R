@@ -44,45 +44,18 @@ server <- function(input, output, session) {
   observeEvent(input$number, {
     updateSliderInput(inputId = "specific", max = input$number)
   })
-
-  # observeEvent(input$pop_out, {
-  #   showModal(modalDialog(
-  #     strong("Aufgabe 1"),
-  #     p("Finde eine Einstellung für der Mittelwert, wo der rote Strich (µ) genau auf der 50 liegt."),
-  #     strong("Aufgabe 2"),
-  #     p("Verändere den Mittelwert und die Standardabweichung so, dass die Zahlen {0, 50, 100} auf der X-Achse zu lesen sind."),
-  #     strong("Aufgabe 3"),
-  #     p("Verschiebe die Größe der einzelnen Stichproben, bis das Histogramm optisch einer Normalverteilung an nächsten kommt."),
-  #     strong("Aufgabe 4"),
-  #     p("Schaue dir verschiedene spezifische Stichproben an, wieso unterscheiden sie sich?"),
-  #     strong("Aufgabe 5"),
-  #     br(em("Aktiviere für diese Aufgabe die Plots der SKV des arithmetischen Mittels und des alternativen Schätzers.")),
-  #     p("Stelle die Stichprobengröße so ein, das die Plots der SKV vom arithmetischen Mittel und
-  #            dem alternativen Schätzer identisch sind. (Zur Erinnerung: der alternative Schätzer
-  #            ist der Mittelwert des Minimums und Maximums.)"),
-  #     strong("Aufgabe 6"),
-  #     br(em("Aktiviere für diese Aufgabe die Plots der SKV des arithmetischen Mittels und des gleichverteilten Bayes-Schätzers.")),
-  #     p("Finde eine Einstellung, für die die Plots der SKV des arithmetischen Mittels und
-  #            des gleichverteilten Bayes-Schätzers maximal ähnlich sind."),
-  #     strong("Aufgabe 7"),
-  #     br(em("Lade für diese Aufgabe die Seite neu und aktiviere den Plot des normalverteilten Bayes-Schätzers")),
-  #     p("Der Mittelwert aller Bayesschätzer (schwarzer Strich) ist ziemlich eindeutig unterschiedlich zum tatsächlichen Poplulationsmittelwert (µ, roter Strich). Woran liegt das?"),
-  #     p("Finde eine Einstellung, in dem der Mean aller Bayesschätzer (schwarzer Strich) und der tatsächliche Populationsmittelwert (roter Strich) direkt übereinander liegen."),
-  #
-  #     strong("Aufgabe 8"),
-  #     br(em("Aktiviere für diese Aufgabe den Konfidenzintervall-Plot.")),
-  #     p("Vergleiche die verschiedenen Schätzer im Konfidenzintervall-Plot. Welches ist der beste Schätzer?"),
-  #     p("Wie kannst du die Regler so einstellen, das einer der Schätzer den Populationsmittelwert (µ) nicht mehr mit einschließt? "),
-  #     p("Kannst du die Regler so verändern, das einer der Schätzer deutlich besser ist als die anderen?"),
-  #     strong("Aufgabe 9"),
-  #     p("Für Aufgabe 8 gibt es unterschiedliche Lösungen, findest du 2? Welche der
-  #            Lösungen könntest du unter Umständen auch in der Forschung anwenden, und welche solltest du eher vermeiden?"),
-  #     # actionButton("close", "close")
-  #   ))
-  #   })
+  ##this lags cause input$p_bayes_uni gets updated after plot dont know how to change the order of execution
+  # observeEvent(input$p_bayes_uni, {
+  #   updateCheckboxInput(session, "show_prior_uni", value = input$p_bayes_uni)
+  # }, priority = 1)
+  # observeEvent(input$p_bayes_nv, {
+  #   updateCheckboxInput(session, "show_prior_nv", value = input$p_bayes_nv)
+  # }, priority = 1)
 
 
-  #unecessary ??
+
+
+  #left for documentation reasons, not needed for the app to work
   # # get input from ui
   # mu <- reactive(input$mu)                         # Population mean
   # std <- reactive(input$std)                       # Population sd
@@ -209,7 +182,7 @@ server <- function(input, output, session) {
     mu_hat(seq(min_coord, max_coord, length.out = lengthout()))
 
     ## compute likelihood
-
+    # browser() #debug
     norm_likelihood(
       # reactive({
       sapply(1:number(), function(i){
@@ -236,7 +209,11 @@ server <- function(input, output, session) {
         likelihood_function / den_like$value # normierte Likelihood
         # })
       })
+
       )
+    # browser() #debug
+        # validate(
+        #   need(isTRUE(any(apply(norm_likelihood(), 2, function(x) all(is.na(x))))), "Computation for at least one sample failed. \nPlease choose another prior"))
 
     # })
 
@@ -334,7 +311,12 @@ server <- function(input, output, session) {
   # Single Sample Plot erstellen, aber NICHT ausgeben; für die Legende
 
   # })
+  # browser() #debug
 
+   ## Definitionen für die Annotation der Formel
+  kategorienbreite <- (max(minmax()) - min(minmax())) / num_classesSKV #prev reactive
+  # y Wert für die Annotation
+  anno_y <- quantile(density(minmax(), bw = kategorienbreite)$y, .80) #prev reactive
 
     plot_l$plot_mean <-
       # renderPlot({
@@ -376,10 +358,7 @@ server <- function(input, output, session) {
         theme_bw()
     # })
     # browser() #debug
-    ## Definitionen für die Annotation der Formel
-    kategorienbreite <- (max(minmax()) - min(minmax())) / num_classesSKV #prev reactive
-    # y Wert für die Annotation
-    anno_y <- max(density(minmax(), bw = kategorienbreite)$y) #prev reactive
+
 
     #### Plot Minmax ####
     # browser() #debug
@@ -390,12 +369,17 @@ server <- function(input, output, session) {
       # Alternativer Schätzer
       ggplot(NULL, aes(x = minmax())) +
 
-        geom_histogram(aes(y = after_stat(density)), fill = colours["est_minmax"],
-                       bins = num_classesSKV, alpha = .5) +
 
-        annotate("label",
-                 label = TeX(r"( $\frac{\max(x) + \min(x)}{2}$ )"),
-                 x = mu - 2 * std, y = anno_y) +
+        geom_histogram(aes(y = after_stat(density)), fill = colours["est_minmax"],
+                       bins = num_classesSKV,
+                       # bins = 8,
+                       alpha = .5) +
+
+      ##give formula in title since annotation is messing with the plot, minmax and mean cant look the same with annotation
+
+        # annotate("label",
+        #          label = TeX(r"( $\frac{\max(x) + \min(x)}{2}$ )"),
+        #          x = mu - 2 * std, y = anno_y) +
         # every sample as triangle
         geom_point(aes(x = minmax(), y = 0), color = colours["est_minmax"], shape = 17, size = 4)  +
 
@@ -419,7 +403,8 @@ server <- function(input, output, session) {
         # ) +
 
         labs(
-          title = "Alternativer Schätzer",
+          title = paste0("Alternativer Schätzer ((max(x) + min(x))/2)"),
+          # title = "Alternativer Schätzer",
           x = expression(bar(x)),
           y = NULL,
           colour = NULL) +
@@ -498,7 +483,7 @@ server <- function(input, output, session) {
 
     if(all(is.na(bayesWerte()))){
       p_forest<-p_forest + geom_text(aes(y = 3, x = mu(), label = paste0(
-        "All posteriori values are NA \nchange prior settings"
+        "For at least one sample\nAll posterior values are NA\nplease choose a different prior"
       )))
 
     } else{
@@ -536,7 +521,7 @@ server <- function(input, output, session) {
 
     if(all(is.na(bayesWerteNV()))){
       p_forest<-p_forest + geom_text(aes(y = 4, x = mu(), label = paste0(
-        "All posteriori values are NA \nchange prior settings"
+        "For at least one sample\nAll posterior values are NA\nplease choose a different prior"
       )))
 
     } else{
@@ -758,18 +743,20 @@ server <- function(input, output, session) {
 
     # isolate({
     # norm_likelihood_uni <- norm_likelihood() # likelihood_function_norm aus vorheriger for schleife dazu holen
+    if(isFALSE(any(apply(isolate(norm_likelihood()), 2, function(x) all(is.na(x)))))){
+      for (i in 1:number()) {
+        # validate(need(norm_likelihood(), paste0("Computation failed in sample", i, "\nplease choose a different prior")))
 
-    for (i in 1:number()) {
+        # calculate posteriori
+        posterior0 <- prior_dens() * norm_likelihood()[ , i]
+        #
+        #   # Posteriori normieren
+        den_post <- Bolstad::sintegral(mu_hat(), posterior0)
+        posterior <- posterior0 / den_post$value
 
-      # calculate posteriori
-      posterior0 <- prior_dens() * norm_likelihood()[ , i]
-      #
-      #   # Posteriori normieren
-      den_post <- Bolstad::sintegral(mu_hat(), posterior0)
-      posterior <- posterior0 / den_post$value
-
-      # !!! Hier brauchen wir dringend eine Kontrollfunktion: wenn NaN, dann Fehlermeldung: "Die Daten sind bei deiner Gewählten gleichverteilten Priori (super starke annahme!!) unmöglich!"
-      results[ , i] <- posterior
+        # !!! Hier brauchen wir dringend eine Kontrollfunktion: wenn NaN, dann Fehlermeldung: "Die Daten sind bei deiner Gewählten gleichverteilten Priori (super starke annahme!!) unmöglich!"
+        results[ , i] <- posterior
+      }
     }
 
 
@@ -803,19 +790,21 @@ server <- function(input, output, session) {
         resultsNV = matrix(ncol = number(), nrow = lengthout())
     # isolate({
     # norm_likelihood_nv <- norm_likelihood # likelihood_function_norm aus vorheriger for schleife dazu holen
+    if(isFALSE(any(apply(isolate(norm_likelihood()), 2, function(x) all(is.na(x)))))){
+      for (i in 1:number()) {
 
-    for (i in 1:number()) {
 
+        # calculate posteriori
+        posterior0 <- prior_densNV() * norm_likelihood()[ , i]
 
-      # calculate posteriori
-      posterior0 <- prior_densNV() * norm_likelihood()[ , i]
+        # Posteriori normieren # hier nochmal
+        den_post <- Bolstad::sintegral(mu_hat(), posterior0)
+        posterior <- posterior0 / den_post$value
 
-      # Posteriori normieren # hier nochmal
-      den_post <- Bolstad::sintegral(mu_hat(), posterior0)
-      posterior <- posterior0 / den_post$value
-
-      resultsNV[ , i] <- posterior
+        resultsNV[ , i] <- posterior
+      }
     }
+
 
 
 
@@ -878,7 +867,7 @@ server <- function(input, output, session) {
 
     if(all(is.na(bayesWerte()))){
       plot_l$plot_bayes_uni<-ggplot(NULL) + geom_text(aes(y = 0, x =0, label = paste0(
-        "All posterior values are NA \n please choose a different prior"
+        "For at least one sample\nAll posterior values are NA\nplease choose a different prior"
       ))) + ggtitle("Bayesschätzer mit gleichverteilter Priori") + theme_minimal()
     } else{
 
@@ -948,7 +937,7 @@ server <- function(input, output, session) {
 
     if(all(is.na(bayesWerteNV()))){
       plot_l$plot_bayes_nv<-ggplot(NULL) + geom_text(aes(y = 0, x =0, label = paste0(
-        "All posterior values are NA \n please choose a different prior"
+        "For at least one sample\nAll posterior values are NA\nplease choose a different prior"
       ))) + ggtitle("Bayesschätzer mit normalverteilter Priori") + theme_minimal()
     } else{
       plot_l$plot_bayes_nv <-
@@ -1084,7 +1073,7 @@ server <- function(input, output, session) {
       points(x_likelihood-point_to_text_x_diff, lower_row, type = "p", pch = 19, col = colours["likelihood"], cex = 2)
     }
 
-    if(isTRUE(input$p_bayes_NV)){
+    if(isTRUE(input$p_bayes_nv)){
       text(x_prior_nv, lower_row, "Normalverteilter\nPrior", adj = 0)
       points(x_prior_nv-point_to_text_x_diff, lower_row, type = "p", pch = 19, col = colours["prior_nv"], cex = 2)
     }
