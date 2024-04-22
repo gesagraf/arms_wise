@@ -185,7 +185,7 @@ einstellen",
           wellPanel(
           h4("Lerne die App kennen"),
            strong("Aufgabe 1"),
-           p("Finde eine Einstellung für der Mittelwert, wo der rote Strich (µ) genau auf der 50 liegt."),
+           p("Finde eine Einstellung für den Mittelwert, wo der rote Strich (µ) genau auf der 50 liegt."),
           strong("Aufgabe 2"),
           p("Verändere den Mittelwert und die Standardabweichung so, dass die Zahlen {0, 50, 100} auf der X-Achse zu lesen sind."),
           strong("Aufgabe 3"),
@@ -196,7 +196,7 @@ einstellen",
           wellPanel(
           h4("Verändere die Populationsparameter"),
           strong("Aufgabe 4"),
-          p("Schaue dir verschiedene spezifische Stichproben an, wieso unterscheiden sie sich?"),
+          p("Schaue dir verschiedene spezifische Stichproben (unter Tab 'Plots') an, wieso unterscheiden sie sich?"),
           strong("Aufgabe 5"),
            br(em("Aktiviere für diese Aufgabe die Plots der SKV des arithmetischen Mittels und des alternativen Schätzers.")),
            p("Stelle die Stichprobengröße so ein, das die SKV vom arithmetischen Mittel und
@@ -212,7 +212,7 @@ einstellen",
           wellPanel(
           h4("Vergleiche die verschiedenen Schätzer"),
           strong("Aufgabe 7"),
-          br(em("Lade für diese Aufgabe die Seite neu (um die Default-Werte wieder herzustellen) und aktiviere den Plot des normalverteilten Bayes-Schätzers")),
+          br(em("Lade für diese Aufgabe die Seite neu (um die Default-Werte wieder herzustellen; das ist der Pfeil oben links in der Ecke) und aktiviere den Plot des normalverteilten Bayes-Schätzers")),
           p("Der Mittelwert aller Bayes-Schätzer (schwarzer Strich) ist ziemlich eindeutig unterschiedlich zum tatsächlichen Poplulationsmittelwert (µ, roter Strich). Woran liegt das?"),
           p("Finde eine Einstellung, in dem der Mean aller Bayes-Schätzer (schwarzer Strich) und der tatsächliche Populationsmittelwert (roter Strich) direkt übereinander liegen."),
 
@@ -220,11 +220,11 @@ einstellen",
 
           strong("Aufgabe 8"),
            br(em("Aktiviere für diese Aufgabe den Konfidenzintervall-Plot.")),
-           p("Vergleiche die verschiedenen Schätzer im Konfidenzintervall-Plot. Welcher Schätzer hat die beste Erwartungstreue, Effizienz und Konsistenz?"),
-           p("Wie kannst du die Regler so einstellen, das einer der Schätzer den Populationsmittelwert (µ) nicht mehr mit einschließt? "),
-          p("Kannst du die Regler so verändern, das einer der Schätzer deutlich effizienter ist als die anderen?"),
+           p("a) Vergleiche die verschiedenen Schätzer im Konfidenzintervall-Plot. Welcher Schätzer hat die beste Erwartungstreue, Effizienz und Konsistenz?"),
+           p("b) Wie kannst du die Regler so einstellen, das einer der Schätzer den Populationsmittelwert (µ) nicht mehr mit einschließt? "),
+          p("c) Kannst du die Regler so verändern, das einer der Schätzer deutlich effizienter ist als die anderen?"),
            strong("Aufgabe 9"),
-           p("Für Aufgabe 8 gibt es unterschiedliche Lösungen, findest du 2? Welche der
+           p("Für Aufgabe 8c) gibt es unterschiedliche Lösungen, findest du 2? Welche der
              Lösungen könntest du unter Umständen auch in der Forschung anwenden, und welche solltest du eher vermeiden?")
 
           ))
@@ -234,10 +234,10 @@ einstellen",
     # fixedPanel(fluidRow(column(12, height = 9, uiOutput("legendontop")))),
     tabPanel("Stichprobenkennwerteverteilungen",
                  #style = "overflow-x: scroll",
-                 # fluidRow(column(12, height = 9, uiOutput("legendontop"))),
-                 fluidRow(column(12,
-                                 # height = 4,
-                                 plotOutput("legendontop"),style = "height:30vh")),
+                 fluidRow(column(12, height = 9, uiOutput("legendontop"))),
+                 # fluidRow(column(12,
+                 #                 # height = 4,
+                 #                 plotOutput("legendontop"),style = "height:30vh")),
                  # fluidRow(column(12, align="center", height = 20, br("."), br(".") , br("."), br("."))),
                 fluidRow(
                   conditionalPanel("input.p_samp == 1", column(6, shinycssloaders::withSpinner(
