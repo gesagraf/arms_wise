@@ -53,7 +53,7 @@ ui <- fluidPage(
                                     tags$style(HTML(".js-irs-3 .irs-single, .js-irs-3 .irs-bar-edge, .js-irs-3 .irs-bar {background: #a9a9a9; border-top: #a9a9a9; border-bottom: #a9a9a9}")),
                                     ### Slider
                                     sliderInput(inputId = "number",
-                                                "Gesamtanzahl der Stichproben",
+                                                "Gesamtanzahl der Stichproben (höhere Werte -> längere Rechenzeit)",
                                                 min = 10,
                                                 max = 1000,
                                                 value = 100)),
@@ -119,10 +119,10 @@ ui <- fluidPage(
     wellPanel(title = "Hier kannst du die Priori des gleichverteilten Bayes-Schätzers einstllen.
 Der gleichverteilte Schätzer nimmt an, das alle Werte innerhalb der eingestellten Range gleich
 wahrscheinlich sind, aber Werte außerhalb der Range unmöglich sind.",
-              strong("SKV von Bayesschätzern"),
+              strong("SKV von Bayes-Schätzern"),
               p("mit gleichverteilter Priori"),
 
-      checkboxInput("p_bayes_uni", "Zeige die SKV dieses Bayesschätzers", value = F),
+      checkboxInput("p_bayes_uni", "Zeige die SKV dieses Bayes-Schätzers", value = F),
 
     #### Priors ####
     # Gleichverteiler Prior
@@ -134,7 +134,7 @@ wahrscheinlich sind, aber Werte außerhalb der Range unmöglich sind.",
                 max = 100,
                 value = c(-50,5)),
 
-    checkboxInput("show_prior_uni", "Zeige den Prior des gleichverteilten Bayes Schätzers", value = F)#,
+    checkboxInput("show_prior_uni", "Zeige den Prior des gleichverteilten Bayes-Schätzers", value = F)#,
     # textOutput("nas_uni")
 
 
@@ -150,10 +150,10 @@ wahrscheinlich sind, aber Werte außerhalb der Range unmöglich sind.",
 
     wellPanel(title = "hier kannst du Mittelwert und Standardabweichung der normalverteilten Priori
 einstellen",
-              strong("SKV von Bayesschätzern"),
+              strong("SKV von Bayes-Schätzern"),
               p("mit normalverteiltem Prior"),
 
-      checkboxInput("p_bayes_nv", "Zeige die SKV dieses Bayesschätzers", value = F),
+      checkboxInput("p_bayes_nv", "Zeige die SKV dieses Bayes-Schätzers", value = F),
     # Normalverteilter Prior
     # Prior Mean
     tags$style(HTML(".js-irs-6 .irs-single, .js-irs-6 .irs-bar-edge, .js-irs-6 .irs-bar {background: #440154FF; border-top: #440154FF; border-bottom: #440154FF}")),
@@ -171,7 +171,7 @@ einstellen",
                 max = 100,
                 value = 5),
 
-    checkboxInput("show_prior_nv", "Zeige den Prior des normalverteilten Bayes Schätzers", value = F)#,
+    checkboxInput("show_prior_nv", "Zeige den Prior des normalverteilten Bayes-Schätzers", value = F)#,
     # textOutput("nas_NV")
 
 
@@ -181,40 +181,53 @@ einstellen",
 
            wellPanel(p("In diesem Tab findest du Aufgaben, die dich durch die Plots leiten und dir helfen können, sie gut zu verstehen.")),
           # actionButton("pop_out", "pop-out-Aufgaben"),
-          p(""),
-
+          # p(""),
+          wellPanel(
+          h4("Lerne die App kennen"),
            strong("Aufgabe 1"),
            p("Finde eine Einstellung für der Mittelwert, wo der rote Strich (µ) genau auf der 50 liegt."),
           strong("Aufgabe 2"),
           p("Verändere den Mittelwert und die Standardabweichung so, dass die Zahlen {0, 50, 100} auf der X-Achse zu lesen sind."),
           strong("Aufgabe 3"),
           p("Verschiebe die Größe der einzelnen Stichproben, bis das Histogramm optisch einer Normalverteilung an nächsten kommt."),
+          ),
+
+
+          wellPanel(
+          h4("Verändere die Populationsparameter"),
           strong("Aufgabe 4"),
           p("Schaue dir verschiedene spezifische Stichproben an, wieso unterscheiden sie sich?"),
           strong("Aufgabe 5"),
            br(em("Aktiviere für diese Aufgabe die Plots der SKV des arithmetischen Mittels und des alternativen Schätzers.")),
-           p("Stelle die Stichprobengröße so ein, das die Plots der SKV vom arithmetischen Mittel und
+           p("Stelle die Stichprobengröße so ein, das die SKV vom arithmetischen Mittel und
              dem alternativen Schätzer identisch sind. (Zur Erinnerung: der alternative Schätzer
              ist der Mittelwert des Minimums und Maximums.)"),
            strong("Aufgabe 6"),
            br(em("Aktiviere für diese Aufgabe die Plots der SKV des arithmetischen Mittels und des gleichverteilten Bayes-Schätzers.")),
            p("Finde eine Einstellung, für die die Plots der SKV des arithmetischen Mittels und
              des gleichverteilten Bayes-Schätzers maximal ähnlich sind."),
+          # p("")
+          ),
+
+          wellPanel(
+          h4("Vergleiche die verschiedenen Schätzer"),
           strong("Aufgabe 7"),
-          br(em("Lade für diese Aufgabe die Seite neu und aktiviere den Plot des normalverteilten Bayes-Schätzers")),
-          p("Der Mittelwert aller Bayesschätzer (schwarzer Strich) ist ziemlich eindeutig unterschiedlich zum tatsächlichen Poplulationsmittelwert (µ, roter Strich). Woran liegt das?"),
-          p("Finde eine Einstellung, in dem der Mean aller Bayesschätzer (schwarzer Strich) und der tatsächliche Populationsmittelwert (roter Strich) direkt übereinander liegen."),
+          br(em("Lade für diese Aufgabe die Seite neu (um die Default-Werte wieder herzustellen) und aktiviere den Plot des normalverteilten Bayes-Schätzers")),
+          p("Der Mittelwert aller Bayes-Schätzer (schwarzer Strich) ist ziemlich eindeutig unterschiedlich zum tatsächlichen Poplulationsmittelwert (µ, roter Strich). Woran liegt das?"),
+          p("Finde eine Einstellung, in dem der Mean aller Bayes-Schätzer (schwarzer Strich) und der tatsächliche Populationsmittelwert (roter Strich) direkt übereinander liegen."),
+
+
 
           strong("Aufgabe 8"),
            br(em("Aktiviere für diese Aufgabe den Konfidenzintervall-Plot.")),
-           p("Vergleiche die verschiedenen Schätzer im Konfidenzintervall-Plot. Welches ist der beste Schätzer?"),
+           p("Vergleiche die verschiedenen Schätzer im Konfidenzintervall-Plot. Welcher Schätzer hat die beste Erwartungstreue, Effizienz und Konsistenz?"),
            p("Wie kannst du die Regler so einstellen, das einer der Schätzer den Populationsmittelwert (µ) nicht mehr mit einschließt? "),
-          p("Kannst du die Regler so verändern, das einer der Schätzer deutlich besser ist als die anderen?"),
+          p("Kannst du die Regler so verändern, das einer der Schätzer deutlich effizienter ist als die anderen?"),
            strong("Aufgabe 9"),
            p("Für Aufgabe 8 gibt es unterschiedliche Lösungen, findest du 2? Welche der
              Lösungen könntest du unter Umständen auch in der Forschung anwenden, und welche solltest du eher vermeiden?")
 
-          )
+          ))
       )),
   # Show a plot of the generated distribution
   mainPanel(
