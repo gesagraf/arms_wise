@@ -279,7 +279,7 @@ tags$head(tags$style(
 # ,
 p("."),p("."),p(".")
 ,p("Erstellt im Rahmen des ARMS II Seminars
-bei Prof. Dr. Florian Scharf. Projekt von Gesa Graf und Ian Buhmann.
+bei Prof. Dr. Florian Scharf. Projekt von Gesa Graf, Ian Buhmann und Constantin Wiegand.
 ")
 
 
